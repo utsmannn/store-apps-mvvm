@@ -1,0 +1,31 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    defaultConfig {
+        applicationId rootProject.ext.applicationId
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+apply from: "$rootDir/dependencies/android.gradle"
+apply from: "$rootDir/dependencies/commons.gradle"
+apply from: "$rootDir/dependencies/deps.gradle"
+apply from: "$rootDir/dependencies/test.gradle"
+
+dependencies {
+    implementation project(":libraries:abstraction")
+    implementation project(":libraries:network")
+    implementation project(":data")
+
+    implementation project(":feature:home")
+    implementation project(":feature:listing")
+}

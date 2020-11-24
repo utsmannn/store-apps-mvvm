@@ -1,0 +1,27 @@
+package com.utsman.network.utils
+
+import com.squareup.moshi.JsonReader
+import com.utsman.abstraction.di.moduleOf
+import com.utsman.network.di.moshi
+import okio.Buffer
+
+class JsonBeautifier {
+
+    private val moshiModule by moduleOf(moshi)
+    private val buffer = Buffer()
+    private val adapter = moshiModule.adapter(Any::class.java).indent("    ")
+
+    fun fromString(source: String): String {
+        val reader = JsonReader.of(buffer.writeUtf8(source))
+            .apply {
+                isLenient = true
+            }
+        val data = reader.readJsonValue()
+        return adapter.toJson(data)
+    }
+
+    fun fromAny(source: Any): String {
+        return adapter.toJson(source)
+    }
+
+}

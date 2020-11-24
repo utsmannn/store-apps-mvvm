@@ -1,0 +1,8 @@
+include ':feature:listing'
+include ':feature:home'
+include ':data'
+include ':libraries:network'
+rootProject.name = "Store Apps"
+
+include ':app'
+include ':libraries:abstraction'
