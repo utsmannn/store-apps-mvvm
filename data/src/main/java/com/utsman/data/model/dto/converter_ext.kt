@@ -4,7 +4,7 @@ import com.utsman.data.model.AppsItem
 import com.utsman.data.model.Aptoide
 import com.utsman.data.model.Category
 
-fun Aptoide.toCategoryView(category: Category): CategoryView {
+fun Aptoide.toCategoryView(category: Category?): CategoryView? {
     val list = datalist?.list?.map { app ->
         AppsView.simple {
             id = app.id ?: 0
@@ -15,8 +15,8 @@ fun Aptoide.toCategoryView(category: Category): CategoryView {
     } ?: emptyList()
 
     return CategoryView.simple {
-        name = category.name
-        query = category.query
+        name = category?.name ?: ""
+        query = category?.query
         apps = list
     }
 }

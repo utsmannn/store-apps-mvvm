@@ -1,11 +1,8 @@
-package com.utsman.data
+package com.utsman.data.repository
 
 import com.utsman.data.model.Aptoide
 import com.utsman.data.model.Category
-import com.utsman.data.repository.CategoriesRepository
-import com.utsman.data.repository.CategoriesRepositoryImpl
 import com.utsman.data.route.Services
-import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Before

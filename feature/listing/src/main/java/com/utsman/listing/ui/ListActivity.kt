@@ -7,19 +7,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import com.utsman.abstraction.di.moduleOf
-import com.utsman.abstraction.ext.logi
 import com.utsman.abstraction.ext.stringExtras
-import com.utsman.listing.R
 import com.utsman.listing.databinding.ActivityListBinding
 import com.utsman.listing.di.pagingViewModel
 import com.utsman.listing.ui.adapter.PagingListAdapter
-import com.utsman.listing.ui.adapter.PagingStateAdapter
+import com.utsman.abstraction.base.PagingStateAdapter
 import com.utsman.listing.viewmodel.PagingViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class ListActivity : AppCompatActivity() {

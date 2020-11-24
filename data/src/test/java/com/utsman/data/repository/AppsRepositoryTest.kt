@@ -1,8 +1,6 @@
-package com.utsman.data
+package com.utsman.data.repository
 
 import com.utsman.data.model.Aptoide
-import com.utsman.data.repository.AppsRepository
-import com.utsman.data.repository.AppsRepositoryImpl
 import com.utsman.data.route.Services
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals

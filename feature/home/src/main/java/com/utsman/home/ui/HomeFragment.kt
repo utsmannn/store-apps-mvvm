@@ -3,72 +3,28 @@ package com.utsman.home.ui
 import android.os.Bundle
 import android.view.View
 import android.viewbinding.library.fragment.viewBinding
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.utsman.abstraction.base.PagingStateAdapter
 import com.utsman.abstraction.di.moduleOf
-import com.utsman.abstraction.dto.listenOn
-import com.utsman.abstraction.ext.bindToProgressView
-import com.utsman.abstraction.ext.loge
-import com.utsman.abstraction.ext.logi
-import com.utsman.abstraction.listener.IResultState
-import com.utsman.data.model.dto.AppsView
-import com.utsman.data.model.dto.CategoryView
 import com.utsman.home.R
 import com.utsman.home.databinding.FragmentHomeBinding
 import com.utsman.home.di.homeViewModel
-import com.utsman.home.ui.adapter.CategoryAdapter
+import com.utsman.home.ui.adapter.PagingCategoryAdapter
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private val binding: FragmentHomeBinding by viewBinding()
-    private val categoryAdapter = CategoryAdapter()
     private val viewModel by moduleOf(homeViewModel)
 
-    private val appsRandomListener = object : IResultState<List<AppsView>> {
-        override fun onIdle() {
-            logi("idle...")
-        }
-
-        override fun onLoading() {
-            logi("loading...")
-        }
-
-        override fun onSuccess(data: List<AppsView>) {
-            logi("success...")
-            val defaultCategory = CategoryView.simple {
-                name = "Random apps for you"
-                query = null
-                apps = data
-            }
-            categoryAdapter.addItem(defaultCategory)
-        }
-
-        override fun onError(throwable: Throwable) {
-            loge("error on -> \n${throwable.localizedMessage}")
-            throwable.printStackTrace()
-        }
-    }
-
-    private val appsCategoryListener = object : IResultState<List<CategoryView>> {
-        override fun onIdle() {
-            logi("idle...")
-        }
-
-        override fun onLoading() {
-            logi("loading...")
-        }
-
-        override fun onSuccess(data: List<CategoryView>) {
-            logi("success...")
-            categoryAdapter.updateItems(data)
-        }
-
-        override fun onError(throwable: Throwable) {
-            loge("error on -> \n${throwable.localizedMessage}")
-            throwable.printStackTrace()
-        }
-
+    private val pagingCategoryAdapter = PagingCategoryAdapter()
+    private val pagingStateAdapter = PagingStateAdapter {
+        pagingCategoryAdapter.retry()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,18 +32,18 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         binding.rvHome.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = categoryAdapter
+            adapter = pagingCategoryAdapter.withLoadStateFooter(pagingStateAdapter)
         }
 
-        viewModel.getRandomApps()
-        viewModel.randomList.observe(viewLifecycleOwner, Observer { result ->
-            result.listenOn(appsRandomListener)
-        })
+        pagingCategoryAdapter.addLoadStateListener { combinedLoadStates ->
+            binding.progressCircular.isVisible = combinedLoadStates.refresh is LoadState.Loading
+        }
 
-        viewModel.getCategories()
-        viewModel.categories.observe(viewLifecycleOwner, Observer { result ->
-            result.listenOn(appsCategoryListener)
-            result.bindToProgressView(binding.progressCircular)
+        viewModel.getPagingCategories()
+        viewModel.pagingCategories.observe(viewLifecycleOwner, Observer { pagingData ->
+            lifecycleScope.launch {
+                pagingCategoryAdapter.submitData(pagingData)
+            }
         })
     }
 }

@@ -1,6 +1,7 @@
 package com.utsman.data.const
 
 import com.utsman.data.model.Category
+import java.lang.IndexOutOfBoundsException
 
 object CategoriesApps {
     val tools = Category.simple {
@@ -77,4 +78,16 @@ object CategoriesApps {
         system,
         sport
     )
+
+    object MockPaging {
+
+        fun page(page: Int): List<Category>? {
+            val perPage = 2
+            return try {
+                list.subList(page, page+perPage)
+            } catch (e: IndexOutOfBoundsException) {
+                null
+            }
+        }
+    }
 }

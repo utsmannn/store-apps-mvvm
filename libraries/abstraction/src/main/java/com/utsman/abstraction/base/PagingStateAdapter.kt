@@ -1,4 +1,4 @@
-package com.utsman.listing.ui.adapter
+package com.utsman.abstraction.base
 
 import android.view.View
 import android.view.ViewGroup
@@ -6,9 +6,9 @@ import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.utsman.abstraction.R
+import com.utsman.abstraction.databinding.ItemListLoaderBinding
 import com.utsman.abstraction.ext.inflate
-import com.utsman.listing.R
-import com.utsman.listing.databinding.ItemListLoaderBinding
 
 class PagingStateAdapter(private val retry: () -> Unit) : LoadStateAdapter<PagingStateAdapter.PagingStateViewHolder>() {
 

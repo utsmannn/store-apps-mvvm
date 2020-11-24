@@ -2,6 +2,7 @@ package com.utsman.home
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import androidx.paging.PagingData
 import com.nhaarman.mockitokotlin2.verify
 import com.utsman.abstraction.dto.ResultState
 import com.utsman.data.model.dto.AppsView
@@ -38,6 +39,7 @@ class HomeViewModelTest {
 
     private val dataRandom = listOf<AppsView>()
     private val dataCategory = listOf<CategoryView>()
+    private val dataPagingCategory = PagingData.from(emptyList<CategoryView>())
 
     private val returnRandomSuccessValue = ResultState.Success(dataRandom)
     private val returnRandomFailedValue = ResultState.Error<List<AppsView>>(th = Throwable("Error"))
@@ -52,6 +54,9 @@ class HomeViewModelTest {
 
     @Mock
     private lateinit var observerCategory:  Observer<in ResultState<List<CategoryView>>>
+
+    @Mock
+    private lateinit var observerPagingCategoryView: Observer<PagingData<CategoryView>>
 
     @Before
     fun setup() {
@@ -91,6 +96,20 @@ class HomeViewModelTest {
         homeUseCase.categories.value = returnCategoryFailedValue
         homeViewModel.categories.observeForever(observerCategory)
         verify(observerCategory).onChanged(returnCategoryFailedValue)
+    }
+
+    @Test
+    fun appsPagingCategorySuccess() = runBlockingTest {
+        homeUseCase.pagingCategories.postValue(dataPagingCategory)
+        homeViewModel.pagingCategories.observeForever(observerPagingCategoryView)
+        verify(observerPagingCategoryView).onChanged(dataPagingCategory)
+    }
+
+    @Test
+    fun appsPagingCategoryFailed() = runBlockingTest {
+        homeUseCase.pagingCategories.postValue(null)
+        homeViewModel.pagingCategories.observeForever(observerPagingCategoryView)
+        verify(observerPagingCategoryView).onChanged(null)
     }
 
 }
