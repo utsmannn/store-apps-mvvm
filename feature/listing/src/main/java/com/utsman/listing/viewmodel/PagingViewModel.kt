@@ -11,7 +11,11 @@ import kotlinx.coroutines.launch
 class PagingViewModel(private val pagingUseCase: PagingUseCase) : ViewModel() {
     val pagingData: LiveData<PagingData<AppsView>> get() = pagingUseCase.pagingData
 
-    fun searchApps(query: String) = viewModelScope.launch {
-        pagingUseCase.searchApps(viewModelScope, query)
+    fun searchApps(query: String? = null) = viewModelScope.launch {
+        pagingUseCase.searchApps(this, query)
+    }
+
+    fun restartState() = viewModelScope.launch {
+        pagingUseCase.restartState(this)
     }
 }

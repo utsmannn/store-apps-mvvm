@@ -10,7 +10,7 @@ class LogInterceptor : HttpLoggingInterceptor.Logger {
         val tag = "API LOGGING ------"
         if (message.startsWith("{") || message.startsWith("[")) {
             try {
-                logi(message.toJson(), tag = tag)
+                //logi(message.toJson(), tag = tag)
             } catch (e: JsonEncodingException) {
                 logi("..failed to logging response..")
             }

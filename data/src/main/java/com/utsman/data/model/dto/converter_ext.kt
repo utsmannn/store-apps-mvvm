@@ -16,6 +16,7 @@ fun Aptoide.toCategoryView(category: Category): CategoryView {
 
     return CategoryView.simple {
         name = category.name
+        query = category.query
         apps = list
     }
 }

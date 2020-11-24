@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper
 import com.utsman.abstraction.ext.inflate
+import com.utsman.abstraction.ext.intentTo
 import com.utsman.data.model.dto.CategoryView
 import com.utsman.home.R
 import com.utsman.home.databinding.ItemAppsCategoryBinding
@@ -22,6 +23,12 @@ class CategoryAdapter : RecyclerView.Adapter<CategoryAdapter.HomeViewHolder>() {
             }
 
             txtLabelCategory.text = categoryView.name
+            txtLabelCategory.setOnClickListener {
+                it.context.intentTo("com.utsman.listing.ui.ListActivity") {
+                    putExtra("title", categoryView.name)
+                    putExtra("query", categoryView.query)
+                }
+            }
             rvApps.run {
                 val snapHelper = GravitySnapHelper(Gravity.START)
                 snapHelper.attachToRecyclerView(this)

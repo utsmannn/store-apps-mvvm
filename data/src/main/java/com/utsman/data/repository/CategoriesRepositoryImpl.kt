@@ -6,12 +6,12 @@ import com.utsman.data.route.Services
 
 class CategoriesRepositoryImpl(private val services: Services) : CategoriesRepository {
     override suspend fun getCategory(category: Category): Aptoide {
-        return services.searchList(category.query)
+        return services.searchList(query = category.query)
     }
 
     override suspend fun getCategories(categories: List<Category>): List<Aptoide> {
         return categories.map { category ->
-            services.searchList(category.query)
+            services.searchList(query = category.query)
         }
     }
 }

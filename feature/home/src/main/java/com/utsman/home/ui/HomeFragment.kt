@@ -38,6 +38,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             logi("success...")
             val defaultCategory = CategoryView.simple {
                 name = "Random apps for you"
+                query = null
                 apps = data
             }
             categoryAdapter.addItem(defaultCategory)
