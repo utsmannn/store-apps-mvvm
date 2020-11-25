@@ -1,10 +1,9 @@
 package com.utsman.data.repository
 
-import com.utsman.data.model.Aptoide
 import com.utsman.data.model.Datalist
 import com.utsman.data.route.Services
 
-class PagingRepositoryImpl(private val services: Services) : PagingRepository {
+class PagingAppRepositoryImpl(private val services: Services) : PagingAppRepository {
 
     override suspend fun loadApps(query: String?, search: Boolean, offset: Int): Datalist {
         return if (query != null) {

@@ -8,6 +8,8 @@ sealed class AppsSealedView(val viewType: AppsViewType) {
     data class AppsBannerView(
         var id: Int = 0,
         var name: String = "",
+        var packageName: String = "",
+        var appVersion: AppVersion = AppVersion(),
         var downloads: Long = 0,
         var size: Long = 0,
         var icon: String = "",
@@ -21,6 +23,8 @@ sealed class AppsSealedView(val viewType: AppsViewType) {
     data class AppsView(
         var id: Int = 0,
         var name: String = "",
+        var packageName: String = "",
+        var appVersion: AppVersion = AppVersion(),
         var size: Long = 0,
         var icon: String = ""
     ): AppsSealedView(AppsViewType.REGULAR) {

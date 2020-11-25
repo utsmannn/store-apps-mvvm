@@ -4,10 +4,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.paging.PagingData
 import com.nhaarman.mockitokotlin2.verify
-import com.utsman.abstraction.dto.ResultState
 import com.utsman.data.model.dto.AppsSealedView.AppsView
-import com.utsman.data.repository.PagingRepository
-import com.utsman.data.repository.PagingRepositoryImpl
+import com.utsman.data.repository.PagingAppRepository
+import com.utsman.data.repository.PagingAppRepositoryImpl
 import com.utsman.data.route.Services
 import com.utsman.listing.domain.PagingUseCase
 import com.utsman.listing.viewmodel.PagingViewModel
@@ -27,7 +26,7 @@ class PagingViewModelTest {
     val instantExecutorRule = InstantTaskExecutorRule()
     private val services = Mockito.mock(Services::class.java)
 
-    private lateinit var pagingRepository: PagingRepository
+    private lateinit var pagingAppRepository: PagingAppRepository
     private lateinit var pagingUseCase: PagingUseCase
     private lateinit var pagingViewModel: PagingViewModel
 
@@ -42,8 +41,8 @@ class PagingViewModelTest {
         MockitoAnnotations.initMocks(this)
         Dispatchers.setMain(schedulerProvider)
 
-        pagingRepository = PagingRepositoryImpl(services)
-        pagingUseCase = PagingUseCase(pagingRepository)
+        pagingAppRepository = PagingAppRepositoryImpl(services)
+        pagingUseCase = PagingUseCase(pagingAppRepository)
         pagingViewModel = PagingViewModel(pagingUseCase)
     }
 

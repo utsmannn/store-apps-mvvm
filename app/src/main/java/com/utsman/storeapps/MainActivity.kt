@@ -8,6 +8,7 @@ import com.utsman.abstraction.base.SimplePagerAdapter
 import com.utsman.abstraction.di.moduleOf
 import com.utsman.home.di.homeViewModel
 import com.utsman.home.ui.HomeFragment
+import com.utsman.listing.ui.InstalledAppFragment
 import com.utsman.storeapps.databinding.ActivityMainBinding
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -20,8 +21,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val homeFragment = HomeFragment()
+        val installedAppFragment = InstalledAppFragment()
         val pagerAdapter = SimplePagerAdapter(supportFragmentManager).apply {
-            addFragment(homeFragment)
+            addFragment(installedAppFragment, homeFragment)
         }
 
         binding.run {

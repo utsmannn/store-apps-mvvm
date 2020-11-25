@@ -19,7 +19,7 @@ import com.utsman.abstraction.ext.booleanExtras
 import com.utsman.listing.viewmodel.PagingViewModel
 import kotlinx.coroutines.launch
 
-class ListActivity : AppCompatActivity() {
+class ListAppActivity : AppCompatActivity() {
 
     private val binding: ActivityListBinding by viewBinding()
     private val viewModel: PagingViewModel by moduleOf(pagingViewModel)
@@ -41,7 +41,7 @@ class ListActivity : AppCompatActivity() {
 
         supportActionBar?.run {
             setDisplayHomeAsUpEnabled(true)
-            title = this@ListActivity.title
+            title = this@ListAppActivity.title
         }
 
         val gridLayout = GridLayoutManager(this, 3).apply {

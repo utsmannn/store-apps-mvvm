@@ -23,7 +23,7 @@ data class File(
     val vername: String? = null,
 
     @Json(name="vercode")
-    val vercode: Int? = null,
+    val vercode: Long? = null,
 
     @Json(name="tags")
     val tags: List<Any?>? = null
@@ -50,7 +50,7 @@ data class Rating(
 data class AppsItem(
 
     @Json(name="package")
-    val jsonMemberPackage: String? = null,
+    val packageName: String? = null,
 
     @Json(name="uname")
     val uname: String? = null,

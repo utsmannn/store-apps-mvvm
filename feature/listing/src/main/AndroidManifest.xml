@@ -3,6 +3,6 @@
     package="com.utsman.listing">
 
     <application>
-        <activity android:name=".ui.ListActivity"/>
+        <activity android:name=".ui.ListAppActivity"/>
     </application>
 </manifest>
