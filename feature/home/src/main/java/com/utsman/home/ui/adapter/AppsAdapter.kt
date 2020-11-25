@@ -1,44 +1,50 @@
 package com.utsman.home.ui.adapter
 
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.utsman.abstraction.ext.bytesToString
 import com.utsman.abstraction.ext.inflate
-import com.utsman.abstraction.ext.loadUrl
-import com.utsman.data.model.dto.AppsView
+import com.utsman.data.model.dto.AppsSealedView
+import com.utsman.data.model.dto.AppsSealedView.AppsBannerView
+import com.utsman.data.model.dto.AppsSealedView.AppsView
+import com.utsman.data.model.dto.AppsViewType
 import com.utsman.home.R
-import com.utsman.home.databinding.ItemAppsBinding
+import com.utsman.home.ui.holder.AppsBannerViewHolder
+import com.utsman.home.ui.holder.AppsViewHolder
 
-class AppsAdapter : RecyclerView.Adapter<AppsAdapter.AppsViewHolder>() {
+class AppsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    class AppsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val binding = ItemAppsBinding.bind(view)
+    private val apps = mutableListOf<AppsSealedView>()
 
-        fun bind(item: AppsView) = binding.run {
-            txtTitle.text = item.name
-            txtSize.text = item.size.bytesToString()
-            imgItem.loadUrl(item.icon, item.id.toString())
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val viewBanner = parent.inflate(R.layout.item_apps_banner)
+        val viewRegular = parent.inflate(R.layout.item_apps)
+        return when(AppsViewType.values()[viewType]) {
+            AppsViewType.BANNER -> AppsBannerViewHolder(viewBanner)
+            AppsViewType.REGULAR -> AppsViewHolder(viewRegular)
         }
     }
 
-    private val apps = mutableListOf<AppsView>()
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppsViewHolder {
-        val view = parent.inflate(R.layout.item_apps)
-        return AppsViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: AppsViewHolder, position: Int) {
-        val item = apps[position]
-        holder.bind(item)
+        when (val item = apps[position]) {
+            is AppsBannerView -> {
+                (holder as AppsBannerViewHolder).bind(item)
+            }
+            is AppsView -> {
+                (holder as AppsViewHolder).bind(item)
+            }
+        }
     }
 
     override fun getItemCount(): Int {
         return apps.size
     }
 
-    fun updateItems(apps: List<AppsView>) {
+    override fun getItemViewType(position: Int): Int {
+        return apps[position].viewType.ordinal
+    }
+
+    fun updateItems(apps: List<AppsSealedView>) {
         this.apps.addAll(apps)
         notifyDataSetChanged()
     }

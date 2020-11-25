@@ -20,13 +20,6 @@ class CategoriesAppsRepositoryTest {
         query = "social"
     }
 
-    private val sportCategory = Category.simple {
-        name = "Sport"
-        query = "sport"
-    }
-
-    private val listCategoriesTest = listOf(socialCategory, sportCategory)
-
     @Before
     fun setup() {
         categoriesRepository = CategoriesRepositoryImpl(services)

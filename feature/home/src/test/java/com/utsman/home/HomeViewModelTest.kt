@@ -5,7 +5,7 @@ import androidx.lifecycle.Observer
 import androidx.paging.PagingData
 import com.nhaarman.mockitokotlin2.verify
 import com.utsman.abstraction.dto.ResultState
-import com.utsman.data.model.dto.AppsView
+import com.utsman.data.model.dto.AppsSealedView
 import com.utsman.data.model.dto.CategoryView
 import com.utsman.data.repository.AppsRepository
 import com.utsman.data.repository.AppsRepositoryImpl
@@ -37,12 +37,12 @@ class HomeViewModelTest {
     private lateinit var homeUseCase: HomeUseCase
     private lateinit var homeViewModel: HomeViewModel
 
-    private val dataRandom = listOf<AppsView>()
+    private val dataRandom = listOf<AppsSealedView.AppsView>()
     private val dataCategory = listOf<CategoryView>()
     private val dataPagingCategory = PagingData.from(emptyList<CategoryView>())
 
     private val returnRandomSuccessValue = ResultState.Success(dataRandom)
-    private val returnRandomFailedValue = ResultState.Error<List<AppsView>>(th = Throwable("Error"))
+    private val returnRandomFailedValue = ResultState.Error<List<AppsSealedView.AppsView>>(th = Throwable("Error"))
 
     private val returnCategorySuccessValue = ResultState.Success(dataCategory)
     private val returnCategoryFailedValue = ResultState.Error<List<CategoryView>>(th = Throwable("Error"))
@@ -50,7 +50,7 @@ class HomeViewModelTest {
     private val schedulerProvider = Dispatchers.Unconfined
 
     @Mock
-    private lateinit var observerRandomApps:  Observer<in ResultState<List<AppsView>>>
+    private lateinit var observerRandomApps:  Observer<in ResultState<List<AppsSealedView.AppsView>>>
 
     @Mock
     private lateinit var observerCategory:  Observer<in ResultState<List<CategoryView>>>

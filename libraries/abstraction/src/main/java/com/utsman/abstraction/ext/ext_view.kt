@@ -1,16 +1,19 @@
 package com.utsman.abstraction.ext
 
-import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.utsman.abstraction.dto.ResultState
-import com.utsman.abstraction.listener.IResultState
+import java.util.*
+import kotlin.math.ln
+import kotlin.math.pow
 
-infix fun ViewGroup.inflate(layoutResId: Int): View = LayoutInflater.from(context).inflate(layoutResId, this, false)
+infix fun ViewGroup.inflate(layoutResId: Int): View = LayoutInflater.from(context).inflate(
+    layoutResId,
+    this,
+    false
+)
 
 fun Long.bytesToString() = when {
     this == Long.MIN_VALUE || this < 0 -> "N/A"
@@ -23,6 +26,18 @@ fun Long.bytesToString() = when {
     else -> "%.1f EiB".format((this shr 20).toDouble() / (0x1 shl 40))
 }
 
-fun <T: Any>ResultState<T>.bindToProgressView(view: View) {
+fun Long.toSumReadable(): String? {
+    if (this < 1000) return "" + this
+    val exp = (ln(this.toDouble()) / ln(1000.0)).toInt()
+    return String.format(
+        "%.0f%c",
+        this / 1000.0.pow(exp),
+        "kMGTPE"[exp - 1]
+    )
+}
+
+fun <T : Any>ResultState<T>.bindToProgressView(view: View) {
     view.isVisible = this is ResultState.Loading
 }
+
+fun String.capital() = capitalize(Locale.getDefault())

@@ -3,7 +3,7 @@ package com.utsman.home.viewmodel
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import com.utsman.abstraction.dto.ResultState
-import com.utsman.data.model.dto.AppsView
+import com.utsman.data.model.dto.AppsSealedView.AppsView
 import com.utsman.data.model.dto.CategoryView
 import com.utsman.home.domain.HomeUseCase
 import kotlinx.coroutines.launch

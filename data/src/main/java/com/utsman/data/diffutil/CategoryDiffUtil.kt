@@ -1,4 +1,4 @@
-package com.utsman.data.model
+package com.utsman.data.diffutil
 
 import androidx.recyclerview.widget.DiffUtil
 import com.utsman.data.model.dto.CategoryView

@@ -9,7 +9,7 @@ import com.utsman.abstraction.dto.ResultState
 import com.utsman.abstraction.dto.fetch
 import com.utsman.abstraction.dto.stateOf
 import com.utsman.data.const.CategoriesApps
-import com.utsman.data.model.dto.AppsView
+import com.utsman.data.model.dto.AppsSealedView.AppsView
 import com.utsman.data.model.dto.CategoryView
 import com.utsman.data.model.dto.toAppsView
 import com.utsman.data.model.dto.toCategoryView

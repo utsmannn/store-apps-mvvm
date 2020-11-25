@@ -6,7 +6,7 @@ import com.utsman.data.model.Category
 
 fun Aptoide.toCategoryView(category: Category?): CategoryView? {
     val list = datalist?.list?.map { app ->
-        AppsView.simple {
+        AppsSealedView.AppsView.simple {
             id = app.id ?: 0
             name = app.name ?: ""
             size = app.size ?: 0
@@ -21,8 +21,19 @@ fun Aptoide.toCategoryView(category: Category?): CategoryView? {
     }
 }
 
-fun AppsItem.toAppsView(): AppsView {
-    return AppsView.simple {
+fun AppsItem.toAppsBannerView(): AppsSealedView.AppsBannerView {
+    return AppsSealedView.AppsBannerView.simple {
+        id = this@toAppsBannerView.id ?: 0
+        name = this@toAppsBannerView.name ?: ""
+        downloads = this@toAppsBannerView.stats?.downloads ?: 0
+        size = this@toAppsBannerView.size ?: 0
+        icon = this@toAppsBannerView.icon ?: ""
+        image = this@toAppsBannerView.graphic ?: ""
+    }
+}
+
+fun AppsItem.toAppsView(): AppsSealedView.AppsView {
+    return AppsSealedView.AppsView.simple {
         id = this@toAppsView.id ?: 0
         name = this@toAppsView.name ?: ""
         size = this@toAppsView.size ?: 0

@@ -5,7 +5,7 @@ import androidx.lifecycle.Observer
 import androidx.paging.PagingData
 import com.nhaarman.mockitokotlin2.verify
 import com.utsman.abstraction.dto.ResultState
-import com.utsman.data.model.dto.AppsView
+import com.utsman.data.model.dto.AppsSealedView.AppsView
 import com.utsman.data.repository.PagingRepository
 import com.utsman.data.repository.PagingRepositoryImpl
 import com.utsman.data.route.Services

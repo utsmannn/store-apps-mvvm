@@ -1,7 +1,7 @@
-package com.utsman.data.model
+package com.utsman.data.diffutil
 
 import androidx.recyclerview.widget.DiffUtil
-import com.utsman.data.model.dto.AppsView
+import com.utsman.data.model.dto.AppsSealedView.AppsView
 
 class AppsViewDiffUtil : DiffUtil.ItemCallback<AppsView>() {
     override fun areItemsTheSame(oldItem: AppsView, newItem: AppsView): Boolean {
@@ -11,5 +11,4 @@ class AppsViewDiffUtil : DiffUtil.ItemCallback<AppsView>() {
     override fun areContentsTheSame(oldItem: AppsView, newItem: AppsView): Boolean {
         return oldItem == newItem
     }
-
 }

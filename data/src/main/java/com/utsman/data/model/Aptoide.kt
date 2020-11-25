@@ -104,10 +104,10 @@ data class Stats(
     val prating: Prating? = null,
 
     @Json(name="pdownloads")
-    val pdownloads: Int? = null,
+    val pdownloads: Long? = null,
 
     @Json(name="downloads")
-    val downloads: Int? = null,
+    val downloads: Long? = null,
 
     @Json(name="rating")
     val rating: Rating? = null

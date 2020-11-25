@@ -2,7 +2,7 @@ package com.utsman.listing.domain
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.*
-import com.utsman.data.model.dto.AppsView
+import com.utsman.data.model.dto.AppsSealedView.AppsView
 import com.utsman.data.model.dto.toAppsView
 import com.utsman.data.repository.PagingRepository
 import com.utsman.data.source.AppsPagingSource

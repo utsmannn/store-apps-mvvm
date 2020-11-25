@@ -14,7 +14,7 @@ import com.utsman.abstraction.di.moduleOf
 import com.utsman.home.R
 import com.utsman.home.databinding.FragmentHomeBinding
 import com.utsman.home.di.homeViewModel
-import com.utsman.home.ui.adapter.PagingCategoryAdapter
+import com.utsman.home.ui.adapter.CategoryAdapter
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -22,27 +22,29 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val binding: FragmentHomeBinding by viewBinding()
     private val viewModel by moduleOf(homeViewModel)
 
-    private val pagingCategoryAdapter = PagingCategoryAdapter()
-    private val pagingStateAdapter = PagingStateAdapter {
-        pagingCategoryAdapter.retry()
+    private val categoryAdapter = CategoryAdapter()
+    private val stateAdapter = PagingStateAdapter {
+        categoryAdapter.retry()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.rvHome.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = pagingCategoryAdapter.withLoadStateFooter(pagingStateAdapter)
-        }
+        binding.run {
+            rvHome.apply {
+                layoutManager = LinearLayoutManager(context)
+                adapter = categoryAdapter.withLoadStateFooter(stateAdapter)
+            }
 
-        pagingCategoryAdapter.addLoadStateListener { combinedLoadStates ->
-            binding.progressCircular.isVisible = combinedLoadStates.refresh is LoadState.Loading
+            categoryAdapter.addLoadStateListener { combinedLoadStates ->
+                progressCircular.isVisible = combinedLoadStates.refresh is LoadState.Loading
+            }
         }
 
         viewModel.getPagingCategories()
         viewModel.pagingCategories.observe(viewLifecycleOwner, Observer { pagingData ->
             lifecycleScope.launch {
-                pagingCategoryAdapter.submitData(pagingData)
+                categoryAdapter.submitData(pagingData)
             }
         })
     }
