@@ -10,7 +10,8 @@ import com.utsman.abstraction.dto.fetch
 import com.utsman.abstraction.dto.stateOf
 import com.utsman.data.const.CategoriesApps
 import com.utsman.data.model.dto.AppsSealedView.AppsView
-import com.utsman.data.model.dto.CategoryView
+import com.utsman.data.model.dto.CategorySealedView
+import com.utsman.data.model.dto.CategorySealedView.CategoryView
 import com.utsman.data.model.dto.toAppsView
 import com.utsman.data.model.dto.toCategoryView
 import com.utsman.data.repository.AppsRepository
@@ -26,13 +27,13 @@ class HomeUseCase(
     private val categoriesRepository: CategoriesRepository
 ) {
     val randomList = stateOf<List<AppsView>>()
-    val categories = stateOf<List<CategoryView>>()
+    val categories = stateOf<List<CategorySealedView>>()
 
-    val pagingCategories = MutableLiveData<PagingData<CategoryView>>()
+    val pagingCategories = MutableLiveData<PagingData<CategorySealedView>>()
 
     suspend fun getRandomApps(scope: CoroutineScope) = scope.launch {
         fetch {
-            val response = appsRepository.getRandomApps()
+            val response = appsRepository.getTopApps()
             response.datalist?.list?.map { app ->
                 app.toAppsView()
             } ?: emptyList()
@@ -48,7 +49,7 @@ class HomeUseCase(
                 aptoide.toCategoryView(CategoriesApps.list[index]) ?: CategoryView()
             }
         }.collect {
-            categories.value = it
+            categories.value = it as ResultState<List<CategorySealedView>>
         }
     }
 

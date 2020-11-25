@@ -13,9 +13,9 @@ import kotlinx.coroutines.launch
 class PagingUseCase(private val pagingRepository: PagingRepository) {
     val pagingData = MutableLiveData<PagingData<AppsView>>()
 
-    fun searchApps(scope: CoroutineScope, query: String? = null) = scope.launch {
+    fun searchApps(scope: CoroutineScope, query: String? = null, isSearch: Boolean) = scope.launch {
         Pager(PagingConfig(pageSize = 10)) {
-            AppsPagingSource(query, pagingRepository)
+            AppsPagingSource(query, isSearch, pagingRepository)
         }.flow
             .cachedIn(this)
             .collect {

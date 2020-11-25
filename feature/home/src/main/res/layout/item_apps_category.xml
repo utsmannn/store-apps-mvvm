@@ -18,7 +18,8 @@
         android:paddingBottom="6dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:drawableEndCompat="@drawable/ic_round_arrow_forward_24" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_apps"

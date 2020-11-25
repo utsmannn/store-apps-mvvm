@@ -4,7 +4,8 @@ import androidx.lifecycle.*
 import androidx.paging.PagingData
 import com.utsman.abstraction.dto.ResultState
 import com.utsman.data.model.dto.AppsSealedView.AppsView
-import com.utsman.data.model.dto.CategoryView
+import com.utsman.data.model.dto.CategorySealedView
+import com.utsman.data.model.dto.CategorySealedView.CategoryView
 import com.utsman.home.domain.HomeUseCase
 import kotlinx.coroutines.launch
 
@@ -18,10 +19,10 @@ class HomeViewModel(
     val randomList: LiveData<ResultState<List<AppsView>>>
         get() = _randomList.asLiveData(viewModelScope.coroutineContext)
 
-    val categories: LiveData<ResultState<List<CategoryView>>>
+    val categories: LiveData<ResultState<List<CategorySealedView>>>
         get() = _categories.asLiveData(viewModelScope.coroutineContext)
 
-    val pagingCategories: LiveData<PagingData<CategoryView>> get() = homeUseCase.pagingCategories
+    val pagingCategories: LiveData<PagingData<CategorySealedView>> get() = homeUseCase.pagingCategories
 
     fun getRandomApps() = viewModelScope.launch {
         homeUseCase.getRandomApps(this)

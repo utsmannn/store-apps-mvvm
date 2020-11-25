@@ -5,7 +5,9 @@ import java.util.*
 
 data class Category(
     var name: String = "",
-    var query: String = ""
+    var query: String = "",
+    var image: String = "",
+    var desc: String = ""
 ) {
     companion object {
         fun simple(category: Category.() -> Unit) = Category().apply(category)

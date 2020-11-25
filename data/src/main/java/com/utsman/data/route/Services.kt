@@ -8,11 +8,17 @@ import retrofit2.http.Query
 interface Services {
 
     @GET("/api/7/apps/get/offset={offset}/sort=downloads")
-    suspend fun randomList(
+    suspend fun topList(
         @Path("offset") offset: Int = 0
     ): Aptoide
 
     @GET("/api/7/apps/get/group_name={query}/offset={offset}/sort=downloads")
+    suspend fun groupList(
+        @Path("query") query: String = "",
+        @Path("offset") offset: Int = 0
+    ): Aptoide
+
+    @GET("/api/7/apps/search/query={query}/offset={offset}")
     suspend fun searchList(
         @Path("query") query: String = "",
         @Path("offset") offset: Int = 0

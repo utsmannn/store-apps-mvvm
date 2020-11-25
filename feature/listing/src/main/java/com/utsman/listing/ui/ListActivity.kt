@@ -15,6 +15,7 @@ import com.utsman.listing.databinding.ActivityListBinding
 import com.utsman.listing.di.pagingViewModel
 import com.utsman.listing.ui.adapter.PagingListAdapter
 import com.utsman.abstraction.base.PagingStateAdapter
+import com.utsman.abstraction.ext.booleanExtras
 import com.utsman.listing.viewmodel.PagingViewModel
 import kotlinx.coroutines.launch
 
@@ -25,6 +26,7 @@ class ListActivity : AppCompatActivity() {
 
     private val query by stringExtras("query")
     private val title by stringExtras("title")
+    private val isSearch by booleanExtras("is_search")
 
     private val pagingListAdapter = PagingListAdapter {
 
@@ -60,7 +62,7 @@ class ListActivity : AppCompatActivity() {
             adapter = pagingListAdapter.withLoadStateFooter(pagingStateAdapter)
         }
 
-        viewModel.searchApps(query)
+        viewModel.getApps(query, isSearch)
         viewModel.pagingData.observe(this, Observer { pagingData ->
             lifecycleScope.launch {
                 pagingListAdapter.submitData(pagingData)

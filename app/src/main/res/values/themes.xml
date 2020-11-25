@@ -14,5 +14,6 @@
         <!--<item name="fontFamily">monospace</item>-->
         <!--<item name="android:letterSpacing" tools:targetApi="l">0.007</item>-->
         <!-- Customize your theme here. -->
+        <item name="android:textColor">@android:color/black</item>
     </style>
 </resources>

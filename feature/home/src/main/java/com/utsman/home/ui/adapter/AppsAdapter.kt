@@ -9,29 +9,40 @@ import com.utsman.data.model.dto.AppsSealedView.AppsView
 import com.utsman.data.model.dto.AppsViewType
 import com.utsman.home.R
 import com.utsman.home.ui.holder.AppsBannerViewHolder
+import com.utsman.home.ui.holder.AppsMiniViewHolder
 import com.utsman.home.ui.holder.AppsViewHolder
 
-class AppsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class AppsAdapter(private val isMini: Boolean = false) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val apps = mutableListOf<AppsSealedView>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val viewBanner = parent.inflate(R.layout.item_apps_banner)
         val viewRegular = parent.inflate(R.layout.item_apps)
+        val viewMini = parent.inflate(R.layout.item_apps_mini)
         return when(AppsViewType.values()[viewType]) {
             AppsViewType.BANNER -> AppsBannerViewHolder(viewBanner)
-            AppsViewType.REGULAR -> AppsViewHolder(viewRegular)
+            AppsViewType.REGULAR -> {
+                if (isMini) {
+                    AppsMiniViewHolder(viewMini)
+                } else {
+                    AppsViewHolder(viewRegular)
+                }
+            }
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-
         when (val item = apps[position]) {
             is AppsBannerView -> {
                 (holder as AppsBannerViewHolder).bind(item)
             }
             is AppsView -> {
-                (holder as AppsViewHolder).bind(item)
+                if (isMini) {
+                    (holder as AppsMiniViewHolder).bind(item)
+                } else {
+                    (holder as AppsViewHolder).bind(item)
+                }
             }
         }
     }

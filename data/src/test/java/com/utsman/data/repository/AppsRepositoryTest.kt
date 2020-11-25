@@ -22,17 +22,17 @@ class AppsRepositoryTest {
 
     @Test
     fun appsSuccess() = runBlocking {
-        `when`(service.randomList()).thenReturn(Aptoide())
+        `when`(service.topList()).thenReturn(Aptoide())
 
-        val repo = appsRepository.getRandomApps()
+        val repo = appsRepository.getTopApps()
         assertEquals(repo, Aptoide())
     }
 
     @Test
     fun appsNullOrError() = runBlocking {
-        `when`(service.randomList()).thenReturn(null)
+        `when`(service.topList()).thenReturn(null)
 
-        val repo = appsRepository.getRandomApps()
+        val repo = appsRepository.getTopApps()
         assertEquals(repo, null)
     }
 }

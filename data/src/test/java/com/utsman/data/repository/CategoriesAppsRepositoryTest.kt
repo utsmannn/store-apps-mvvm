@@ -27,7 +27,7 @@ class CategoriesAppsRepositoryTest {
 
     @Test
     fun categorySuccess() = runBlocking {
-        `when`(services.searchList(socialCategory.query)).thenReturn(Aptoide())
+        `when`(services.groupList(socialCategory.query)).thenReturn(Aptoide())
 
         val repo = categoriesRepository.getCategory(socialCategory)
         assertEquals(repo, Aptoide())
