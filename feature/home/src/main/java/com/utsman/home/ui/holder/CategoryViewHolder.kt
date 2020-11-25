@@ -19,7 +19,7 @@ class CategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         txtLabelCategory.text = categoryView.name
         txtLabelCategory.setOnClickListener {
-            it.context.intentTo("com.utsman.listing.ui.ListActivity") {
+            it.context.intentTo("com.utsman.listing.ui.ListAppActivity") {
                 putExtra("title", categoryView.name)
                 putExtra("query", categoryView.query)
             }

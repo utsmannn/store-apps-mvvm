@@ -14,7 +14,7 @@ class InstalledPagingSource(private val installedAppsRepository: InstalledAppsRe
             val currentPage = params.key ?: page
             val data = installedAppsRepository.getInstalledAppsInStore(currentPage)
             val prevPage = if (currentPage <= 0) null else currentPage-perPage
-            val nextPage = if (data != null) currentPage+perPage else null
+            val nextPage = if (data != null) currentPage+perPage+1 else null
 
             LoadResult.Page(data ?: emptyList(), prevPage, nextPage)
         } catch (e: Throwable) {
