@@ -1,7 +1,6 @@
 package com.utsman.data.source
 
 import androidx.paging.PagingSource
-import com.utsman.abstraction.ext.logi
 import com.utsman.data.const.StringValues
 import com.utsman.data.model.Category
 import com.utsman.data.model.dto.AppsSealedView
@@ -12,7 +11,6 @@ import com.utsman.data.model.dto.toCategoryBannerView
 import com.utsman.data.repository.AppsRepository
 import com.utsman.data.repository.CategoriesRepository
 import com.utsman.data.repository.InstalledAppsRepository
-import com.utsman.network.toJson
 
 class CategoriesPagingSource(
     private val categoryRepository: CategoriesRepository,
@@ -55,24 +53,35 @@ class CategoriesPagingSource(
                     this.image = StringValues.covidBannerUrl
                     this.desc = StringValues.covidDesc
                 }
-                val covidAppsCategoryView = appsRepository.getSearchApps("covid", 0)
+                val covidAppsCategoryView = appsRepository.getSearchApps(covidAppsCategory.query, 0)
                     .toCategoryBannerView(covidAppsCategory)
                     ?: CategorySealedView.CategoryBannerView()
+
+                val sportAppsCategory = Category.simple {
+                    this.name = StringValues.sportTitle
+                    this.query = "sport"
+                    this.image = StringValues.sportBannerUrl
+                    this.desc = StringValues.sportDesc
+                }
+
+                val sportAppsCategoryView = appsRepository.getSearchApps(sportAppsCategory.query, 0)
+                    .toCategoryBannerView(sportAppsCategory) ?: CategorySealedView.CategoryBannerView()
 
                 val topAppsCategoryView = appsRepository.getTopApps()
                     .datalist?.list?.map { app ->
                         app.toAppsBannerView()
                     } ?: emptyList<AppsSealedView>()
 
-                val categoryView = CategoryView.simple {
+                val topCategoryView = CategoryView.simple {
                     name = "Top downloads"
                     query = null
                     apps = topAppsCategoryView
                 }
 
-                // push random apps category in top of list
+                // push custom category view
                 val reversed = newData.toMutableList().asReversed().apply {
-                    add(categoryView)
+                    add(sportAppsCategoryView)
+                    add(topCategoryView)
                     add(covidAppsCategoryView)
                 }.apply {
                     reverse()
