@@ -1,7 +1,5 @@
 package com.utsman.data.model.dto
 
-import com.utsman.data.R
-
 enum class AppsViewType {
     BANNER, REGULAR
 }
@@ -33,17 +31,7 @@ sealed class AppsSealedView(val viewType: AppsViewType) {
         var iconLabel: Int? = null
     ) : AppsSealedView(AppsViewType.REGULAR) {
         companion object {
-            fun simple(appsView: AppsView.() -> Unit) = AppsView().apply(appsView).apply {
-                /*val updateRes = R.drawable.ic_fluent_phone_update_24_filled
-                val installedRes = R.drawable.ic_fluent_play_circle_24_filled
-                if (appVersion.code != 0L) {
-                    iconLabel = if (appVersion.apiCode > appVersion.code) {
-                        updateRes
-                    } else {
-                        installedRes
-                    }
-                }*/
-            }.apply(appsView)
+            fun simple(appsView: AppsView.() -> Unit) = AppsView().apply(appsView)
         }
     }
 }
