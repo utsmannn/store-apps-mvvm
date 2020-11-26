@@ -1,10 +1,7 @@
 package com.utsman.listing.domain
 
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
+import androidx.paging.*
 import com.utsman.abstraction.dto.fetch
 import com.utsman.abstraction.dto.stateOf
 import com.utsman.data.model.dto.AppsSealedView
@@ -19,13 +16,16 @@ class InstalledAppUseCase(private val installedAppsRepository: InstalledAppsRepo
 
     val pagingData = MutableLiveData<PagingData<AppsSealedView.AppsView>>()
 
-    suspend fun getInstalledApp(scope: CoroutineScope) = scope.launch {
+    suspend fun getUpdatedApp(scope: CoroutineScope) = scope.launch {
         Pager(PagingConfig(pageSize = 4)) {
             InstalledPagingSource(installedAppsRepository)
         }.flow
             .cachedIn(this)
             .collect {
-                pagingData.postValue(it)
+                val appView = it.map { ap ->
+                    installedAppsRepository.checkInstalledApps(ap)
+                }
+                pagingData.postValue(appView)
             }
     }
 

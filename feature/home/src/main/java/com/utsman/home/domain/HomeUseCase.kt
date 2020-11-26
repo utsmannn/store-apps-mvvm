@@ -16,6 +16,7 @@ import com.utsman.data.model.dto.toAppsView
 import com.utsman.data.model.dto.toCategoryView
 import com.utsman.data.repository.AppsRepository
 import com.utsman.data.repository.CategoriesRepository
+import com.utsman.data.repository.InstalledAppsRepository
 import com.utsman.data.source.CategoriesPagingSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
@@ -24,7 +25,8 @@ import kotlinx.coroutines.launch
 
 class HomeUseCase(
     private val appsRepository: AppsRepository,
-    private val categoriesRepository: CategoriesRepository
+    private val categoriesRepository: CategoriesRepository,
+    private val installedAppsRepository: InstalledAppsRepository
 ) {
     val randomList = stateOf<List<AppsView>>()
     val categories = stateOf<List<CategorySealedView>>()
@@ -55,7 +57,7 @@ class HomeUseCase(
 
     suspend fun getPagingCategories(scope: CoroutineScope) = scope.launch {
         Pager(PagingConfig(pageSize = 2)) {
-            CategoriesPagingSource(categoriesRepository, appsRepository)
+            CategoriesPagingSource(categoriesRepository, appsRepository, installedAppsRepository)
         }.flow
             .cachedIn(this)
             .collect { pagingData ->

@@ -30,7 +30,7 @@ ext {
     applicationId = "com.utsman.storeapps"
     buildTools = "30.0.2"
     compileSdk = 29
-    minSdk = 19
+    minSdk = 21
     targetSdk = 29
     versionCode = 1
     versionName = "1.0.0"

@@ -12,7 +12,7 @@ class InstalledPagingSource(private val installedAppsRepository: InstalledAppsRe
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, AppsSealedView.AppsView> {
         return try {
             val currentPage = params.key ?: page
-            val data = installedAppsRepository.getInstalledAppsInStore(currentPage)
+            val data = installedAppsRepository.getUpdatedAppsInStore(currentPage)
             val prevPage = if (currentPage <= 0) null else currentPage-perPage
             val nextPage = if (data != null) currentPage+perPage+1 else null
 

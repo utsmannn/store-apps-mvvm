@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import com.utsman.abstraction.ext.logi
 import com.utsman.abstraction.ext.safeSingle
+import com.utsman.data.R
 import com.utsman.data.model.AppsItem
 import com.utsman.data.model.dto.AppVersion
 import com.utsman.data.model.dto.AppsSealedView
@@ -27,7 +28,7 @@ class InstalledAppsRepositoryImpl(
         val packageManager = context.packageManager
         return packageManager.getInstalledApplications(0)
             .filter { app ->
-                app.flags and (ApplicationInfo.FLAG_UPDATED_SYSTEM_APP or ApplicationInfo.FLAG_SYSTEM) > 0
+                app.flags and (ApplicationInfo.FLAG_UPDATED_SYSTEM_APP or ApplicationInfo.FLAG_SYSTEM) != 1
             }
             .map { aInfo ->
                 packageManager.getPackageInfo(aInfo.packageName, 0)
@@ -49,7 +50,7 @@ class InstalledAppsRepositoryImpl(
             }
     }
 
-    override suspend fun getInstalledAppsInStore(page: Int): List<AppsSealedView.AppsView>? {
+    override suspend fun getUpdatedAppsInStore(page: Int): List<AppsSealedView.AppsView>? {
         logi("load from -> $page until ${page+perPage}, size is -> ${installedAppsView.size}")
         return if (page+perPage <= installedAppsView.size) {
             try {
@@ -80,6 +81,32 @@ class InstalledAppsRepositoryImpl(
             }
         } else {
             null
+        }
+    }
+
+    override suspend fun checkInstalledApps(appsView: AppsSealedView.AppsView): AppsSealedView.AppsView {
+        val appInstalledFound = installedAppsView.find { ap ->
+            ap.packageName == appsView.packageName
+        }
+        val version = appInstalledFound?.appVersion
+        return if (version != null || version != AppVersion()) {
+            appsView.apply {
+                appVersion.name = version?.name ?: ""
+                appVersion.code = version?.code ?: 0
+
+                val updateRes = R.drawable.ic_fluent_phone_update_24_filled
+                val installedRes = R.drawable.ic_fluent_play_circle_24_filled
+                if (appVersion.code != 0L) {
+                    iconLabel = if (appVersion.apiCode > appVersion.code) {
+                        updateRes
+                    } else {
+                        installedRes
+                    }
+                }
+            }
+            return appsView
+        } else {
+            appsView
         }
     }
 }

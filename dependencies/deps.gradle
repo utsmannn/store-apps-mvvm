@@ -12,6 +12,9 @@ dependencies {
     //noinspection LifecycleAnnotationProcessorWithJava8
     kapt 'androidx.lifecycle:lifecycle-compiler:2.2.0'
 
+    // fluent icon
+    implementation 'com.microsoft.design:fluent-system-icons:1.1.86'
+
     // paging3
     implementation 'androidx.paging:paging-runtime:3.0.0-alpha09'
 

@@ -18,8 +18,8 @@ fun provideInstalledAppViewModel(installedAppUseCase: InstalledAppUseCase): Modu
     return Module(data)
 }
 
-fun providePagingUseCase(pagingAppRepository: PagingAppRepository): Module<PagingUseCase> {
-    val data = PagingUseCase(pagingAppRepository)
+fun providePagingUseCase(pagingAppRepository: PagingAppRepository, installedAppsRepository: InstalledAppsRepository): Module<PagingUseCase> {
+    val data = PagingUseCase(pagingAppRepository, installedAppsRepository)
     return Module(data)
 }
 

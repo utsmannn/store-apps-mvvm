@@ -24,10 +24,10 @@ class MainApplication : Application() {
         pagingAppRepository = providePagingRepository(services.data)
         installedAppsRepository = provideInstalledAppsRepository(this, services.data)
 
-        homeUseCase = provideHomeUseCase(appsRepository.data, categoriesRepository.data)
+        homeUseCase = provideHomeUseCase(appsRepository.data, categoriesRepository.data, installedAppsRepository.data)
         homeViewModel = provideHomeViewModel(homeUseCase.data)
 
-        pagingUseCase = providePagingUseCase(pagingAppRepository.data)
+        pagingUseCase = providePagingUseCase(pagingAppRepository.data, installedAppsRepository.data)
         pagingViewModel = providePagingViewModel(pagingUseCase.data)
 
         installedAppUseCase = provideInstalledAppUseCase(installedAppsRepository.data)

@@ -7,13 +7,15 @@ import com.utsman.abstraction.BuildConfig
 
 fun loge(msg: String?) = Log.e("Store_Apps ---------", msg)
 fun logi(msg: String?, tag: String = "Store_Apps ---------") {
-    val maxLogSize = 1000
-    val nullableMsg = msg ?: ""
-    for (i in 0..nullableMsg.length / maxLogSize) {
-        val start = i * maxLogSize
-        var end = (i + 1) * maxLogSize
-        end = if (end > nullableMsg.length) nullableMsg.length else end
-        Log.i(tag, nullableMsg.substring(start, end))
+    debug {
+        val maxLogSize = 1000
+        val nullableMsg = msg ?: ""
+        for (i in 0..nullableMsg.length / maxLogSize) {
+            val start = i * maxLogSize
+            var end = (i + 1) * maxLogSize
+            end = if (end > nullableMsg.length) nullableMsg.length else end
+            Log.i(tag, nullableMsg.substring(start, end))
+        }
     }
 }
 

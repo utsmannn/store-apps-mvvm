@@ -50,7 +50,7 @@ data class Rating(
 data class AppsItem(
 
     @Json(name="package")
-    val packageName: String? = null,
+    val `package`: String? = null,
 
     @Json(name="uname")
     val uname: String? = null,

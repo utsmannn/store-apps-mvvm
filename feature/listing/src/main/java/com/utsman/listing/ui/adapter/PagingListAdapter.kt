@@ -2,10 +2,12 @@ package com.utsman.listing.ui.adapter
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.utsman.abstraction.ext.bytesToString
 import com.utsman.abstraction.ext.inflate
+import com.utsman.abstraction.ext.loadRes
 import com.utsman.abstraction.ext.loadUrl
 import com.utsman.data.diffutil.AppsViewDiffUtil
 import com.utsman.data.model.dto.AppsSealedView.AppsView
@@ -27,6 +29,9 @@ class PagingListAdapter(private val onClick: (AppsView) -> Unit) : PagingDataAda
             root.setOnClickListener {
                 click.invoke(item)
             }
+
+            imgLabel.isVisible = item.iconLabel != null
+            if (item.iconLabel != null) imgLabel.loadRes(item.iconLabel!!, item.id.toString())
         }
     }
 

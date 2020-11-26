@@ -4,5 +4,6 @@ import com.utsman.data.model.dto.AppsSealedView
 
 interface InstalledAppsRepository {
     fun getInstalledApps() : List<AppsSealedView.AppsView>
-    suspend fun getInstalledAppsInStore(page: Int) : List<AppsSealedView.AppsView>?
+    suspend fun getUpdatedAppsInStore(page: Int) : List<AppsSealedView.AppsView>?
+    suspend fun checkInstalledApps(appsView: AppsSealedView.AppsView): AppsSealedView.AppsView
 }
