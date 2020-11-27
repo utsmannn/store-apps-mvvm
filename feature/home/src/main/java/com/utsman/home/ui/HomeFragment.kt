@@ -6,24 +6,23 @@ import android.viewbinding.library.fragment.viewBinding
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.utsman.abstraction.base.PagingStateAdapter
-import com.utsman.abstraction.di.moduleOf
 import com.utsman.home.R
 import com.utsman.home.databinding.FragmentHomeBinding
-import com.utsman.home.di.homeViewModel
 import com.utsman.home.ui.adapter.CategoryAdapter
+import com.utsman.home.viewmodel.HomeViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private val binding: FragmentHomeBinding by viewBinding()
-    private val viewModel by moduleOf(homeViewModel)
+    private val viewModel: HomeViewModel by viewModel()
 
     private val categoryAdapter = CategoryAdapter()
     private val stateAdapter = PagingStateAdapter {

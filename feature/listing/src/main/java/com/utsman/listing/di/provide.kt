@@ -8,22 +8,18 @@ import com.utsman.listing.domain.PagingUseCase
 import com.utsman.listing.viewmodel.InstalledAppsViewModel
 import com.utsman.listing.viewmodel.PagingViewModel
 
-fun providePagingViewModel(pagingUseCase: PagingUseCase): Module<PagingViewModel> {
-    val data = PagingViewModel(pagingUseCase)
-    return Module(data)
+fun providePagingViewModel(pagingUseCase: PagingUseCase): PagingViewModel {
+    return PagingViewModel(pagingUseCase)
 }
 
-fun provideInstalledAppViewModel(installedAppUseCase: InstalledAppUseCase): Module<InstalledAppsViewModel> {
-    val data = InstalledAppsViewModel(installedAppUseCase)
-    return Module(data)
+fun provideInstalledAppViewModel(installedAppUseCase: InstalledAppUseCase): InstalledAppsViewModel {
+    return InstalledAppsViewModel(installedAppUseCase)
 }
 
-fun providePagingUseCase(pagingAppRepository: PagingAppRepository, installedAppsRepository: InstalledAppsRepository): Module<PagingUseCase> {
-    val data = PagingUseCase(pagingAppRepository, installedAppsRepository)
-    return Module(data)
+fun providePagingUseCase(pagingAppRepository: PagingAppRepository, installedAppsRepository: InstalledAppsRepository): PagingUseCase {
+    return PagingUseCase(pagingAppRepository, installedAppsRepository)
 }
 
-fun provideInstalledAppUseCase(installedAppsRepository: InstalledAppsRepository): Module<InstalledAppUseCase> {
-    val data = InstalledAppUseCase(installedAppsRepository)
-    return Module(data)
+fun provideInstalledAppUseCase(installedAppsRepository: InstalledAppsRepository): InstalledAppUseCase {
+    return InstalledAppUseCase(installedAppsRepository)
 }
