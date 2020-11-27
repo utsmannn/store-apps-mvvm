@@ -18,9 +18,8 @@ import com.utsman.data.repository.AppsRepository
 import com.utsman.data.repository.CategoriesRepository
 import com.utsman.data.repository.InstalledAppsRepository
 import com.utsman.data.source.CategoriesPagingSource
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 
 class HomeUseCase(
@@ -59,7 +58,7 @@ class HomeUseCase(
         Pager(PagingConfig(pageSize = 2)) {
             CategoriesPagingSource(categoriesRepository, appsRepository, installedAppsRepository)
         }.flow
-            .cachedIn(this)
+            .cachedIn(GlobalScope)
             .collect { pagingData ->
                 pagingCategories.postValue(pagingData)
             }

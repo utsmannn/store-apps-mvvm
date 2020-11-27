@@ -32,7 +32,7 @@ fun ImageView.loadUrl(
 }
 
 fun ImageView.loadRes(
-    @DrawableRes res: Int,
+    @DrawableRes res: Int?,
     id: String,
     requestListener: RequestListener<Drawable>? = null,
     placeholder: Drawable? = null

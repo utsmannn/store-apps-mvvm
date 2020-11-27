@@ -17,6 +17,7 @@ import com.utsman.listing.databinding.ActivityListBinding
 import com.utsman.listing.di.installedAppViewModel
 import com.utsman.listing.ui.adapter.PagingListAdapter
 import com.utsman.listing.viewmodel.InstalledAppsViewModel
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class InstalledAppFragment : Fragment(R.layout.activity_list) {
@@ -49,7 +50,7 @@ class InstalledAppFragment : Fragment(R.layout.activity_list) {
 
         viewModel.getInstalledApps()
         viewModel.installedApps.observe(viewLifecycleOwner, Observer { pagingData ->
-            lifecycleScope.launch {
+            GlobalScope.launch {
                 pagingListAdapter.submitData(pagingData)
             }
         })

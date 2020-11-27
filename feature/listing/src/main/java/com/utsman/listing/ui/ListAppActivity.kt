@@ -17,6 +17,7 @@ import com.utsman.listing.ui.adapter.PagingListAdapter
 import com.utsman.abstraction.base.PagingStateAdapter
 import com.utsman.abstraction.ext.booleanExtras
 import com.utsman.listing.viewmodel.PagingViewModel
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class ListAppActivity : AppCompatActivity() {
@@ -64,7 +65,7 @@ class ListAppActivity : AppCompatActivity() {
 
         viewModel.getApps(query, isSearch)
         viewModel.pagingData.observe(this, Observer { pagingData ->
-            lifecycleScope.launch {
+            GlobalScope.launch {
                 pagingListAdapter.submitData(pagingData)
             }
         })

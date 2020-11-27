@@ -31,7 +31,7 @@ class PagingListAdapter(
             imgItem.loadUrl(item.icon, item.id.toString())
 
             imgLabel.isVisible = item.iconLabel != null
-            if (item.iconLabel != null) imgLabel.loadRes(item.iconLabel!!, item.id.toString())
+            if (item.iconLabel != null) imgLabel.loadRes(item.iconLabel, item.id.toString())
 
             root.setOnClickListener {
                 click.invoke(item)

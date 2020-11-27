@@ -9,6 +9,7 @@ import com.utsman.data.repository.InstalledAppsRepository
 import com.utsman.data.repository.PagingAppRepository
 import com.utsman.data.source.AppsPagingSource
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -22,7 +23,7 @@ class PagingUseCase(
         Pager(PagingConfig(pageSize = 10)) {
             AppsPagingSource(query, isSearch, pagingAppRepository)
         }.flow
-            .cachedIn(this)
+            .cachedIn(GlobalScope)
             .collect {
                 val appsViewPaging = it.mapSync { ap ->
                     ap.toAppsView()

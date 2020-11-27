@@ -15,7 +15,10 @@ import com.utsman.home.R
 import com.utsman.home.databinding.FragmentHomeBinding
 import com.utsman.home.di.homeViewModel
 import com.utsman.home.ui.adapter.CategoryAdapter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
@@ -43,8 +46,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         viewModel.getPagingCategories()
         viewModel.pagingCategories.observe(viewLifecycleOwner, Observer { pagingData ->
-            lifecycleScope.launch {
-                categoryAdapter.submitData(pagingData)
+            GlobalScope.launch {
+                withContext(Dispatchers.IO) {
+                    categoryAdapter.submitData(pagingData)
+                }
             }
         })
     }
