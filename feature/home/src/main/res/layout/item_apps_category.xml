@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:text="Category"
         android:textSize="16sp"
+        android:layout_marginTop="6dp"
         android:background="?attr/selectableItemBackground"
         android:textStyle="bold"
         android:paddingStart="12dp"
