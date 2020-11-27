@@ -22,7 +22,7 @@ class CategoryBannerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         imgBanner.loadUrl(item.image, item.name)
 
         cardContainer.setOnClickListener {
-            it.context.intentTo("com.utsman.listing.ui.ListAppActivity") {
+            it.context.intentTo("com.utsman.listing.ui.activity.ListAppActivity") {
                 putExtra("title", item.name)
                 putExtra("query", item.query)
                 putExtra("is_search", true)

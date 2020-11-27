@@ -6,6 +6,7 @@ import android.viewbinding.library.fragment.viewBinding
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.utsman.abstraction.base.PagingStateAdapter
@@ -48,10 +49,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         viewModel.getPagingCategories()
         viewModel.pagingCategories.observe(viewLifecycleOwner, Observer { pagingData ->
-            GlobalScope.launch {
-                withContext(Dispatchers.IO) {
-                    categoryAdapter.submitData(pagingData)
-                }
+            lifecycleScope.launch {
+                categoryAdapter.submitData(pagingData)
             }
         })
     }

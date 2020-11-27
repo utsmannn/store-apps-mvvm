@@ -6,6 +6,7 @@ import android.viewbinding.library.activity.viewBinding
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import com.utsman.abstraction.base.PagingStateAdapter
@@ -62,9 +63,10 @@ class ListAppActivity : AppCompatActivity() {
             adapter = pagingListAdapter.withLoadStateFooter(pagingStateAdapter)
         }
 
+        viewModel.restartState()
         viewModel.getApps(query, isSearch)
         viewModel.pagingData.observe(this, Observer { pagingData ->
-            GlobalScope.launch {
+            lifecycleScope.launch {
                 pagingListAdapter.submitData(pagingData)
             }
         })
@@ -75,11 +77,6 @@ class ListAppActivity : AppCompatActivity() {
             }
 
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.restartState()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

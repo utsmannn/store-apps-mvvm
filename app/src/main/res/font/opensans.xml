@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:targetApi="o">
+    <font android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/opensans_regular" />
+
+    <font android:fontStyle="italic"
+        android:fontWeight="400"
+        android:font="@font/opensans_italic"/>
+</font-family>

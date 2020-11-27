@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.utsman.abstraction.base.PagingStateAdapter
 import com.utsman.abstraction.ext.initialLoadState
 import com.utsman.abstraction.ext.logi
@@ -29,7 +30,7 @@ class SearchAppActivity : AppCompatActivity() {
     private val viewModel: SearchPagingViewModel by viewModel()
     private var searchView: SearchView? = null
 
-    private val pagingListAdapter = PagingListAdapter {
+    private val pagingListAdapter = PagingListAdapter(holderType = PagingListAdapter.HolderType.SEARCH) {
 
     }
 
@@ -39,29 +40,16 @@ class SearchAppActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
         viewModel.restartState()
 
         supportActionBar?.run {
             setDisplayHomeAsUpEnabled(true)
         }
 
-        val gridLayout = GridLayoutManager(this, 3).apply {
-            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int {
-                    return when (pagingStateAdapter.loadState) {
-                        is LoadState.NotLoading -> 1
-                        is LoadState.Loading -> if (position == pagingListAdapter.itemCount) 3 else 1
-                        is LoadState.Error -> if (position == pagingListAdapter.itemCount) 3 else 1
-                        else -> 1
-                    }
-                }
-            }
-        }
+        val linearLayout = LinearLayoutManager(this)
 
         binding.rvList.run {
-            layoutManager = gridLayout
+            layoutManager = linearLayout
             adapter = pagingListAdapter.withLoadStateFooter(pagingStateAdapter)
         }
 

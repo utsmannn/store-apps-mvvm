@@ -53,17 +53,19 @@
             android:alpha="0.5"
             android:text="12mb"
             android:textSize="12sp"
-            app:layout_constraintStart_toStartOf="@+id/txt_title"
-            app:layout_constraintTop_toBottomOf="@+id/txt_title" />
+            app:layout_constraintStart_toEndOf="@+id/img_label"
+            app:layout_constraintTop_toTopOf="@+id/img_label" />
 
         <ImageView
-            android:layout_width="15dp"
-            android:layout_height="0dp"
-            android:scaleType="fitXY"
-            android:alpha="0.5"
             android:id="@+id/img_label"
+            android:layout_width="16dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="1dp"
+            android:alpha="0.5"
+            android:padding="2dp"
+            android:scaleType="fitXY"
             app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toEndOf="@+id/txt_size"
+            app:layout_constraintStart_toStartOf="@+id/txt_title"
             app:layout_constraintTop_toBottomOf="@+id/txt_title" />
 
 

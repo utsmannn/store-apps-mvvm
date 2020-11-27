@@ -93,8 +93,8 @@ class InstalledAppsRepositoryImpl(
                 appVersion.name = version?.name ?: ""
                 appVersion.code = version?.code ?: 0
 
-                val updateRes = R.drawable.ic_fluent_phone_update_24_filled
-                val installedRes = R.drawable.ic_fluent_play_circle_24_filled
+                val updateRes = R.drawable.ic_fluent_cloud_download_24_regular
+                val installedRes = R.drawable.ic_fluent_checkmark_underline_circle_20_regular
                 if (appVersion.code != 0L) {
                     iconLabel = if (appVersion.apiCode > appVersion.code) {
                         updateRes
