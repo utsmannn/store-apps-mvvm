@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
-import com.utsman.data.model.dto.AppsSealedView.AppsView
+import com.utsman.data.model.dto.list.AppsSealedView.AppsView
 import com.utsman.listing.domain.PagingUseCase
 import kotlinx.coroutines.launch
 

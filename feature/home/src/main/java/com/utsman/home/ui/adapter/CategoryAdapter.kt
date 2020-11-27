@@ -5,8 +5,8 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.utsman.abstraction.ext.inflate
 import com.utsman.data.diffutil.CategoryDiffUtil
-import com.utsman.data.model.dto.CategorySealedView
-import com.utsman.data.model.dto.CategoryViewType
+import com.utsman.data.model.dto.list.CategorySealedView
+import com.utsman.data.model.dto.list.CategoryViewType
 import com.utsman.home.R
 import com.utsman.home.ui.holder.CategoryBannerViewHolder
 import com.utsman.home.ui.holder.CategoryViewHolder

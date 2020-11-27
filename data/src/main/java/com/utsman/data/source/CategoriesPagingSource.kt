@@ -3,14 +3,17 @@ package com.utsman.data.source
 import androidx.paging.PagingSource
 import com.utsman.data.const.StringValues
 import com.utsman.data.model.Category
-import com.utsman.data.model.dto.AppsSealedView
-import com.utsman.data.model.dto.CategorySealedView
-import com.utsman.data.model.dto.CategorySealedView.CategoryView
-import com.utsman.data.model.dto.toAppsBannerView
-import com.utsman.data.model.dto.toCategoryBannerView
+import com.utsman.data.model.dto.list.AppsSealedView
+import com.utsman.data.model.dto.list.CategorySealedView
+import com.utsman.data.model.dto.list.CategorySealedView.CategoryView
+import com.utsman.data.model.dto.list.toAppsBannerView
+import com.utsman.data.model.dto.list.toCategoryBannerView
 import com.utsman.data.repository.AppsRepository
 import com.utsman.data.repository.CategoriesRepository
 import com.utsman.data.repository.InstalledAppsRepository
+import java.lang.Exception
+import java.net.SocketException
+import java.net.SocketTimeoutException
 
 class CategoriesPagingSource(
     private val categoryRepository: CategoriesRepository,
@@ -67,17 +70,6 @@ class CategoriesPagingSource(
                         apps = topAppsCategoryView
                     }
 
-                    // push custom category view
-                    val reversed = newData.toMutableList().asReversed().apply {
-                        add(topCategoryView)
-                        add(covidAppsCategoryView)
-                    }.apply {
-                        reverse()
-                    }.toList()
-
-                    LoadResult.Page(reversed, prevPage, nextPage)
-                }
-                1 -> {
                     val sportAppsCategory = Category.simple {
                         this.name = StringValues.sportTitle
                         this.query = "sport"
@@ -90,7 +82,9 @@ class CategoriesPagingSource(
 
                     // push custom category view
                     val reversed = newData.toMutableList().asReversed().apply {
+                        add(topCategoryView)
                         add(sportAppsCategoryView)
+                        add(covidAppsCategoryView)
                     }.apply {
                         reverse()
                     }.toList()
@@ -100,6 +94,12 @@ class CategoriesPagingSource(
                 else -> LoadResult.Page(newData, prevPage, nextPage)
             }
         } catch (e: Throwable) {
+            LoadResult.Error(e)
+        } catch (e: SocketTimeoutException) {
+            LoadResult.Error(e)
+        } catch (e: SocketException) {
+            LoadResult.Error(e)
+        } catch (e: Exception) {
             LoadResult.Error(e)
         }
     }

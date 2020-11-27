@@ -1,4 +1,4 @@
-package com.utsman.data.model
+package com.utsman.data.model.response.list
 
 import com.squareup.moshi.Json
 

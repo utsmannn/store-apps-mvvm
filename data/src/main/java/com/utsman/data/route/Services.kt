@@ -1,9 +1,8 @@
 package com.utsman.data.route
 
-import com.utsman.data.model.Aptoide
+import com.utsman.data.model.response.list.Aptoide
 import retrofit2.http.GET
 import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface Services {
 

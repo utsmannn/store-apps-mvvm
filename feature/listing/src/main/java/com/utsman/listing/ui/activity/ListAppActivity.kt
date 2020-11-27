@@ -1,4 +1,4 @@
-package com.utsman.listing.ui
+package com.utsman.listing.ui.activity
 
 import android.os.Bundle
 import android.view.MenuItem
@@ -10,6 +10,7 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import com.utsman.abstraction.base.PagingStateAdapter
 import com.utsman.abstraction.ext.booleanExtras
+import com.utsman.abstraction.ext.initialLoadState
 import com.utsman.abstraction.ext.stringExtras
 import com.utsman.listing.databinding.ActivityListBinding
 import com.utsman.listing.ui.adapter.PagingListAdapter
@@ -69,7 +70,10 @@ class ListAppActivity : AppCompatActivity() {
         })
 
         pagingListAdapter.addLoadStateListener { combinedLoadStates ->
-            binding.progressCircularInitial.isVisible = combinedLoadStates.refresh !is LoadState.Error
+            binding.layoutProgress.initialLoadState(combinedLoadStates.refresh) {
+                pagingListAdapter.retry()
+            }
+
         }
     }
 

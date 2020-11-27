@@ -5,12 +5,11 @@ import android.content.pm.ApplicationInfo
 import com.utsman.abstraction.ext.logi
 import com.utsman.abstraction.ext.safeSingle
 import com.utsman.data.R
-import com.utsman.data.model.AppsItem
-import com.utsman.data.model.dto.AppVersion
-import com.utsman.data.model.dto.AppsSealedView
-import com.utsman.data.model.dto.toAppsView
+import com.utsman.data.model.response.list.AppsItem
+import com.utsman.data.model.dto.list.AppVersion
+import com.utsman.data.model.dto.list.AppsSealedView
+import com.utsman.data.model.dto.list.toAppsView
 import com.utsman.data.route.Services
-import com.utsman.network.toJson
 import java.lang.IndexOutOfBoundsException
 
 class InstalledAppsRepositoryImpl(

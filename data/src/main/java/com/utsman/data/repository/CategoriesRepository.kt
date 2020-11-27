@@ -1,8 +1,8 @@
 package com.utsman.data.repository
 
-import com.utsman.data.model.Aptoide
+import com.utsman.data.model.response.list.Aptoide
 import com.utsman.data.model.Category
-import com.utsman.data.model.dto.CategorySealedView
+import com.utsman.data.model.dto.list.CategorySealedView
 
 interface CategoriesRepository {
     suspend fun getCategory(category: Category) : Aptoide

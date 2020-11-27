@@ -1,6 +1,6 @@
-package com.utsman.data.model.dto
+package com.utsman.data.model.dto.list
 
-import com.utsman.data.model.AppsItem
+import com.utsman.data.model.response.list.AppsItem
 
 data class AppVersion(
     var name: String = "",

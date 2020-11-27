@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.paging.PagingData
 import com.nhaarman.mockitokotlin2.verify
-import com.utsman.data.model.dto.AppsSealedView.AppsView
+import com.utsman.data.model.dto.list.AppsSealedView.AppsView
 import com.utsman.data.repository.PagingAppRepository
 import com.utsman.data.repository.PagingAppRepositoryImpl
 import com.utsman.data.route.Services

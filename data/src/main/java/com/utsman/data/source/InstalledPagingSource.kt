@@ -1,7 +1,7 @@
 package com.utsman.data.source
 
 import androidx.paging.PagingSource
-import com.utsman.data.model.dto.AppsSealedView
+import com.utsman.data.model.dto.list.AppsSealedView
 import com.utsman.data.repository.InstalledAppsRepository
 import com.utsman.data.repository.InstalledAppsRepositoryImpl
 

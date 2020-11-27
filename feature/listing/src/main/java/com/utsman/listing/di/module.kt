@@ -21,4 +21,7 @@ val listInstalledViewModel = module {
         provideInstalledAppViewModel(get())
     }
 
+    viewModel {
+        provideSearchPagingViewModel(get())
+    }
 }

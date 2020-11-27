@@ -20,9 +20,9 @@ object Network {
 
     private fun okHttp() = OkHttpClient.Builder()
         .retryOnConnectionFailure(true)
-        .pingInterval(30L, TimeUnit.SECONDS)
-        .readTimeout(30L, TimeUnit.SECONDS)
-        .connectTimeout(30L, TimeUnit.SECONDS)
+        .pingInterval(10L, TimeUnit.SECONDS)
+        .readTimeout(10L, TimeUnit.SECONDS)
+        .connectTimeout(10L, TimeUnit.SECONDS)
         .apply {
             debug {
                 addInterceptor(loggingInterceptor)

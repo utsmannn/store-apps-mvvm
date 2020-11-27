@@ -1,8 +1,11 @@
 package com.utsman.data.source
 
 import androidx.paging.PagingSource
-import com.utsman.data.model.AppsItem
+import com.utsman.data.model.response.list.AppsItem
 import com.utsman.data.repository.PagingAppRepository
+import java.lang.Exception
+import java.net.SocketException
+import java.net.SocketTimeoutException
 
 class AppsPagingSource(
     private val query: String?,
@@ -22,6 +25,12 @@ class AppsPagingSource(
             val currentList = response.list ?: emptyList()
             LoadResult.Page(currentList, prevOffset, nextOffset)
         } catch (e: Throwable) {
+            LoadResult.Error(e)
+        } catch (e: SocketTimeoutException) {
+            LoadResult.Error(e)
+        } catch (e: SocketException) {
+            LoadResult.Error(e)
+        } catch (e: Exception) {
             LoadResult.Error(e)
         }
     }
