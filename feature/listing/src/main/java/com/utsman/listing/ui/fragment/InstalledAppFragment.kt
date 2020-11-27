@@ -1,4 +1,4 @@
-package com.utsman.listing.ui
+package com.utsman.listing.ui.fragment
 
 import android.os.Bundle
 import android.view.View

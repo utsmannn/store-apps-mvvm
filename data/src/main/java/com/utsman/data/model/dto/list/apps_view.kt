@@ -1,4 +1,4 @@
-package com.utsman.data.model.dto
+package com.utsman.data.model.dto.list
 
 enum class AppsViewType {
     BANNER, REGULAR

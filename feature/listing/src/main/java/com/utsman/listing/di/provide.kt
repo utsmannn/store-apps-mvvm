@@ -7,9 +7,14 @@ import com.utsman.listing.domain.InstalledAppUseCase
 import com.utsman.listing.domain.PagingUseCase
 import com.utsman.listing.viewmodel.InstalledAppsViewModel
 import com.utsman.listing.viewmodel.PagingViewModel
+import com.utsman.listing.viewmodel.SearchPagingViewModel
 
 fun providePagingViewModel(pagingUseCase: PagingUseCase): PagingViewModel {
     return PagingViewModel(pagingUseCase)
+}
+
+fun provideSearchPagingViewModel(pagingUseCase: PagingUseCase): SearchPagingViewModel {
+    return SearchPagingViewModel(pagingUseCase)
 }
 
 fun provideInstalledAppViewModel(installedAppUseCase: InstalledAppUseCase): InstalledAppsViewModel {

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper
 import com.utsman.abstraction.ext.intentTo
-import com.utsman.data.model.dto.CategorySealedView.CategoryView
+import com.utsman.data.model.dto.list.CategorySealedView.CategoryView
 import com.utsman.home.databinding.ItemAppsCategoryBinding
 import com.utsman.home.ui.adapter.AppsAdapter
 

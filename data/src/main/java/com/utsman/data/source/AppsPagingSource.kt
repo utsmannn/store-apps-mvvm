@@ -1,7 +1,7 @@
 package com.utsman.data.source
 
 import androidx.paging.PagingSource
-import com.utsman.data.model.AppsItem
+import com.utsman.data.model.response.list.AppsItem
 import com.utsman.data.repository.PagingAppRepository
 
 class AppsPagingSource(

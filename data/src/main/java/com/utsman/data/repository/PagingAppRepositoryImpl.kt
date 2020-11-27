@@ -1,6 +1,6 @@
 package com.utsman.data.repository
 
-import com.utsman.data.model.Datalist
+import com.utsman.data.model.response.list.Datalist
 import com.utsman.data.route.Services
 
 class PagingAppRepositoryImpl(private val services: Services) : PagingAppRepository {

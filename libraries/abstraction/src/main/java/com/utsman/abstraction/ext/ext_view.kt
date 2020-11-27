@@ -1,15 +1,19 @@
 package com.utsman.abstraction.ext
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import com.utsman.abstraction.dto.ResultState
 import java.util.*
 import kotlin.math.ln
 import kotlin.math.pow
 
-infix fun ViewGroup.inflate(layoutResId: Int): View = LayoutInflater.from(context).inflate(
+fun Context?.toast(msg: String, duration: Int = Toast.LENGTH_SHORT) = Toast.makeText(this, msg, duration).show()
+
+fun ViewGroup.inflate(layoutResId: Int): View = LayoutInflater.from(context).inflate(
     layoutResId,
     this,
     false

@@ -1,3 +1,4 @@
+include ':feature:detail'
 include ':feature:listing'
 include ':feature:home'
 include ':data'

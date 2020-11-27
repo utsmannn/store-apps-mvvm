@@ -1,8 +1,7 @@
-package com.utsman.data.model.dto
+package com.utsman.data.model.dto.list
 
-import com.utsman.abstraction.ext.logi
-import com.utsman.data.model.AppsItem
-import com.utsman.data.model.Aptoide
+import com.utsman.data.model.response.list.AppsItem
+import com.utsman.data.model.response.list.Aptoide
 import com.utsman.data.model.Category
 
 fun Aptoide.toCategoryBannerView(category: Category?): CategorySealedView.CategoryBannerView? {

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.utsman.abstraction.ext.bytesToString
 import com.utsman.abstraction.ext.loadRes
 import com.utsman.abstraction.ext.loadUrl
-import com.utsman.data.model.dto.AppsSealedView
+import com.utsman.data.model.dto.list.AppsSealedView
 import com.utsman.home.databinding.ItemAppsBinding
 
 class AppsViewHolder(view: View) : RecyclerView.ViewHolder(view) {

@@ -9,11 +9,11 @@ import com.utsman.abstraction.dto.ResultState
 import com.utsman.abstraction.dto.fetch
 import com.utsman.abstraction.dto.stateOf
 import com.utsman.data.const.CategoriesApps
-import com.utsman.data.model.dto.AppsSealedView.AppsView
-import com.utsman.data.model.dto.CategorySealedView
-import com.utsman.data.model.dto.CategorySealedView.CategoryView
-import com.utsman.data.model.dto.toAppsView
-import com.utsman.data.model.dto.toCategoryView
+import com.utsman.data.model.dto.list.AppsSealedView.AppsView
+import com.utsman.data.model.dto.list.CategorySealedView
+import com.utsman.data.model.dto.list.CategorySealedView.CategoryView
+import com.utsman.data.model.dto.list.toAppsView
+import com.utsman.data.model.dto.list.toCategoryView
 import com.utsman.data.repository.AppsRepository
 import com.utsman.data.repository.CategoriesRepository
 import com.utsman.data.repository.InstalledAppsRepository

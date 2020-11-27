@@ -1,4 +1,4 @@
-package com.utsman.listing.ui
+package com.utsman.listing.ui.activity
 
 import android.os.Bundle
 import android.view.MenuItem
@@ -69,7 +69,7 @@ class ListAppActivity : AppCompatActivity() {
         })
 
         pagingListAdapter.addLoadStateListener { combinedLoadStates ->
-            binding.progressCircularInitial.isVisible = combinedLoadStates.refresh !is LoadState.Error
+            binding.progressCircularInitial.isVisible = combinedLoadStates.refresh is LoadState.Loading
         }
     }
 

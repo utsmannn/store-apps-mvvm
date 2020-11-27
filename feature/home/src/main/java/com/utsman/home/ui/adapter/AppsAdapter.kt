@@ -3,10 +3,10 @@ package com.utsman.home.ui.adapter
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.utsman.abstraction.ext.inflate
-import com.utsman.data.model.dto.AppsSealedView
-import com.utsman.data.model.dto.AppsSealedView.AppsBannerView
-import com.utsman.data.model.dto.AppsSealedView.AppsView
-import com.utsman.data.model.dto.AppsViewType
+import com.utsman.data.model.dto.list.AppsSealedView
+import com.utsman.data.model.dto.list.AppsSealedView.AppsBannerView
+import com.utsman.data.model.dto.list.AppsSealedView.AppsView
+import com.utsman.data.model.dto.list.AppsViewType
 import com.utsman.home.R
 import com.utsman.home.ui.holder.AppsBannerViewHolder
 import com.utsman.home.ui.holder.AppsMiniViewHolder

@@ -10,7 +10,7 @@ import com.utsman.abstraction.ext.inflate
 import com.utsman.abstraction.ext.loadRes
 import com.utsman.abstraction.ext.loadUrl
 import com.utsman.data.diffutil.AppsViewDiffUtil
-import com.utsman.data.model.dto.AppsSealedView.AppsView
+import com.utsman.data.model.dto.list.AppsSealedView.AppsView
 import com.utsman.listing.R
 import com.utsman.listing.databinding.ItemListAppsBinding
 import com.utsman.listing.databinding.ItemListUpdatedBinding

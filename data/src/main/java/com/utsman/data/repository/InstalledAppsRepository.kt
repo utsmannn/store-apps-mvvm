@@ -1,6 +1,6 @@
 package com.utsman.data.repository
 
-import com.utsman.data.model.dto.AppsSealedView
+import com.utsman.data.model.dto.list.AppsSealedView
 
 interface InstalledAppsRepository {
     fun getInstalledApps() : List<AppsSealedView.AppsView>

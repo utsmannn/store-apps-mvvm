@@ -1,10 +1,10 @@
 package com.utsman.data.repository
 
 import com.utsman.data.const.CategoriesApps
-import com.utsman.data.model.Aptoide
+import com.utsman.data.model.response.list.Aptoide
 import com.utsman.data.model.Category
-import com.utsman.data.model.dto.CategorySealedView.CategoryView
-import com.utsman.data.model.dto.toCategoryView
+import com.utsman.data.model.dto.list.CategorySealedView.CategoryView
+import com.utsman.data.model.dto.list.toCategoryView
 import com.utsman.data.route.Services
 
 class CategoriesRepositoryImpl(private val services: Services) : CategoriesRepository {
