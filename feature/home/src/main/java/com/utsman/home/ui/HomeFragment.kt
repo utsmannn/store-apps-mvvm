@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.utsman.abstraction.base.PagingStateAdapter
+import com.utsman.abstraction.ext.initialLoadState
 import com.utsman.home.R
 import com.utsman.home.databinding.FragmentHomeBinding
 import com.utsman.home.ui.adapter.CategoryAdapter
@@ -39,7 +40,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             }
 
             categoryAdapter.addLoadStateListener { combinedLoadStates ->
-                progressCircular.isVisible = combinedLoadStates.refresh is LoadState.Loading
+                binding.layoutProgress.initialLoadState(combinedLoadStates.refresh) {
+                    categoryAdapter.retry()
+                }
             }
         }
 

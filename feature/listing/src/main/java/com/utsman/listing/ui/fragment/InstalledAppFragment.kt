@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.utsman.abstraction.base.PagingStateAdapter
+import com.utsman.abstraction.ext.initialLoadState
 import com.utsman.listing.R
 import com.utsman.listing.databinding.ActivityListBinding
 import com.utsman.listing.ui.adapter.PagingListAdapter
@@ -23,9 +24,10 @@ class InstalledAppFragment : Fragment(R.layout.activity_list) {
     private val viewModel: InstalledAppsViewModel by viewModel()
 
 
-    private val pagingListAdapter = PagingListAdapter(isUpdatedApp = true) {
+    private val pagingListAdapter =
+        PagingListAdapter(holderType = PagingListAdapter.HolderType.UPDATED) {
 
-    }
+        }
 
     private val pagingStateAdapter = PagingStateAdapter {
         pagingListAdapter.retry()
@@ -42,7 +44,9 @@ class InstalledAppFragment : Fragment(R.layout.activity_list) {
         }
 
         pagingListAdapter.addLoadStateListener { combinedLoadStates ->
-            binding.progressCircularInitial.isVisible = combinedLoadStates.refresh is LoadState.Loading
+            binding.layoutProgress.initialLoadState(combinedLoadStates.refresh) {
+                pagingListAdapter.retry()
+            }
         }
 
         viewModel.getInstalledApps()

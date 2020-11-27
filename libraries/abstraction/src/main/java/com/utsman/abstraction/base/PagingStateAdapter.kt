@@ -19,6 +19,12 @@ class PagingStateAdapter(private val retry: () -> Unit) : LoadStateAdapter<Pagin
         binding.run {
             progressCircular.isVisible = loadState is LoadState.Loading
             btnRetry.isVisible = loadState is LoadState.Error
+            txtMsg.isVisible = loadState is LoadState.Error
+
+            if (loadState is LoadState.Error) {
+                val msg = loadState.error.localizedMessage
+                txtMsg.text = msg
+            }
 
             btnRetry.setOnClickListener {
                 retry.invoke()

@@ -14,4 +14,8 @@ class SearchPagingViewModel(private val pagingUseCase: PagingUseCase) : ViewMode
     fun searchApps(query: String?) = viewModelScope.launch {
         pagingUseCase.searchApps(this, query, true)
     }
+
+    fun restartState() = viewModelScope.launch {
+        pagingUseCase.restartState(this)
+    }
 }

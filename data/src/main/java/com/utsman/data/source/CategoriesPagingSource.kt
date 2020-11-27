@@ -11,6 +11,9 @@ import com.utsman.data.model.dto.list.toCategoryBannerView
 import com.utsman.data.repository.AppsRepository
 import com.utsman.data.repository.CategoriesRepository
 import com.utsman.data.repository.InstalledAppsRepository
+import java.lang.Exception
+import java.net.SocketException
+import java.net.SocketTimeoutException
 
 class CategoriesPagingSource(
     private val categoryRepository: CategoriesRepository,
@@ -91,6 +94,12 @@ class CategoriesPagingSource(
                 else -> LoadResult.Page(newData, prevPage, nextPage)
             }
         } catch (e: Throwable) {
+            LoadResult.Error(e)
+        } catch (e: SocketTimeoutException) {
+            LoadResult.Error(e)
+        } catch (e: SocketException) {
+            LoadResult.Error(e)
+        } catch (e: Exception) {
             LoadResult.Error(e)
         }
     }
