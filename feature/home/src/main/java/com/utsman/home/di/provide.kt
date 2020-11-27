@@ -1,6 +1,5 @@
 package com.utsman.home.di
 
-import com.utsman.abstraction.di.Module
 import com.utsman.data.repository.AppsRepository
 import com.utsman.data.repository.CategoriesRepository
 import com.utsman.data.repository.InstalledAppsRepository
@@ -11,12 +10,10 @@ fun provideHomeUseCase(
     appsRepository: AppsRepository,
     categoriesRepository: CategoriesRepository,
     installedAppsRepository: InstalledAppsRepository
-): Module<HomeUseCase> {
-    val data = HomeUseCase(appsRepository, categoriesRepository, installedAppsRepository)
-    return Module(data)
+): HomeUseCase {
+    return HomeUseCase(appsRepository, categoriesRepository, installedAppsRepository)
 }
 
-fun provideHomeViewModel(homeUseCase: HomeUseCase): Module<HomeViewModel> {
-    val data = HomeViewModel(homeUseCase)
-    return Module(data)
+fun provideHomeViewModel(homeUseCase: HomeUseCase): HomeViewModel {
+    return HomeViewModel(homeUseCase)
 }

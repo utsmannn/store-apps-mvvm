@@ -4,7 +4,7 @@
 - Usecase pattern
 - Retrofit
 - Moshi
-- Manual Dependencies Injection
+- Koin Dependencies Injection
 - Kotlin flow (with stateFlow experimental)
 - Unit test viewmodel
 - Paging 3

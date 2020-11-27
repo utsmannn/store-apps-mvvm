@@ -44,52 +44,60 @@ class CategoriesPagingSource(
             val prevPage = if (currentPage <= 0) null else currentPage - 1
             val nextPage = if (!newData.isNullOrEmpty()) currentPage + 2 else null
 
-            if (currentPage == 0) {
-                // if current page == 0, add top apps category and covid apps category (from search)
+            when (currentPage) {
+                0 -> {
+                    val covidAppsCategory = Category.simple {
+                        this.name = StringValues.covidTitle
+                        this.query = "covid"
+                        this.image = StringValues.covidBannerUrl
+                        this.desc = StringValues.covidDesc
+                    }
+                    val covidAppsCategoryView = appsRepository.getSearchApps(covidAppsCategory.query, 0)
+                        .toCategoryBannerView(covidAppsCategory)
+                        ?: CategorySealedView.CategoryBannerView()
 
-                val covidAppsCategory = Category.simple {
-                    this.name = StringValues.covidTitle
-                    this.query = "covid"
-                    this.image = StringValues.covidBannerUrl
-                    this.desc = StringValues.covidDesc
+                    val topAppsCategoryView = appsRepository.getTopApps()
+                        .datalist?.list?.map { app ->
+                            app.toAppsBannerView()
+                        } ?: emptyList<AppsSealedView>()
+
+                    val topCategoryView = CategoryView.simple {
+                        name = "Top downloads"
+                        query = null
+                        apps = topAppsCategoryView
+                    }
+
+                    // push custom category view
+                    val reversed = newData.toMutableList().asReversed().apply {
+                        add(topCategoryView)
+                        add(covidAppsCategoryView)
+                    }.apply {
+                        reverse()
+                    }.toList()
+
+                    LoadResult.Page(reversed, prevPage, nextPage)
                 }
-                val covidAppsCategoryView = appsRepository.getSearchApps(covidAppsCategory.query, 0)
-                    .toCategoryBannerView(covidAppsCategory)
-                    ?: CategorySealedView.CategoryBannerView()
+                1 -> {
+                    val sportAppsCategory = Category.simple {
+                        this.name = StringValues.sportTitle
+                        this.query = "sport"
+                        this.image = StringValues.sportBannerUrl
+                        this.desc = StringValues.sportDesc
+                    }
 
-                val sportAppsCategory = Category.simple {
-                    this.name = StringValues.sportTitle
-                    this.query = "sport"
-                    this.image = StringValues.sportBannerUrl
-                    this.desc = StringValues.sportDesc
+                    val sportAppsCategoryView = appsRepository.getSearchApps(sportAppsCategory.query, 0)
+                        .toCategoryBannerView(sportAppsCategory) ?: CategorySealedView.CategoryBannerView()
+
+                    // push custom category view
+                    val reversed = newData.toMutableList().asReversed().apply {
+                        add(sportAppsCategoryView)
+                    }.apply {
+                        reverse()
+                    }.toList()
+
+                    LoadResult.Page(reversed, prevPage, nextPage)
                 }
-
-                val sportAppsCategoryView = appsRepository.getSearchApps(sportAppsCategory.query, 0)
-                    .toCategoryBannerView(sportAppsCategory) ?: CategorySealedView.CategoryBannerView()
-
-                val topAppsCategoryView = appsRepository.getTopApps()
-                    .datalist?.list?.map { app ->
-                        app.toAppsBannerView()
-                    } ?: emptyList<AppsSealedView>()
-
-                val topCategoryView = CategoryView.simple {
-                    name = "Top downloads"
-                    query = null
-                    apps = topAppsCategoryView
-                }
-
-                // push custom category view
-                val reversed = newData.toMutableList().asReversed().apply {
-                    add(sportAppsCategoryView)
-                    add(topCategoryView)
-                    add(covidAppsCategoryView)
-                }.apply {
-                    reverse()
-                }.toList()
-
-                LoadResult.Page(reversed, prevPage, nextPage)
-            } else {
-                LoadResult.Page(newData, prevPage, nextPage)
+                else -> LoadResult.Page(newData, prevPage, nextPage)
             }
         } catch (e: Throwable) {
             LoadResult.Error(e)

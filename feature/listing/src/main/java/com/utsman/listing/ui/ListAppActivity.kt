@@ -6,24 +6,22 @@ import android.viewbinding.library.activity.viewBinding
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
-import com.utsman.abstraction.di.moduleOf
-import com.utsman.abstraction.ext.stringExtras
-import com.utsman.listing.databinding.ActivityListBinding
-import com.utsman.listing.di.pagingViewModel
-import com.utsman.listing.ui.adapter.PagingListAdapter
 import com.utsman.abstraction.base.PagingStateAdapter
 import com.utsman.abstraction.ext.booleanExtras
+import com.utsman.abstraction.ext.stringExtras
+import com.utsman.listing.databinding.ActivityListBinding
+import com.utsman.listing.ui.adapter.PagingListAdapter
 import com.utsman.listing.viewmodel.PagingViewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ListAppActivity : AppCompatActivity() {
 
     private val binding: ActivityListBinding by viewBinding()
-    private val viewModel: PagingViewModel by moduleOf(pagingViewModel)
+    private val viewModel: PagingViewModel by viewModel()
 
     private val query by stringExtras("query")
     private val title by stringExtras("title")
@@ -71,7 +69,7 @@ class ListAppActivity : AppCompatActivity() {
         })
 
         pagingListAdapter.addLoadStateListener { combinedLoadStates ->
-            binding.progressCircularInitial.isVisible = combinedLoadStates.refresh is LoadState.Loading
+            binding.progressCircularInitial.isVisible = combinedLoadStates.refresh !is LoadState.Error
         }
     }
 
