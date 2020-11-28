@@ -1,3 +1,8 @@
+/*
+ * Created by Muhammad Utsman on 28/11/20 3:54 PM
+ * Copyright (c) 2020 . All rights reserved.
+ */
+
 package com.utsman.data.source
 
 import androidx.paging.PagingSource
@@ -8,9 +13,9 @@ import com.utsman.data.model.dto.list.CategorySealedView
 import com.utsman.data.model.dto.list.CategorySealedView.CategoryView
 import com.utsman.data.model.dto.list.toAppsBannerView
 import com.utsman.data.model.dto.list.toCategoryBannerView
-import com.utsman.data.repository.AppsRepository
-import com.utsman.data.repository.CategoriesRepository
-import com.utsman.data.repository.InstalledAppsRepository
+import com.utsman.data.repository.list.AppsRepository
+import com.utsman.data.repository.list.CategoriesRepository
+import com.utsman.data.repository.list.InstalledAppsRepository
 import java.lang.Exception
 import java.net.SocketException
 import java.net.SocketTimeoutException

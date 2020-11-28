@@ -1,4 +1,9 @@
-package com.utsman.data.repository
+/*
+ * Created by Muhammad Utsman on 28/11/20 4:02 PM
+ * Copyright (c) 2020 . All rights reserved.
+ */
+
+package com.utsman.data.repository.list
 
 import com.utsman.data.const.CategoriesApps
 import com.utsman.data.model.response.list.Aptoide

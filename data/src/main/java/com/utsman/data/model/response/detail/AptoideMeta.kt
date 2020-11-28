@@ -1,8 +1,13 @@
+/*
+ * Created by Muhammad Utsman on 28/11/20 3:54 PM
+ * Copyright (c) 2020 . All rights reserved.
+ */
+
 package com.utsman.data.model.response.detail
 
 import com.squareup.moshi.Json
 
-data class AptoideDetail(
+data class AptoideMeta(
 
 	@Json(name="data")
 	val data: Data? = null,
@@ -80,7 +85,7 @@ data class File(
 	val flags: Flags? = null,
 
 	@Json(name="filesize")
-	val filesize: Int? = null,
+	val filesize: Long? = null,
 
 	@Json(name="used_permissions")
 	val usedPermissions: List<String?>? = null,
@@ -104,7 +109,7 @@ data class File(
 	val vername: String? = null,
 
 	@Json(name="vercode")
-	val vercode: Int? = null,
+	val vercode: Long? = null,
 
 	@Json(name="hardware")
 	val hardware: Hardware? = null
@@ -203,7 +208,7 @@ data class Media(
 data class Data(
 
 	@Json(name="package")
-	val jsonMemberPackage: String? = null,
+	val `package`: String? = null,
 
 	@Json(name="aab")
 	val aab: Any? = null,
@@ -392,16 +397,16 @@ data class Stats(
 	val prating: Prating? = null,
 
 	@Json(name="pdownloads")
-	val pdownloads: Int? = null,
+	val pdownloads: Long? = null,
 
 	@Json(name="downloads")
-	val downloads: Int? = null,
+	val downloads: Long? = null,
 
 	@Json(name="rating")
 	val rating: Rating? = null,
 
 	@Json(name="subscribers")
-	val subscribers: Int? = null,
+	val subscribers: Long? = null,
 
 	@Json(name="apps")
 	val apps: Int? = null

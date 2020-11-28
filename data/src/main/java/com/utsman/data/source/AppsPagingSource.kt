@@ -1,8 +1,13 @@
+/*
+ * Created by Muhammad Utsman on 28/11/20 3:54 PM
+ * Copyright (c) 2020 . All rights reserved.
+ */
+
 package com.utsman.data.source
 
 import androidx.paging.PagingSource
 import com.utsman.data.model.response.list.AppsItem
-import com.utsman.data.repository.PagingAppRepository
+import com.utsman.data.repository.list.PagingAppRepository
 import java.lang.Exception
 import java.net.SocketException
 import java.net.SocketTimeoutException

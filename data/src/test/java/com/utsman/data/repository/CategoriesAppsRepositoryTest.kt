@@ -1,7 +1,14 @@
+/*
+ * Created by Muhammad Utsman on 28/11/20 3:54 PM
+ * Copyright (c) 2020 . All rights reserved.
+ */
+
 package com.utsman.data.repository
 
 import com.utsman.data.model.response.list.Aptoide
 import com.utsman.data.model.Category
+import com.utsman.data.repository.list.CategoriesRepository
+import com.utsman.data.repository.list.CategoriesRepositoryImpl
 import com.utsman.data.route.Services
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals

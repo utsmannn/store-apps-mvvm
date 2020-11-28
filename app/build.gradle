@@ -1,3 +1,8 @@
+/*
+ * Created by Muhammad Utsman on 28/11/20 3:54 PM
+ * Copyright (c) 2020 . All rights reserved.
+ */
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
@@ -28,4 +33,5 @@ dependencies {
 
     implementation project(":feature:home")
     implementation project(":feature:listing")
+    implementation project(":feature:detail")
 }

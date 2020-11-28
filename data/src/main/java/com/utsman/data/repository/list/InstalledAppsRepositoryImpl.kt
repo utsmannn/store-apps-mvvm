@@ -1,4 +1,9 @@
-package com.utsman.data.repository
+/*
+ * Created by Muhammad Utsman on 28/11/20 4:02 PM
+ * Copyright (c) 2020 . All rights reserved.
+ */
+
+package com.utsman.data.repository.list
 
 import android.content.Context
 import android.content.pm.ApplicationInfo
@@ -50,10 +55,10 @@ class InstalledAppsRepositoryImpl(
     }
 
     override suspend fun getUpdatedAppsInStore(page: Int): List<AppsSealedView.AppsView>? {
-        logi("load from -> $page until ${page+perPage}, size is -> ${installedAppsView.size}")
-        return if (page+perPage <= installedAppsView.size) {
+        logi("load from -> $page until ${page+ perPage}, size is -> ${installedAppsView.size}")
+        return if (page+ perPage <= installedAppsView.size) {
             try {
-                installedAppsView.subList(page, page+perPage).mapNotNull { app ->
+                installedAppsView.subList(page, page+ perPage).mapNotNull { app ->
                     services.searchList(app.packageName)
                         .datalist
                         ?.list

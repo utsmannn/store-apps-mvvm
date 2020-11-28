@@ -1,8 +1,12 @@
+/*
+ * Created by Muhammad Utsman on 28/11/20 3:54 PM
+ * Copyright (c) 2020 . All rights reserved.
+ */
+
 package com.utsman.listing.di
 
-import com.utsman.abstraction.di.Module
-import com.utsman.data.repository.InstalledAppsRepository
-import com.utsman.data.repository.PagingAppRepository
+import com.utsman.data.repository.list.InstalledAppsRepository
+import com.utsman.data.repository.list.PagingAppRepository
 import com.utsman.listing.domain.InstalledAppUseCase
 import com.utsman.listing.domain.PagingUseCase
 import com.utsman.listing.viewmodel.InstalledAppsViewModel

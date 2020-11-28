@@ -1,6 +1,13 @@
+/*
+ * Created by Muhammad Utsman on 28/11/20 3:54 PM
+ * Copyright (c) 2020 . All rights reserved.
+ */
+
 package com.utsman.data.repository
 
 import com.utsman.data.model.response.list.Aptoide
+import com.utsman.data.repository.list.AppsRepository
+import com.utsman.data.repository.list.AppsRepositoryImpl
 import com.utsman.data.route.Services
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals

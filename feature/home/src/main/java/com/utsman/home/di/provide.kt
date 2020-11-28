@@ -1,8 +1,13 @@
+/*
+ * Created by Muhammad Utsman on 28/11/20 3:54 PM
+ * Copyright (c) 2020 . All rights reserved.
+ */
+
 package com.utsman.home.di
 
-import com.utsman.data.repository.AppsRepository
-import com.utsman.data.repository.CategoriesRepository
-import com.utsman.data.repository.InstalledAppsRepository
+import com.utsman.data.repository.list.AppsRepository
+import com.utsman.data.repository.list.CategoriesRepository
+import com.utsman.data.repository.list.InstalledAppsRepository
 import com.utsman.home.domain.HomeUseCase
 import com.utsman.home.viewmodel.HomeViewModel
 

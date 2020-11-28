@@ -1,3 +1,8 @@
+/*
+ * Created by Muhammad Utsman on 28/11/20 3:54 PM
+ * Copyright (c) 2020 . All rights reserved.
+ */
+
 package com.utsman.data.model.dto.list
 
 import com.utsman.data.model.response.list.AppsItem
@@ -12,7 +17,7 @@ fun Aptoide.toCategoryBannerView(category: Category?): CategorySealedView.Catego
             packageName = app.`package` ?: ""
             size = app.size ?: 0
             icon = app.icon ?: ""
-            appVersion = AppVersion.from(app)
+            appVersion = AppVersion.fromItem(app)
         }
     } ?: emptyList()
 
@@ -33,7 +38,7 @@ fun Aptoide.toCategoryView(category: Category?): CategorySealedView.CategoryView
             packageName = app.`package` ?: ""
             size = app.size ?: 0
             icon = app.icon ?: ""
-            appVersion = AppVersion.from(app)
+            appVersion = AppVersion.fromItem(app)
         }
     } ?: emptyList()
 
@@ -53,7 +58,7 @@ fun AppsItem.toAppsBannerView(): AppsSealedView.AppsBannerView {
         size = this@toAppsBannerView.size ?: 0
         icon = this@toAppsBannerView.icon ?: ""
         image = this@toAppsBannerView.graphic ?: ""
-        appVersion = AppVersion.from(this@toAppsBannerView)
+        appVersion = AppVersion.fromItem(this@toAppsBannerView)
     }
 }
 
@@ -64,6 +69,6 @@ fun AppsItem.toAppsView(): AppsSealedView.AppsView {
         packageName = this@toAppsView.`package` ?: ""
         size = this@toAppsView.size ?: 0
         icon = this@toAppsView.icon ?: ""
-        appVersion = AppVersion.from(this@toAppsView)
+        appVersion = AppVersion.fromItem(this@toAppsView)
     }
 }

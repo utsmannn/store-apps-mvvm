@@ -1,9 +1,14 @@
+/*
+ * Created by Muhammad Utsman on 28/11/20 3:54 PM
+ * Copyright (c) 2020 . All rights reserved.
+ */
+
 package com.utsman.data.source
 
 import androidx.paging.PagingSource
 import com.utsman.data.model.dto.list.AppsSealedView
-import com.utsman.data.repository.InstalledAppsRepository
-import com.utsman.data.repository.InstalledAppsRepositoryImpl
+import com.utsman.data.repository.list.InstalledAppsRepository
+import com.utsman.data.repository.list.InstalledAppsRepositoryImpl
 
 class InstalledPagingSource(private val installedAppsRepository: InstalledAppsRepository) : PagingSource<Int, AppsSealedView.AppsView>() {
     private val page = 0

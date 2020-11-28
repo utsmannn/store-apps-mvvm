@@ -1,3 +1,8 @@
+/*
+ * Created by Muhammad Utsman on 28/11/20 3:54 PM
+ * Copyright (c) 2020 . All rights reserved.
+ */
+
 package com.utsman.home.domain
 
 import androidx.lifecycle.MutableLiveData
@@ -14,9 +19,9 @@ import com.utsman.data.model.dto.list.CategorySealedView
 import com.utsman.data.model.dto.list.CategorySealedView.CategoryView
 import com.utsman.data.model.dto.list.toAppsView
 import com.utsman.data.model.dto.list.toCategoryView
-import com.utsman.data.repository.AppsRepository
-import com.utsman.data.repository.CategoriesRepository
-import com.utsman.data.repository.InstalledAppsRepository
+import com.utsman.data.repository.list.AppsRepository
+import com.utsman.data.repository.list.CategoriesRepository
+import com.utsman.data.repository.list.InstalledAppsRepository
 import com.utsman.data.source.CategoriesPagingSource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect

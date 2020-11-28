@@ -1,3 +1,8 @@
+/*
+ * Created by Muhammad Utsman on 28/11/20 3:54 PM
+ * Copyright (c) 2020 . All rights reserved.
+ */
+
 package com.utsman.listing.ui.activity
 
 import android.os.Bundle
@@ -6,11 +11,8 @@ import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.LoadState
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.utsman.abstraction.base.PagingStateAdapter
 import com.utsman.abstraction.ext.initialLoadState
@@ -111,12 +113,4 @@ class SearchAppActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-    /*override fun onBackPressed() {
-        if (searchView?.isIconified == false) {
-            super.onBackPressed()
-        } else {
-            super.onBackPressed()
-        }
-    }*/
 }

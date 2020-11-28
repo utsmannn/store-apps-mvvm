@@ -1,3 +1,8 @@
+/*
+ * Created by Muhammad Utsman on 28/11/20 3:54 PM
+ * Copyright (c) 2020 . All rights reserved.
+ */
+
 package com.utsman.listing
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -5,8 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.paging.PagingData
 import com.nhaarman.mockitokotlin2.verify
 import com.utsman.data.model.dto.list.AppsSealedView.AppsView
-import com.utsman.data.repository.PagingAppRepository
-import com.utsman.data.repository.PagingAppRepositoryImpl
+import com.utsman.data.repository.list.PagingAppRepository
+import com.utsman.data.repository.list.PagingAppRepositoryImpl
 import com.utsman.data.route.Services
 import com.utsman.listing.domain.PagingUseCase
 import com.utsman.listing.viewmodel.PagingViewModel

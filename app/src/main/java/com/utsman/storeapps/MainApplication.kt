@@ -1,9 +1,16 @@
+/*
+ * Created by Muhammad Utsman on 28/11/20 3:54 PM
+ * Copyright (c) 2020 . All rights reserved.
+ */
+
 package com.utsman.storeapps
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.utsman.abstraction.base.GlideApp
 import com.utsman.data.di.*
+import com.utsman.detail.di.detailUseCaseModule
+import com.utsman.detail.di.detailViewModelModule
 import com.utsman.home.di.*
 import com.utsman.listing.di.*
 import com.utsman.network.di.jsonBeautifier
@@ -27,6 +34,7 @@ class MainApplication : Application() {
             modules(serviceModule, dataRepositoryModule)
             modules(homeUseCaseModule, homeViewModelModule)
             modules(listPagingUseCase, listInstalledViewModel)
+            modules(detailUseCaseModule, detailViewModelModule)
         }
     }
 

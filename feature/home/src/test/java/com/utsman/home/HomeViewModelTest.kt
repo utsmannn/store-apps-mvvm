@@ -1,3 +1,8 @@
+/*
+ * Created by Muhammad Utsman on 28/11/20 3:54 PM
+ * Copyright (c) 2020 . All rights reserved.
+ */
+
 package com.utsman.home
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -7,10 +12,10 @@ import com.nhaarman.mockitokotlin2.verify
 import com.utsman.abstraction.dto.ResultState
 import com.utsman.data.model.dto.list.AppsSealedView
 import com.utsman.data.model.dto.CategoryView
-import com.utsman.data.repository.AppsRepository
-import com.utsman.data.repository.AppsRepositoryImpl
-import com.utsman.data.repository.CategoriesRepository
-import com.utsman.data.repository.CategoriesRepositoryImpl
+import com.utsman.data.repository.list.AppsRepository
+import com.utsman.data.repository.list.AppsRepositoryImpl
+import com.utsman.data.repository.list.CategoriesRepository
+import com.utsman.data.repository.list.CategoriesRepositoryImpl
 import com.utsman.data.route.Services
 import com.utsman.home.domain.HomeUseCase
 import com.utsman.home.viewmodel.HomeViewModel

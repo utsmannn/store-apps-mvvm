@@ -1,5 +1,10 @@
 
 
+/*
+ * Created by Muhammad Utsman on 28/11/20 3:54 PM
+ * Copyright (c) 2020 . All rights reserved.
+ */
+
 apply from: "$rootDir/dependencies/libs.gradle"
 apply from: "$rootDir/dependencies/android.gradle"
 apply from: "$rootDir/dependencies/commons.gradle"
