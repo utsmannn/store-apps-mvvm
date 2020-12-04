@@ -9,6 +9,7 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.utsman.abstraction.ext.bytesToString
+import com.utsman.abstraction.ext.detailFor
 import com.utsman.abstraction.ext.loadRes
 import com.utsman.abstraction.ext.loadUrl
 import com.utsman.data.model.dto.list.AppsSealedView
@@ -28,8 +29,6 @@ class SearchAppViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         imgLabel.isVisible = item.iconLabel != null
         if (item.iconLabel != null) imgLabel.loadRes(item.iconLabel, item.id.toString())
 
-        root.setOnClickListener {
-            click.invoke(item)
-        }
+        root detailFor item.packageName
     }
 }

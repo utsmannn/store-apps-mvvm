@@ -8,6 +8,7 @@ package com.utsman.listing.ui.viewholder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.utsman.abstraction.ext.bytesToString
+import com.utsman.abstraction.ext.detailFor
 import com.utsman.abstraction.ext.loadUrl
 import com.utsman.data.model.dto.list.AppsSealedView
 import com.utsman.listing.databinding.ItemListUpdatedBinding
@@ -24,8 +25,6 @@ class UpdatedAppViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             "Current ver. ${item.appVersion.name}\nUpdated ver. ${item.appVersion.apiName}"
         txtVersion.text = versionString
 
-        root.setOnClickListener {
-            click.invoke(item)
-        }
+        root detailFor item.packageName
     }
 }

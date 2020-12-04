@@ -7,4 +7,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.utsman.detail">
 
+    <application>
+        <activity android:name=".ui.DetailActivity"/>
+
+    </application>
+
 </manifest>
