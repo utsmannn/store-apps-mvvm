@@ -5,6 +5,7 @@
 
 package com.utsman.detail.viewmodel
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
@@ -14,7 +15,7 @@ import com.utsman.data.model.dto.detail.DetailView
 import com.utsman.detail.domain.DetailUseCase
 import kotlinx.coroutines.launch
 
-class DetailViewModel(private val detailUseCase: DetailUseCase) : ViewModel() {
+class DetailViewModel @ViewModelInject constructor(private val detailUseCase: DetailUseCase) : ViewModel() {
 
     private val _detailView = detailUseCase.detailView
     val detailView: LiveData<ResultState<DetailView>>

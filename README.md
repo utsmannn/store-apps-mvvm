@@ -4,7 +4,7 @@
 - Usecase pattern
 - Retrofit
 - Moshi
-- Koin Dependencies Injection
+- Dagger Hilt Dependencies Injection
 - Kotlin flow (with stateFlow experimental)
 - Unit test viewmodel
 - Paging 3

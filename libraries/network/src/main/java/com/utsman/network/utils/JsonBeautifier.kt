@@ -6,7 +6,7 @@
 package com.utsman.network.utils
 
 import com.squareup.moshi.JsonReader
-import com.utsman.abstraction.di.moduleOf
+import com.utsman.abstraction.dimanual.moduleOf
 import com.utsman.network.di.moshi
 import okio.Buffer
 

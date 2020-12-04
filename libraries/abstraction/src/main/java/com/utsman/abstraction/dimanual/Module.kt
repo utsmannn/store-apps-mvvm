@@ -3,7 +3,7 @@
  * Copyright (c) 2020 . All rights reserved.
  */
 
-package com.utsman.abstraction.di
+package com.utsman.abstraction.dimanual
 
 data class Module<T: Any>(
     val data: T

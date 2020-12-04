@@ -25,9 +25,10 @@ import com.utsman.data.repository.list.InstalledAppsRepository
 import com.utsman.data.source.CategoriesPagingSource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
+import javax.inject.Inject
 
 
-class HomeUseCase(
+class HomeUseCase @Inject constructor(
     private val appsRepository: AppsRepository,
     private val categoriesRepository: CategoriesRepository,
     private val installedAppsRepository: InstalledAppsRepository

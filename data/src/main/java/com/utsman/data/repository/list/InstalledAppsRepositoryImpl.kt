@@ -16,8 +16,9 @@ import com.utsman.data.model.dto.list.AppsSealedView
 import com.utsman.data.model.dto.list.toAppsView
 import com.utsman.data.route.Services
 import java.lang.IndexOutOfBoundsException
+import javax.inject.Inject
 
-class InstalledAppsRepositoryImpl(
+class InstalledAppsRepositoryImpl @Inject constructor(
     private val context: Context,
     private val services: Services
 ) : InstalledAppsRepository {

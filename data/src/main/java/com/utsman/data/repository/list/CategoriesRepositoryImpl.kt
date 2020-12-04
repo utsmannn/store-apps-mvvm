@@ -11,8 +11,9 @@ import com.utsman.data.model.Category
 import com.utsman.data.model.dto.list.CategorySealedView.CategoryView
 import com.utsman.data.model.dto.list.toCategoryView
 import com.utsman.data.route.Services
+import javax.inject.Inject
 
-class CategoriesRepositoryImpl(private val services: Services) : CategoriesRepository {
+class CategoriesRepositoryImpl @Inject constructor(private val services: Services) : CategoriesRepository {
     override suspend fun getCategory(category: Category): Aptoide {
         return services.groupList(query = category.query)
     }

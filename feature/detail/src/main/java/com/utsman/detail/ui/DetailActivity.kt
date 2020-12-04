@@ -8,6 +8,7 @@ package com.utsman.detail.ui
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.viewbinding.library.activity.viewBinding
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.utsman.abstraction.dto.listenOn
@@ -19,13 +20,14 @@ import com.utsman.abstraction.listener.IResultState
 import com.utsman.data.model.dto.detail.DetailView
 import com.utsman.detail.databinding.ActivityDetailBinding
 import com.utsman.detail.viewmodel.DetailViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class DetailActivity : AppCompatActivity() {
 
     private val binding: ActivityDetailBinding by viewBinding()
     private val packageApps by stringExtras("package_name")
-    private val viewModel: DetailViewModel by viewModel()
+    private val viewModel: DetailViewModel by viewModels()
 
     private val resultListener = object : IResultState<DetailView> {
         override fun onIdle() {

@@ -8,8 +8,8 @@ package com.utsman.listing.ui.activity
 import android.os.Bundle
 import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -21,14 +21,14 @@ import com.utsman.abstraction.ext.stringExtras
 import com.utsman.listing.databinding.ActivityListBinding
 import com.utsman.listing.ui.adapter.PagingListAdapter
 import com.utsman.listing.viewmodel.PagingViewModel
-import kotlinx.coroutines.GlobalScope
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
+@AndroidEntryPoint
 class ListAppActivity : AppCompatActivity() {
 
     private val binding: ActivityListBinding by viewBinding()
-    private val viewModel: PagingViewModel by viewModel()
+    private val viewModel: PagingViewModel by viewModels()
 
     private val query by stringExtras("query")
     private val title by stringExtras("title")

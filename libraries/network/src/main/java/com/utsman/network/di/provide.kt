@@ -6,7 +6,7 @@
 package com.utsman.network.di
 
 import com.squareup.moshi.Moshi
-import com.utsman.abstraction.di.Module
+import com.utsman.abstraction.dimanual.Module
 import com.utsman.network.utils.JsonBeautifier
 
 fun provideMoshi(): Module<Moshi> {

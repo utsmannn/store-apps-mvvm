@@ -14,8 +14,9 @@ import com.utsman.data.repository.meta.MetaRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DetailUseCase(private val metaRepository: MetaRepository) {
+class DetailUseCase @Inject constructor(private val metaRepository: MetaRepository) {
 
     val detailView = stateOf<DetailView>()
 
