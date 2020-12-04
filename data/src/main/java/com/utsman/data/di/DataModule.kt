@@ -6,11 +6,13 @@
 package com.utsman.data.di
 
 import android.content.Context
+import androidx.work.WorkManager
 import com.utsman.data.repository.list.*
 import com.utsman.data.repository.meta.MetaRepository
 import com.utsman.data.repository.meta.MetaRepositoryImpl
 import com.utsman.data.route.Services
 import com.utsman.network.Network
+import dagger.BindsInstance
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,6 +29,11 @@ class DataModule {
     fun provideServices(): Services {
         return Network.builder("http://ws75.aptoide.com/")
             .create(Services::class.java)
+    }
+
+    @Provides
+    fun workManager(@ApplicationContext context: Context): WorkManager {
+        return WorkManager.getInstance(context)
     }
 
     @Provides

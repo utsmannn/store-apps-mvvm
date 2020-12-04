@@ -5,6 +5,7 @@
 
 package com.utsman.detail.di
 
+import androidx.work.WorkManager
 import com.utsman.data.repository.list.InstalledAppsRepository
 import com.utsman.data.repository.meta.MetaRepository
 import com.utsman.detail.domain.DetailUseCase
@@ -20,7 +21,11 @@ class DetailModule {
 
     @Provides
     @Singleton
-    fun provideDetailUseCase(metaRepository: MetaRepository, installedAppsRepository: InstalledAppsRepository): DetailUseCase {
-        return DetailUseCase(metaRepository, installedAppsRepository)
+    fun provideDetailUseCase(
+        metaRepository: MetaRepository,
+        installedAppsRepository: InstalledAppsRepository,
+        workManager: WorkManager
+    ): DetailUseCase {
+        return DetailUseCase(metaRepository, installedAppsRepository, workManager)
     }
 }

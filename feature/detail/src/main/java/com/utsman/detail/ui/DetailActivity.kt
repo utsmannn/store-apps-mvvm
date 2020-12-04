@@ -14,13 +14,19 @@ import android.viewbinding.library.activity.viewBinding
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.Operation
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.utsman.abstraction.dto.listenOn
 import com.utsman.abstraction.ext.*
 import com.utsman.abstraction.listener.IResultState
 import com.utsman.data.model.dto.detail.DetailView
+import com.utsman.data.worker.DownloadAppWorker
 import com.utsman.detail.databinding.ActivityDetailBinding
 import com.utsman.detail.viewmodel.DetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class DetailActivity : AppCompatActivity() {
@@ -28,6 +34,8 @@ class DetailActivity : AppCompatActivity() {
     private val binding: ActivityDetailBinding by viewBinding()
     private val packageApps by stringExtras("package_name")
     private val viewModel: DetailViewModel by viewModels()
+
+    @Inject lateinit var workManager: WorkManager
 
     private val resultListener = object : IResultState<DetailView> {
         override fun onIdle() {
@@ -78,7 +86,25 @@ class DetailActivity : AppCompatActivity() {
             }
         }
 
-        btnDownload.text = downloadTitle
+        btnDownload.setOnClickListener {
+            val workerId = viewModel.requestDownload(data.file.url, data.packageName)
+            viewModel.observerWorkInfo(workerId)
+                .observe(this@DetailActivity, Observer {
+                    val progress = it.progress.getString("data")
+                    val doneData = it.outputData.getBoolean("done", false)
+                    if (progress != null) btnDownload.text = progress
+
+                    logi("done data is -> $doneData")
+                    if (doneData) {
+                        viewModel.downloadIsComplete()
+                    }
+                })
+        }
+
+        viewModel.checkIsDownloading(data.packageName).observe(this@DetailActivity, Observer {
+            val downloading = if (it) "Downloading..." else downloadTitle
+            btnDownload.text = downloading
+        })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,6 +114,22 @@ class DetailActivity : AppCompatActivity() {
             setDisplayHomeAsUpEnabled(true)
             title = ""
         }
+
+        viewModel.workerState.observe(this, Observer { state ->
+            logi("worker state is -> $state")
+            when (state) {
+                is Operation.State.IN_PROGRESS -> {
+                    binding.txtDeveloper.text = "in progress"
+                }
+                is Operation.State.FAILURE -> {
+                    val throwable = state.throwable
+                    binding.txtDeveloper.text = throwable.localizedMessage
+                }
+                is Operation.State.SUCCESS -> {
+                    binding.txtDeveloper.text = "success"
+                }
+            }
+        })
 
         viewModel.getDetailView(packageApps)
         viewModel.detailView.observe(this, Observer {
