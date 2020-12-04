@@ -7,8 +7,9 @@ package com.utsman.data.repository.list
 
 import com.utsman.data.model.response.list.Datalist
 import com.utsman.data.route.Services
+import javax.inject.Inject
 
-class PagingAppRepositoryImpl(private val services: Services) : PagingAppRepository {
+class PagingAppRepositoryImpl @Inject constructor(private val services: Services) : PagingAppRepository {
 
     override suspend fun loadApps(query: String?, search: Boolean, offset: Int): Datalist {
         return if (query != null) {

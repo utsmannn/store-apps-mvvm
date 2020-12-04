@@ -9,11 +9,11 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1'
 
-    // koin
-    implementation 'org.koin:koin-android:2.2.0'
-    implementation 'org.koin:koin-androidx-scope:2.2.0'
-    implementation 'org.koin:koin-androidx-viewmodel:2.2.0'
-    implementation 'org.koin:koin-androidx-fragment:2.2.0'
+    // hilt dependency injection
+    implementation 'com.google.dagger:hilt-android:2.28-alpha'
+    implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02'
+    kapt 'com.google.dagger:hilt-android-compiler:2.28-alpha'
+    kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha02'
 
     // lifecycle
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0'

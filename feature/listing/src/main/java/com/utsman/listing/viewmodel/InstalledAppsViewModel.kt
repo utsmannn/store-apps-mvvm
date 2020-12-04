@@ -5,6 +5,7 @@
 
 package com.utsman.listing.viewmodel
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,11 +14,11 @@ import com.utsman.data.model.dto.list.AppsSealedView
 import com.utsman.listing.domain.InstalledAppUseCase
 import kotlinx.coroutines.launch
 
-class InstalledAppsViewModel(private val installedAppUseCase: InstalledAppUseCase) : ViewModel() {
+class InstalledAppsViewModel @ViewModelInject constructor(private val installedAppUseCase: InstalledAppUseCase) : ViewModel() {
 
     private val _installedApps = installedAppUseCase.pagingData
-    val installedApps: LiveData<PagingData<AppsSealedView.AppsView>> get() = installedAppUseCase
-        .pagingData
+    val installedApps: LiveData<PagingData<AppsSealedView.AppsView>>
+        get() = _installedApps
 
     fun getInstalledApps() = viewModelScope.launch {
         installedAppUseCase.getUpdatedApp(this)

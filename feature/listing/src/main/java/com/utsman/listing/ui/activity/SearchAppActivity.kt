@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
@@ -21,15 +22,16 @@ import com.utsman.listing.R
 import com.utsman.listing.databinding.ActivityListBinding
 import com.utsman.listing.ui.adapter.PagingListAdapter
 import com.utsman.listing.viewmodel.SearchPagingViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
+@AndroidEntryPoint
 class SearchAppActivity : AppCompatActivity() {
 
     private val binding: ActivityListBinding by viewBinding()
-    private val viewModel: SearchPagingViewModel by viewModel()
+    private val viewModel: SearchPagingViewModel by viewModels()
     private var searchView: SearchView? = null
 
     private val pagingListAdapter = PagingListAdapter(holderType = PagingListAdapter.HolderType.SEARCH) {

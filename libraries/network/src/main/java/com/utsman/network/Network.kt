@@ -5,7 +5,7 @@
 
 package com.utsman.network
 
-import com.utsman.abstraction.di.moduleOf
+import com.utsman.abstraction.dimanual.moduleOf
 import com.utsman.abstraction.ext.debug
 import com.utsman.network.di.moshi
 import com.utsman.network.interceptor.LogInterceptor

@@ -3,7 +3,7 @@
  * Copyright (c) 2020 . All rights reserved.
  */
 
-package com.utsman.abstraction.di
+package com.utsman.abstraction.dimanual
 
 fun <T: Any> moduleOf(mod: Module<T>): Lazy<T> {
     return lazy(LazyThreadSafetyMode.SYNCHRONIZED) {

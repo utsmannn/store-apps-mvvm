@@ -15,8 +15,9 @@ import com.utsman.abstraction.ext.intentTo
 import com.utsman.home.ui.HomeFragment
 import com.utsman.listing.ui.fragment.InstalledAppFragment
 import com.utsman.storeapps.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private val binding: ActivityMainBinding by viewBinding()

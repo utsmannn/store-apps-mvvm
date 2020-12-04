@@ -16,8 +16,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class PagingUseCase(
+class PagingUseCase @Inject constructor(
     private val pagingAppRepository: PagingAppRepository,
     private val installedAppsRepository: InstalledAppsRepository
 ) {
