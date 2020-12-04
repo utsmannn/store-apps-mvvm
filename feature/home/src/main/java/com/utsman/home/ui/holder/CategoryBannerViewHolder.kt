@@ -34,7 +34,7 @@ class CategoryBannerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             }
         }
         rvApps.run {
-            layoutManager = GridLayoutManager(context, 5)
+            layoutManager = GridLayoutManager(context, 4)
             adapter = appsAdapter
         }
     }

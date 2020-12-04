@@ -17,16 +17,17 @@ interface Services {
         @Path("offset") offset: Int = 0
     ): Aptoide
 
-    @GET("/api/7/apps/get/group_name={query}/offset={offset}/sort=downloads")
+    @GET("/api/7/apps/get/group_name={query}/offset={offset}/sort=downloads/limit=10")
     suspend fun groupList(
         @Path("query") query: String = "",
         @Path("offset") offset: Int = 0
     ): Aptoide
 
-    @GET("/api/7/apps/search/query={query}/offset={offset}")
+    @GET("/api/7/apps/search/query={query}/offset={offset}/limit={limit}")
     suspend fun searchList(
         @Path("query") query: String = "",
-        @Path("offset") offset: Int = 0
+        @Path("offset") offset: Int = 0,
+        @Path("limit") limit: Int = 25
     ): Aptoide
 
     @GET("/api/7/app/getMeta/package_name={package_name}")

@@ -60,7 +60,7 @@ class CategoriesPagingSource(
                         this.image = StringValues.covidBannerUrl
                         this.desc = StringValues.covidDesc
                     }
-                    val covidAppsCategoryView = appsRepository.getSearchApps(covidAppsCategory.query, 0)
+                    val covidAppsCategoryView = appsRepository.getSearchApps(covidAppsCategory.query, 0, 10)
                         .toCategoryBannerView(covidAppsCategory)
                         ?: CategorySealedView.CategoryBannerView()
 
@@ -82,7 +82,7 @@ class CategoriesPagingSource(
                         this.desc = StringValues.sportDesc
                     }
 
-                    val sportAppsCategoryView = appsRepository.getSearchApps(sportAppsCategory.query, 0)
+                    val sportAppsCategoryView = appsRepository.getSearchApps(sportAppsCategory.query, 0, 10)
                         .toCategoryBannerView(sportAppsCategory) ?: CategorySealedView.CategoryBannerView()
 
                     // push custom category view

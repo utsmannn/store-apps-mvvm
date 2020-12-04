@@ -13,7 +13,7 @@ class AppsRepositoryImpl(private val service: Services) : AppsRepository {
         return service.topList()
     }
 
-    override suspend fun getSearchApps(query: String, offset: Int): Aptoide {
-        return service.searchList(query, offset)
+    override suspend fun getSearchApps(query: String, offset: Int, limit: Int): Aptoide {
+        return service.searchList(query, offset, limit)
     }
 }
