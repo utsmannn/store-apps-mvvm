@@ -12,6 +12,7 @@ apply from: "$rootDir/dependencies/test.gradle"
 dependencies {
     implementation project(":libraries:abstraction")
     implementation project(":libraries:network")
+    implementation project(":libraries:expandaview")
 
     implementation project(":data")
 }

@@ -5,17 +5,17 @@
 
 package com.utsman.detail.ui
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.TextUtils
+import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.utsman.abstraction.dto.listenOn
-import com.utsman.abstraction.ext.loadUrl
-import com.utsman.abstraction.ext.loge
-import com.utsman.abstraction.ext.logi
-import com.utsman.abstraction.ext.stringExtras
+import com.utsman.abstraction.ext.*
 import com.utsman.abstraction.listener.IResultState
 import com.utsman.data.model.dto.detail.DetailView
 import com.utsman.detail.databinding.ActivityDetailBinding
@@ -55,14 +55,56 @@ class DetailActivity : AppCompatActivity() {
         txtTitle.text = data.name
         txtVersion.text = "Version ${data.appVersion.apiName}"
         txtDeveloper.text = data.developer.name
+        txtDesc.text = data.description
+
+        val size = data.file.size.bytesToString()
+        val isUpdate = data.appVersion.run {
+            code != 0L && apiCode > code
+        }
+
+        val isInstalled = data.appVersion.run {
+            apiCode == code
+        }
+
+        val downloadTitle = when {
+            isUpdate -> {
+                "Update ($size)"
+            }
+            isInstalled -> {
+                "Open"
+            }
+            else -> {
+                "Download ($size)"
+            }
+        }
+
+        btnDownload.text = downloadTitle
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        supportActionBar?.run {
+            setDisplayHomeAsUpEnabled(true)
+            title = ""
+        }
+
         viewModel.getDetailView(packageApps)
         viewModel.detailView.observe(this, Observer {
             it.listenOn(resultListener)
+            it.bindToProgressView(binding.layoutProgress, binding.parentView) {
+                viewModel.getDetailView(packageApps)
+            }
         })
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }
