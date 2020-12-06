@@ -29,4 +29,12 @@ class JsonBeautifier {
         return adapter.toJson(source)
     }
 
+    fun <T: Any>toAny(string: String): T {
+        val reader = JsonReader.of(buffer.writeUtf8(string))
+            .apply {
+                isLenient = true
+            }
+        return reader.readJsonValue() as T
+    }
+
 }

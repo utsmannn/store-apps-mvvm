@@ -10,7 +10,7 @@ import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import com.utsman.abstraction.databinding.InitialLoaderBinding
 import com.utsman.abstraction.databinding.ItemListLoaderBinding
-import com.utsman.abstraction.dto.ResultState
+import com.utsman.abstraction.interactor.ResultState
 
 fun ItemListLoaderBinding.initialLoadState(state: LoadState, retry: () -> Unit) = run {
     progressCircular.isVisible = state is LoadState.Loading

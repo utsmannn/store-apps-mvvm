@@ -23,20 +23,23 @@ dependencies {
     //noinspection LifecycleAnnotationProcessorWithJava8
     kapt 'androidx.lifecycle:lifecycle-compiler:2.2.0'
 
-    // fluent icon
-    implementation 'com.microsoft.design:fluent-system-icons:1.1.86'
-
     // paging3
     implementation 'androidx.paging:paging-runtime:3.0.0-alpha10'
 
     // work manager
     implementation 'androidx.work:work-runtime-ktx:2.4.0'
 
+    // data store
+    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha05"
+
     // retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.okhttp3:okhttp:4.2.2'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.2.1'
     implementation 'com.squareup.retrofit2:converter-moshi:2.4.0'
+
+    // fluent icon
+    implementation 'com.microsoft.design:fluent-system-icons:1.1.86'
 
     // glide
     implementation 'com.github.bumptech.glide:glide:4.11.0'

@@ -11,7 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
-import com.utsman.abstraction.dto.ResultState
+import com.utsman.abstraction.interactor.ResultState
 import java.util.*
 import kotlin.math.ln
 import kotlin.math.pow

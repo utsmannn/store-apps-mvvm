@@ -8,7 +8,7 @@ package com.utsman.home.viewmodel
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import androidx.paging.PagingData
-import com.utsman.abstraction.dto.ResultState
+import com.utsman.abstraction.interactor.ResultState
 import com.utsman.data.model.dto.list.AppsSealedView.AppsView
 import com.utsman.data.model.dto.list.CategorySealedView
 import com.utsman.home.domain.HomeUseCase

@@ -15,6 +15,7 @@ import kotlinx.coroutines.delay
 class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
     CoroutineWorker(context, workerParameters) {
 
+
     override suspend fun doWork(): Result {
         return try {
             val url = inputData.getString("file_url")
@@ -24,7 +25,7 @@ class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
             val dataDone = workDataOf("done" to true)
 
             setProgress(data1)
-            delay(6000)
+            delay(10000)
             setProgress(data2)
 
             logi("url is --> $url")

@@ -5,7 +5,7 @@
 
 package com.utsman.abstraction.listener
 
-interface IResultState<T: Any> {
+interface ResultStateListener<T: Any> {
     fun onIdle()
     fun onLoading()
     fun onSuccess(data: T)

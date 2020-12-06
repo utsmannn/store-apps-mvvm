@@ -5,28 +5,22 @@
 
 package com.utsman.detail.ui
 
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.Operation
-import androidx.work.WorkManager
-import androidx.work.workDataOf
-import com.utsman.abstraction.dto.listenOn
+import com.utsman.abstraction.interactor.listenOn
 import com.utsman.abstraction.ext.*
-import com.utsman.abstraction.listener.IResultState
+import com.utsman.abstraction.listener.ResultStateListener
 import com.utsman.data.model.dto.detail.DetailView
-import com.utsman.data.worker.DownloadAppWorker
+import com.utsman.data.model.dto.worker.WorkInfoResult
 import com.utsman.detail.databinding.ActivityDetailBinding
 import com.utsman.detail.viewmodel.DetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class DetailActivity : AppCompatActivity() {
@@ -35,9 +29,7 @@ class DetailActivity : AppCompatActivity() {
     private val packageApps by stringExtras("package_name")
     private val viewModel: DetailViewModel by viewModels()
 
-    @Inject lateinit var workManager: WorkManager
-
-    private val resultListener = object : IResultState<DetailView> {
+    private val resultListener = object : ResultStateListener<DetailView> {
         override fun onIdle() {
             logi("idle...")
         }
@@ -87,23 +79,39 @@ class DetailActivity : AppCompatActivity() {
         }
 
         btnDownload.setOnClickListener {
-            val workerId = viewModel.requestDownload(data.file.url, data.packageName)
-            viewModel.observerWorkInfo(workerId)
-                .observe(this@DetailActivity, Observer {
-                    val progress = it.progress.getString("data")
-                    val doneData = it.outputData.getBoolean("done", false)
-                    if (progress != null) btnDownload.text = progress
-
-                    logi("done data is -> $doneData")
-                    if (doneData) {
-                        viewModel.downloadIsComplete()
-                    }
-                })
+            viewModel.requestDownload(data.file.url, data.packageName)
         }
 
-        viewModel.checkIsDownloading(data.packageName).observe(this@DetailActivity, Observer {
-            val downloading = if (it) "Downloading..." else downloadTitle
-            btnDownload.text = downloading
+        viewModel.observerWorkInfo(packageApps)
+        viewModel.workStateResult.observe(this@DetailActivity, Observer { result ->
+            when (result) {
+                is WorkInfoResult.Stopped -> {
+                    btnDownload.text = downloadTitle
+                }
+                is WorkInfoResult.Waiting -> {
+                    btnDownload.text = "Waiting another download..."
+                }
+                is WorkInfoResult.Running -> {
+                    val workInfo = result.workData
+                    if (workInfo != null) {
+                        val progress = workInfo.progress.getString("data")
+                        val doneData = workInfo.outputData.getBoolean("done", false)
+                        if (progress != null) btnDownload.text = progress
+
+                        logi("done data is -> $doneData")
+
+                        if (doneData) {
+                            viewModel.markIsDownloadComplete()
+                            btnDownload.text = downloadTitle
+                        } else {
+                            btnDownload.text = "Downloading..."
+                        }
+
+                    } else {
+                        btnDownload.text = downloadTitle
+                    }
+                }
+            }
         })
     }
 
@@ -120,6 +128,7 @@ class DetailActivity : AppCompatActivity() {
             when (state) {
                 is Operation.State.IN_PROGRESS -> {
                     binding.txtDeveloper.text = "in progress"
+                    viewModel.markIsDownloadStart(packageApps)
                 }
                 is Operation.State.FAILURE -> {
                     val throwable = state.throwable

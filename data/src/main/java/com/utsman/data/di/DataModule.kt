@@ -11,8 +11,8 @@ import com.utsman.data.repository.list.*
 import com.utsman.data.repository.meta.MetaRepository
 import com.utsman.data.repository.meta.MetaRepositoryImpl
 import com.utsman.data.route.Services
+import com.utsman.data.store.CurrentWorkerPreferences
 import com.utsman.network.Network
-import dagger.BindsInstance
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,9 +32,14 @@ class DataModule {
     }
 
     @Provides
-    fun workManager(@ApplicationContext context: Context): WorkManager {
+    fun provideWorkManager(@ApplicationContext context: Context): WorkManager {
         return WorkManager.getInstance(context)
     }
+
+    @Provides
+    @Singleton
+    fun provideDataStore(@ApplicationContext context: Context) =
+        CurrentWorkerPreferences(context)
 
     @Provides
     @Singleton
@@ -53,7 +58,10 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun provideInstalledAppsRepository(@ApplicationContext context: Context, services: Services) : InstalledAppsRepository =
+    fun provideInstalledAppsRepository(
+        @ApplicationContext context: Context,
+        services: Services
+    ): InstalledAppsRepository =
         InstalledAppsRepositoryImpl(context, services)
 
     @Provides
