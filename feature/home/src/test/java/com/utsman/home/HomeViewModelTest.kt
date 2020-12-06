@@ -10,7 +10,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.paging.PagingData
 import com.nhaarman.mockitokotlin2.verify
-import com.utsman.abstraction.dto.ResultState
+import com.utsman.abstraction.interactor.ResultState
 import com.utsman.data.model.dto.list.AppsSealedView
 import com.utsman.data.model.dto.list.CategorySealedView
 import com.utsman.data.repository.list.*

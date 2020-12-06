@@ -6,10 +6,12 @@
 package com.utsman.data.di
 
 import android.content.Context
+import androidx.work.WorkManager
 import com.utsman.data.repository.list.*
 import com.utsman.data.repository.meta.MetaRepository
 import com.utsman.data.repository.meta.MetaRepositoryImpl
 import com.utsman.data.route.Services
+import com.utsman.data.store.CurrentWorkerPreferences
 import com.utsman.network.Network
 import dagger.Module
 import dagger.Provides
@@ -30,6 +32,16 @@ class DataModule {
     }
 
     @Provides
+    fun provideWorkManager(@ApplicationContext context: Context): WorkManager {
+        return WorkManager.getInstance(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDataStore(@ApplicationContext context: Context) =
+        CurrentWorkerPreferences(context)
+
+    @Provides
     @Singleton
     fun provideAppsRepository(services: Services): AppsRepository =
         AppsRepositoryImpl(services)
@@ -46,7 +58,10 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun provideInstalledAppsRepository(@ApplicationContext context: Context, services: Services) : InstalledAppsRepository =
+    fun provideInstalledAppsRepository(
+        @ApplicationContext context: Context,
+        services: Services
+    ): InstalledAppsRepository =
         InstalledAppsRepositoryImpl(context, services)
 
     @Provides

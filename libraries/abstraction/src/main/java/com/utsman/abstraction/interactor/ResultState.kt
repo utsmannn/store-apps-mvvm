@@ -3,7 +3,7 @@
  * Copyright (c) 2020 . All rights reserved.
  */
 
-package com.utsman.abstraction.dto
+package com.utsman.abstraction.interactor
 
 sealed class ResultState<T: Any>(val payload: T? = null, val throwable: Throwable? = null, val message: String? = null) {
     class Loading<T: Any> : ResultState<T>()

@@ -10,9 +10,9 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.utsman.abstraction.dto.ResultState
-import com.utsman.abstraction.dto.fetch
-import com.utsman.abstraction.dto.stateOf
+import com.utsman.abstraction.interactor.ResultState
+import com.utsman.abstraction.interactor.fetch
+import com.utsman.abstraction.interactor.stateOf
 import com.utsman.data.const.CategoriesApps
 import com.utsman.data.model.dto.list.AppsSealedView.AppsView
 import com.utsman.data.model.dto.list.CategorySealedView

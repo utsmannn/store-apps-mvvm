@@ -12,18 +12,18 @@ import retrofit2.http.Path
 
 interface Services {
 
-    @GET("/api/7/apps/get/offset={offset}/sort=downloads")
+    @GET("/api/7/apps/get/offset={offset}/sort=downloads/mature=false")
     suspend fun topList(
         @Path("offset") offset: Int = 0
     ): Aptoide
 
-    @GET("/api/7/apps/get/group_name={query}/offset={offset}/sort=downloads/limit=10")
+    @GET("/api/7/apps/get/group_name={query}/offset={offset}/sort=downloads/limit=10/mature=false")
     suspend fun groupList(
         @Path("query") query: String = "",
         @Path("offset") offset: Int = 0
     ): Aptoide
 
-    @GET("/api/7/apps/search/query={query}/offset={offset}/limit={limit}")
+    @GET("/api/7/apps/search/query={query}/offset={offset}/limit={limit}/mature=false")
     suspend fun searchList(
         @Path("query") query: String = "",
         @Path("offset") offset: Int = 0,

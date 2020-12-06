@@ -3,9 +3,9 @@
  * Copyright (c) 2020 . All rights reserved.
  */
 
-package com.utsman.abstraction.dto
+package com.utsman.abstraction.interactor
 
-import com.utsman.abstraction.listener.IResultState
+import com.utsman.abstraction.listener.ResultStateListener
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
@@ -23,11 +23,11 @@ fun <T: Any>stateOf(): MutableStateFlow<ResultState<T>> = run {
     MutableStateFlow(ResultState.Idle())
 }
 
-inline fun <reified T: Any>ResultState<T>.listenOn(iResultState: IResultState<T>) = run {
+inline fun <reified T: Any>ResultState<T>.listenOn(stateListener: ResultStateListener<T>) = run {
     when (this) {
-        is ResultState.Idle -> iResultState.onIdle()
-        is ResultState.Loading -> iResultState.onLoading()
-        is ResultState.Success -> iResultState.onSuccess(this.data)
-        is ResultState.Error -> iResultState.onError(this.th)
+        is ResultState.Idle -> stateListener.onIdle()
+        is ResultState.Loading -> stateListener.onLoading()
+        is ResultState.Success -> stateListener.onSuccess(this.data)
+        is ResultState.Error -> stateListener.onError(this.th)
     }
 }

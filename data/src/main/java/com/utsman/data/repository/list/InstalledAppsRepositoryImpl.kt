@@ -10,6 +10,7 @@ import android.content.pm.ApplicationInfo
 import com.utsman.abstraction.ext.logi
 import com.utsman.abstraction.ext.safeSingle
 import com.utsman.data.R
+import com.utsman.data.model.dto.detail.DetailView
 import com.utsman.data.model.response.list.AppsItem
 import com.utsman.data.model.dto.list.AppVersion
 import com.utsman.data.model.dto.list.AppsSealedView
@@ -112,6 +113,21 @@ class InstalledAppsRepositoryImpl @Inject constructor(
             return appsView
         } else {
             appsView
+        }
+    }
+
+    override suspend fun checkInstalledApps(detailView: DetailView): DetailView {
+        val appInstalledFound = installedAppsView.find { ap ->
+            ap.packageName == detailView.packageName
+        }
+        val version = appInstalledFound?.appVersion
+        return if (version != null || version != AppVersion()) {
+            detailView.apply {
+                appVersion.name = version?.name ?: ""
+                appVersion.code = version?.code ?: 0
+            }
+        } else {
+            detailView
         }
     }
 }

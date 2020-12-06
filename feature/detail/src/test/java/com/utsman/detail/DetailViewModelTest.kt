@@ -8,7 +8,7 @@ package com.utsman.detail
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.nhaarman.mockitokotlin2.verify
-import com.utsman.abstraction.dto.ResultState
+import com.utsman.abstraction.interactor.ResultState
 import com.utsman.data.model.dto.detail.DetailView
 import com.utsman.data.repository.meta.MetaRepository
 import com.utsman.data.repository.meta.MetaRepositoryImpl
