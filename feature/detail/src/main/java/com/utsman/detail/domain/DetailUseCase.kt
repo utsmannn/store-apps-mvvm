@@ -66,9 +66,9 @@ class DetailUseCase @Inject constructor(
             .collect { workInfo ->
                 offer(WorkInfoResult.Downloading(workInfo, packageName))
 
-                val doneData = workInfo.progress.getBoolean("done", false)
-                logi("done data is -> $doneData")
-                if (doneData) {
+                val progressData = workInfo.outputData.getBoolean("done", false)
+                logi("done data is -> $progressData")
+                if (progressData) {
                     preferences.removeApp(packageName)
                     offer(WorkInfoResult.Stopped())
                 }

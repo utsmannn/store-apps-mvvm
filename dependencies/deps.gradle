@@ -46,6 +46,7 @@ dependencies {
     implementation 'com.karumi:dexter:6.2.2'
 
     // fetch downloader
+    implementation "androidx.tonyodev.fetch2:xfetch2:3.1.5"
     implementation "androidx.tonyodev.fetch2okhttp:xfetch2okhttp:3.1.5"
 
     // fluent icon

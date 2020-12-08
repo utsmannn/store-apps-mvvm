@@ -12,11 +12,14 @@ import android.os.Environment
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.utsman.abstraction.ext.getUriFromFile
-import com.utsman.abstraction.ext.logi
-import com.utsman.abstraction.ext.toSumReadable
+import com.tonyodev.fetch2.*
+import com.tonyodev.fetch2core.DownloadBlock
+import com.tonyodev.fetch2core.FetchObserver
+import com.tonyodev.fetch2core.Reason
+import com.utsman.abstraction.ext.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collect
 import java.io.File
@@ -26,6 +29,15 @@ import kotlin.coroutines.suspendCoroutine
 class DownloadAppWorker(private val context: Context, workerParameters: WorkerParameters) :
     CoroutineWorker(context, workerParameters) {
 
+    companion object {
+        val IDLE = 0
+        val START = 1
+        val PROGRESS = 2
+        val CANCELED = 3
+        val WAITING = 4
+        val COMPLETE = 5
+    }
+
     private val downloadManager by lazy {
         context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
     }
@@ -33,6 +45,8 @@ class DownloadAppWorker(private val context: Context, workerParameters: WorkerPa
     private val filePath by lazy {
         File(Environment.getExternalStorageState(), "/apks")
     }
+
+    private val completeStateListener: MutableStateFlow<Int> = MutableStateFlow(IDLE)
 
     override suspend fun doWork(): Result {
 
@@ -49,88 +63,105 @@ class DownloadAppWorker(private val context: Context, workerParameters: WorkerPa
             delay(10000)
             Result.success()*/
             //downloadTask(this@DownloadAppWorker, GlobalScope)
-            Result.success()
+            //Result.success()
+            startDownload()
         } catch (e: Throwable) {
             Result.failure()
         }
     }
 
-    private suspend fun downloadTask(downloadAppWorker: DownloadAppWorker, coroutineScope: CoroutineScope) = suspendCoroutine<Result> {
-        var finished = false
-        var progress = 0L
+    private suspend fun startDownload() = suspendCancellableCoroutine<Result> { task ->
         val url = inputData.getString("file_url")
         val name = inputData.getString("name")
         val fileName = inputData.getString("file_name")
+        val doneData = workDataOf("done" to true)
 
-        logi("try make path")
-        if (!filePath.exists()) filePath.mkdir()
+        val downloadPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString()
+        val filePath = "/$fileName.apk"
+        val fileStringPath = "$downloadPath/$filePath"
 
-        //val fileDownloaded = File(filePath, "$fileName.apk")
-        logi("try get uri file")
-        //val uri = Uri.fromFile(fileDownloaded)
+        val configuration = FetchConfiguration.Builder(context)
+            .setDownloadConcurrentLimit(1)
+            .setNotificationManager(object : DefaultFetchNotificationManager(context) {
+                override fun getSubtitleText(
+                    context: Context,
+                    downloadNotification: DownloadNotification
+                ): String {
+                    return name ?: ""
+                }
 
-        val downloadRequest = DownloadManager.Request(Uri.parse(url)).apply {
-            setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-            setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, "$fileName.apk")
-            //setAllowedOverMetered(true)
-            setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_MOBILE)
-            setTitle("Downloading $name")
+                override fun getFetchInstanceForNamespace(namespace: String): Fetch {
+                    return Fetch.getDefaultInstance()
+                }
+
+            })
+            .createDownloadFileOnEnqueue(true)
+            .build()
+
+        val fetch = Fetch.getInstance(configuration)
+
+        suspend {
+            completeStateListener.collect {
+                logi("state is --> $it")
+            }
         }
 
-        val downloadId = downloadManager.enqueue(downloadRequest)
-        //it.resume(downloadId)
+        logi("try check url")
+        if (url != null) {
+            logi("try request build")
+            val request = Request(url, fileStringPath).apply {
+                priority = Priority.HIGH
+                networkType = NetworkType.ALL
 
-        if (!finished) {
-            val query = DownloadManager.Query().setFilterById(downloadId)
-            val cursor = downloadManager.query(query)
-            if (cursor.moveToFirst()) {
-                when (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
-                    DownloadManager.STATUS_FAILED -> {
-                        logi("failed ----")
-                        finished = true
-                        val doneData = workDataOf("done" to true)
-                        it.resume(Result.failure())
-                        //downloadAppWorker.setProgress(doneData)
-                        //coroutineScope.cancel()
-                    }
-                    DownloadManager.STATUS_PAUSED -> {
-                        logi("paused ----")
-                    }
-                    DownloadManager.STATUS_PENDING -> {
-                        logi("pending ----")
-                    }
-                    DownloadManager.STATUS_RUNNING -> {
-                        logi("running ----")
-                        val size =
-                            cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
-                       /* if (size > 0) {
-
-                        } else {
-                            logi("size is nol")
-                        }*/
-
-                        val downloadedSoFar =
-                            cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
-                        progress = (downloadedSoFar * 100L) / size
-                        logi("size: ${size.toSumReadable()} | downloaded: ${downloadedSoFar.toSumReadable()} | $progress %")
-                        val progressData = workDataOf("data" to progress)
-                        setProgressAsync(progressData)
-                        //downloadAppWorker.setProgress(progressData)
-                        //it.resume(Result.success())
-                    }
-                    DownloadManager.STATUS_SUCCESSFUL -> {
-                        logi("success ----")
-                        progress = 100
-                        finished = true
-                        val doneData = workDataOf("done" to true)
-                        //downloadAppWorker.setProgress(doneData)
-                        //coroutineScope.cancel()
-                        it.resume(Result.success())
-                    }
-                }
             }
 
-            //it.resume(Result.failure())
+            logi("try enqueue download")
+            fetch.enqueue(request)
+
+            fetch.attachFetchObserversForDownload(request.id, object : FetchObserver<Download> {
+                override fun onChanged(data: Download, reason: Reason) {
+                    val total = data.total
+                    val progress = data.progress
+                    val status = data.status
+                    logi("status === $status")
+                    val dataProgress = workDataOf(
+                        "total" to total,
+                        "progress" to progress
+                    )
+                    logi("progress is ---> $dataProgress")
+                    setProgressAsync(dataProgress)
+                    when (status) {
+                        Status.COMPLETED -> {
+                            if (task.isActive) {
+                                task.resume(Result.success(doneData))
+                            }
+                        }
+                        Status.CANCELLED -> {
+                            if (task.isActive) {
+                                task.resume(Result.failure(doneData))
+                            }
+                            fetch.delete(request.id)
+                        }
+                        Status.FAILED -> {
+                            val msg = data.error.throwable?.localizedMessage
+                            logi("message -> $msg")
+                            data.error.throwable?.printStackTrace()
+                            if (task.isActive) {
+                                task.resume(Result.failure(doneData))
+                            }
+                            fetch.delete(request.id)
+                        }
+                        else -> logi("status is -> $status")
+                    }
+                }
+
+            }).enqueue(request) { error ->
+                loge("error -------")
+                error.throwable?.printStackTrace()
+                if (task.isActive) {
+                    task.resume(Result.failure(doneData))
+                }
+            }
         }
     }
 }
