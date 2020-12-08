@@ -26,9 +26,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val homeFragment = HomeFragment()
-        val installedAppFragment = InstalledAppFragment()
+        //val installedAppFragment = InstalledAppFragment()
         val pagerAdapter = SimplePagerAdapter(supportFragmentManager).apply {
-            addFragment(installedAppFragment, homeFragment)
+            addFragment(homeFragment)
         }
 
         binding.run {

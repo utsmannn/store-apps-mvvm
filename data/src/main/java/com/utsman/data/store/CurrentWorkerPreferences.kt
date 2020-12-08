@@ -11,6 +11,10 @@ import androidx.datastore.preferences.core.preferencesKey
 import androidx.datastore.preferences.core.remove
 import androidx.datastore.preferences.createDataStore
 import com.utsman.abstraction.ext.logi
+import com.utsman.data.model.dto.worker.WorkerAppsMap
+import com.utsman.network.toAny
+import com.utsman.network.toAnyList
+import com.utsman.network.toJson
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import java.util.*
@@ -18,41 +22,34 @@ import javax.inject.Inject
 
 class CurrentWorkerPreferences @Inject constructor(context: Context) {
     private val name = "current_worker"
-    private val keyPackage = preferencesKey<String>("package")
-    private val keyUUID = preferencesKey<String>("uuid")
+    private val key = preferencesKey<String>("apps")
 
     private val dataStore = context.createDataStore(name = name)
 
-    val currentUUID = dataStore.data
+    val currentApps = dataStore.data
         .mapNotNull { pref ->
-            pref[keyUUID]
+            pref[key]?.toAnyList(WorkerAppsMap::class.java)
         }
 
-    val currentPackage = dataStore.data
-        .map { pref ->
-            pref[keyPackage] ?: ""
-        }
-
-    suspend fun saveUUID(uuid: UUID) = run {
+    suspend fun saveApp(workerAppsMap: WorkerAppsMap) = run {
         dataStore.edit { pref ->
-            pref[keyUUID] = uuid.toString()
+            val valueResult = pref[key]
+            val listResult = valueResult?.toAnyList(WorkerAppsMap::class.java)?.toMutableList() ?: mutableListOf()
+            listResult.distinctBy { it.packageName }
+            listResult.add(workerAppsMap)
+            val valueReturn = listResult.toJson()
+            pref[key] = valueReturn
         }
     }
 
-    suspend fun saveCurrentPackage(packageName: String) = run {
+    suspend fun removeApp(packageName: String) = run {
         dataStore.edit { pref ->
-            pref[keyPackage] = packageName
+            val valueResult = pref[key]
+            val listResult = valueResult?.toAnyList(WorkerAppsMap::class.java)?.toMutableList() ?: mutableListOf()
+            val foundItem = listResult.find { a -> a.packageName == packageName }
+            listResult.remove(foundItem)
+            val valueReturn = listResult.toJson()
+            pref[key] = valueReturn
         }
-    }
-
-    suspend fun clearCurrentPackage() = run {
-        dataStore.edit { pref ->
-            pref.remove(keyPackage)
-            pref.remove(keyUUID)
-        }
-    }
-
-    suspend fun testYa() = run {
-        logi("anjaaaayyyy")
     }
 }

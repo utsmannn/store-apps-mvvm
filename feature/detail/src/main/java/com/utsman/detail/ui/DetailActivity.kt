@@ -5,6 +5,7 @@
 
 package com.utsman.detail.ui
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.MenuItem
@@ -17,10 +18,13 @@ import com.utsman.abstraction.interactor.listenOn
 import com.utsman.abstraction.ext.*
 import com.utsman.abstraction.listener.ResultStateListener
 import com.utsman.data.model.dto.detail.DetailView
+import com.utsman.data.model.dto.worker.FileDownload
 import com.utsman.data.model.dto.worker.WorkInfoResult
 import com.utsman.detail.databinding.ActivityDetailBinding
 import com.utsman.detail.viewmodel.DetailViewModel
+import com.utsman.network.toJson
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 
 @AndroidEntryPoint
 class DetailActivity : AppCompatActivity() {
@@ -79,8 +83,30 @@ class DetailActivity : AppCompatActivity() {
         }
 
         btnDownload.setOnClickListener {
-            viewModel.requestDownload(data.file.url, data.packageName)
+            val permissions = listOf(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+
+            withPermissions(permissions) { _, deniedList ->
+                if (deniedList.isEmpty()) {
+                    val fileName = "${data.packageName}-${data.appVersion.apiCode}"
+                    val fileDownload = FileDownload.simple {
+                        this.name = data.name
+                        this.fileName = fileName
+                        this.packageName = data.packageName
+                        this.url = data.file.url
+                    }
+                    viewModel.requestDownload(fileDownload)
+                } else {
+                    toast("permission denied")
+                }
+            }
         }
+
+        viewModel.saveApps.observe(this@DetailActivity, Observer {
+            logi("hmmmm -> ${it.toJson()}")
+        })
 
         viewModel.observerWorkInfo(packageApps)
         viewModel.workStateResult.observe(this@DetailActivity, Observer { result ->
@@ -88,24 +114,14 @@ class DetailActivity : AppCompatActivity() {
                 is WorkInfoResult.Stopped -> {
                     btnDownload.text = downloadTitle
                 }
-                is WorkInfoResult.Waiting -> {
-                    btnDownload.text = "Waiting another download..."
-                }
-                is WorkInfoResult.Running -> {
+                is WorkInfoResult.Downloading -> {
                     val workInfo = result.workData
                     if (workInfo != null) {
                         val progress = workInfo.progress.getString("data")
                         val doneData = workInfo.outputData.getBoolean("done", false)
                         if (progress != null) btnDownload.text = progress
-
                         logi("done data is -> $doneData")
-
-                        if (doneData) {
-                            viewModel.markIsDownloadComplete()
-                            btnDownload.text = downloadTitle
-                        } else {
-                            btnDownload.text = "Downloading..."
-                        }
+                        btnDownload.text = "Downloading..."
 
                     } else {
                         btnDownload.text = downloadTitle
@@ -124,11 +140,10 @@ class DetailActivity : AppCompatActivity() {
         }
 
         viewModel.workerState.observe(this, Observer { state ->
-            logi("worker state is -> $state")
+            //logi("worker state is -> $state")
             when (state) {
                 is Operation.State.IN_PROGRESS -> {
                     binding.txtDeveloper.text = "in progress"
-                    viewModel.markIsDownloadStart(packageApps)
                 }
                 is Operation.State.FAILURE -> {
                     val throwable = state.throwable

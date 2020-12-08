@@ -5,6 +5,7 @@
 
 package com.utsman.data.di
 
+import android.app.DownloadManager
 import android.content.Context
 import androidx.work.WorkManager
 import com.utsman.data.repository.list.*
@@ -34,6 +35,11 @@ class DataModule {
     @Provides
     fun provideWorkManager(@ApplicationContext context: Context): WorkManager {
         return WorkManager.getInstance(context)
+    }
+
+    @Provides
+    fun downloadManager(@ApplicationContext context: Context): DownloadManager {
+        return context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
     }
 
     @Provides

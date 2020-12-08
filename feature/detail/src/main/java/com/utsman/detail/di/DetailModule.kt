@@ -8,6 +8,7 @@ package com.utsman.detail.di
 import androidx.work.WorkManager
 import com.utsman.data.repository.list.InstalledAppsRepository
 import com.utsman.data.repository.meta.MetaRepository
+import com.utsman.data.store.CurrentWorkerPreferences
 import com.utsman.detail.domain.DetailUseCase
 import dagger.Module
 import dagger.Provides
@@ -24,8 +25,9 @@ class DetailModule {
     fun provideDetailUseCase(
         metaRepository: MetaRepository,
         installedAppsRepository: InstalledAppsRepository,
-        workManager: WorkManager
+        workManager: WorkManager,
+        workerPreferences: CurrentWorkerPreferences
     ): DetailUseCase {
-        return DetailUseCase(metaRepository, installedAppsRepository, workManager)
+        return DetailUseCase(metaRepository, installedAppsRepository, workManager, workerPreferences)
     }
 }

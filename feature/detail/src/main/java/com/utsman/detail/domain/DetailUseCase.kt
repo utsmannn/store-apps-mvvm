@@ -13,7 +13,9 @@ import com.utsman.abstraction.interactor.stateOf
 import com.utsman.abstraction.ext.logi
 import com.utsman.data.model.dto.detail.DetailView
 import com.utsman.data.model.dto.detail.toDetailView
+import com.utsman.data.model.dto.worker.FileDownload
 import com.utsman.data.model.dto.worker.WorkInfoResult
+import com.utsman.data.model.dto.worker.WorkerAppsMap
 import com.utsman.data.repository.list.InstalledAppsRepository
 import com.utsman.data.repository.meta.MetaRepository
 import com.utsman.data.store.CurrentWorkerPreferences
@@ -29,13 +31,16 @@ import javax.inject.Inject
 class DetailUseCase @Inject constructor(
     private val metaRepository: MetaRepository,
     private val installedAppsRepository: InstalledAppsRepository,
-    private val workManager: WorkManager
+    private val workManager: WorkManager,
+    private val workerPreferences: CurrentWorkerPreferences
 ) {
 
     val detailView = stateOf<DetailView>()
     val workerState = MutableStateFlow<Operation.State?>(null)
 
     val workInfoState = MutableStateFlow<WorkInfoResult>(WorkInfoResult.Stopped())
+
+    val currentApps = workerPreferences.currentApps
 
     suspend fun getDetail(scope: CoroutineScope, packageName: String) = scope.launch {
         fetch {
@@ -52,97 +57,72 @@ class DetailUseCase @Inject constructor(
         packageName: String
     ): Flow<WorkInfoResult> = channelFlow {
         offer(WorkInfoResult.Stopped())
+        preferences.currentApps
+            .mapNotNull { i -> i.find { a -> a.packageName == packageName } }
+            .flatMapMerge { app ->
+                workManager.getWorkInfoByIdLiveData(UUID.fromString(app.uuid))
+                    .asFlow()
+            }
+            .collect { workInfo ->
+                offer(WorkInfoResult.Downloading(workInfo, packageName))
 
-        preferences.currentPackage
-            .collect { current ->
-                preferences.currentUUID.collect { uuid ->
-                    workManager.getWorkInfoByIdLiveData(UUID.fromString(uuid))
-                        .asFlow()
-                        .collect { workInfo ->
-                            when {
-                                current == packageName -> {
-                                    offer(WorkInfoResult.Running(workInfo, current))
-                                    val doneData = workInfo.outputData.getBoolean("done", false)
-                                    logi("done is ---> $doneData")
-                                    if (doneData) {
-                                        preferences.clearCurrentPackage()
-                                        offer(WorkInfoResult.Stopped())
-                                    }
-                                }
-                                current.isEmpty() -> {
-                                    logi("stopped")
-                                    offer(WorkInfoResult.Stopped())
-                                }
-                                else -> {
-                                    logi("waiting")
-                                    offer(WorkInfoResult.Waiting())
-                                }
-                            }
-                        }
+                val doneData = workInfo.progress.getBoolean("done", false)
+                logi("done data is -> $doneData")
+                if (doneData) {
+                    preferences.removeApp(packageName)
+                    offer(WorkInfoResult.Stopped())
                 }
             }
-
-        /*preferences.run {
-            var currentPackageValue = ""
-            currentPackage
-                .flatMapConcat {
-                    currentPackageValue = it
-                    currentUUID
-                }
-                .flatMapMerge {
-                    workManager.getWorkInfoByIdLiveData(UUID.fromString(it)).asFlow()
-                }
-                .collect {
-                    logi("current is -> || $currentPackageValue ||")
-                    offer(WorkInfoResult.Running(it, currentPackageValue))
-                    val doneData = it.outputData.getBoolean("done", false)
-                    logi("done is ---> $doneData")
-                    if (doneData) {
-                        clearCurrentPackage()
-                        offer(WorkInfoResult.Stopped())
-                    }
-                }
-        }*/
 
         awaitClose { cancel() }
     }
 
     suspend fun observerWorkInfoResult(
         scope: CoroutineScope,
-        preferences: CurrentWorkerPreferences,
         packageName: String
     ) = scope.launch {
-        flowWorkResultBuilder(preferences, packageName).collect {
+        flowWorkResultBuilder(workerPreferences, packageName).collect {
             workInfoState.value = it
         }
     }
 
-    fun requestDownload(
+    suspend fun requestDownload(
         scope: CoroutineScope,
-        store: CurrentWorkerPreferences,
-        url: String,
-        tag: String
-    ): UUID = run {
-        val inputData = workDataOf("file_url" to url)
+        file: FileDownload
+    ) = scope.launch {
+        val inputData = workDataOf(
+            "file_url" to file.url,
+            "name" to file.name,
+            "file_name" to file.fileName
+        )
         val worker = OneTimeWorkRequestBuilder<DownloadAppWorker>()
-            .addTag(tag)
+            .addTag(file.packageName ?: "")
             .setInputData(inputData)
             .build()
+
+        val workerAppsMap = WorkerAppsMap(
+            uuid = worker.id.toString(),
+            packageName = file.packageName ?: "",
+            name = file.name ?: ""
+        )
+        workerPreferences.saveApp(workerAppsMap)
 
         scope.launch {
             workManager.enqueue(worker)
                 .state
                 .asFlow()
                 .collect {
-                    /*when (it) {
-                        is Operation.State.IN_PROGRESS ->
-                    }*/
-                    logi("worker status -----> $it")
                     workerState.value = it
+                    logi("state is --> $it")
+                    when (it) {
+                        is Operation.State.FAILURE -> {
+                            file.packageName?.let { p ->
+                                workerPreferences.removeApp(p)
+                            }
+                        }
+                    }
                 }
         }
-
-        worker.id
     }
 
     fun restartState(scope: CoroutineScope) = scope.launch {
