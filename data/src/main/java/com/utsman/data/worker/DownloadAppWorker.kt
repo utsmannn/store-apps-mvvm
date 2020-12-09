@@ -5,10 +5,16 @@
 
 package com.utsman.data.worker
 
+import android.annotation.SuppressLint
 import android.app.DownloadManager
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Environment
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
@@ -17,11 +23,9 @@ import com.tonyodev.fetch2core.DownloadBlock
 import com.tonyodev.fetch2core.FetchObserver
 import com.tonyodev.fetch2core.Reason
 import com.utsman.abstraction.ext.*
+import com.utsman.data.R
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import java.io.File
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -30,40 +34,18 @@ class DownloadAppWorker(private val context: Context, workerParameters: WorkerPa
     CoroutineWorker(context, workerParameters) {
 
     companion object {
-        val IDLE = 0
-        val START = 1
-        val PROGRESS = 2
-        val CANCELED = 3
-        val WAITING = 4
-        val COMPLETE = 5
+        val ACTION_IDLE = 10
+        val ACTION_CANCEL = 20
+        val ACTION_PAUSE = 30
     }
 
-    private val downloadManager by lazy {
-        context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-    }
-
-    private val filePath by lazy {
-        File(Environment.getExternalStorageState(), "/apks")
-    }
-
-    private val completeStateListener: MutableStateFlow<Int> = MutableStateFlow(IDLE)
+    private val _stateAction: MutableStateFlow<Int> = MutableStateFlow(ACTION_IDLE)
+    private val stateAction: StateFlow<Int>
+        get() = _stateAction
 
     override suspend fun doWork(): Result {
 
         return try {
-            /*val task = downloadTask(this@DownloadAppWorker, GlobalScope)
-            //val aa = task
-
-            //logi("url is --> $url")
-            logi("taks -> $task")
-
-            setProgress(workDataOf("lah" to task))
-            delay(1000)
-            logi("result is success .............")
-            delay(10000)
-            Result.success()*/
-            //downloadTask(this@DownloadAppWorker, GlobalScope)
-            //Result.success()
             startDownload()
         } catch (e: Throwable) {
             Result.failure()
@@ -80,31 +62,39 @@ class DownloadAppWorker(private val context: Context, workerParameters: WorkerPa
         val filePath = "/$fileName.apk"
         val fileStringPath = "$downloadPath/$filePath"
 
+        val broadcastResult = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val data = intent?.dataString
+                logi("data is  ---> $data")
+            }
+        }
+
         val configuration = FetchConfiguration.Builder(context)
+            .setNamespace(name)
             .setDownloadConcurrentLimit(1)
-            .setNotificationManager(object : DefaultFetchNotificationManager(context) {
-                override fun getSubtitleText(
-                    context: Context,
-                    downloadNotification: DownloadNotification
-                ): String {
-                    return name ?: ""
-                }
-
-                override fun getFetchInstanceForNamespace(namespace: String): Fetch {
-                    return Fetch.getDefaultInstance()
-                }
-
-            })
             .createDownloadFileOnEnqueue(true)
             .build()
 
         val fetch = Fetch.getInstance(configuration)
 
-        suspend {
-            completeStateListener.collect {
-                logi("state is --> $it")
+
+        val intent = Intent(context, Class.forName("com.utsman.storeapps.MainActivity"))
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+        val notificationBuilder = NotificationCompat.Builder(context, "store_app")
+            .setSmallIcon(R.drawable.ic_fluent_arrow_download_16_filled)
+            .setContentIntent(pendingIntent)
+        val notificationManager = NotificationManagerCompat.from(context)
+
+        /*suspend {
+            stateAction.collect {
+                logi("state action is ----> $it")
             }
-        }
+
+            _stateAction.collect {
+                logi("state action from mutable is ----> $it")
+            }
+        }*/
+
 
         logi("try check url")
         if (url != null) {
@@ -123,15 +113,31 @@ class DownloadAppWorker(private val context: Context, workerParameters: WorkerPa
                     val total = data.total
                     val progress = data.progress
                     val status = data.status
-                    logi("status === $status")
                     val dataProgress = workDataOf(
                         "total" to total,
                         "progress" to progress
                     )
                     logi("progress is ---> $dataProgress")
+
+                    if (progress < 100) {
+                        notificationBuilder.run {
+                            setContentTitle(name)
+                            setProgress(100, progress, false)
+                        }
+                        notificationManager.notify(12, notificationBuilder.build())
+                    } else {
+                        notificationBuilder.run {
+                            setContentTitle("$name complete")
+                            setProgress(0, 0, false)
+                        }
+                        notificationManager.notify(12, notificationBuilder.build())
+                    }
+
+
                     setProgressAsync(dataProgress)
                     when (status) {
                         Status.COMPLETED -> {
+                            logi("complete")
                             if (task.isActive) {
                                 task.resume(Result.success(doneData))
                             }
@@ -140,12 +146,24 @@ class DownloadAppWorker(private val context: Context, workerParameters: WorkerPa
                             if (task.isActive) {
                                 task.resume(Result.failure(doneData))
                             }
+                            notificationBuilder.run {
+                                setContentTitle("$name cancel")
+                                setProgress(0, 0, false)
+                            }
+                            notificationManager.notify(12, notificationBuilder.build())
                             fetch.delete(request.id)
                         }
                         Status.FAILED -> {
                             val msg = data.error.throwable?.localizedMessage
                             logi("message -> $msg")
                             data.error.throwable?.printStackTrace()
+
+                            notificationBuilder.run {
+                                setContentTitle("$name failed")
+                                setProgress(0, 0, false)
+                            }
+                            notificationManager.notify(12, notificationBuilder.build())
+
                             if (task.isActive) {
                                 task.resume(Result.failure(doneData))
                             }
