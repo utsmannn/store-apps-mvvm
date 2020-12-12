@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.utsman.abstraction.base.PagingStateAdapter
 import com.utsman.abstraction.extensions.initialLoadState
 import com.utsman.listing.R
-import com.utsman.listing.databinding.ActivityListBinding
+import com.utsman.listing.databinding.LayoutRecyclerViewBinding
 import com.utsman.listing.ui.adapter.PagingListAdapter
 import com.utsman.listing.viewmodel.InstalledAppsViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,9 +23,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class InstalledAppFragment : Fragment(R.layout.activity_list) {
+class InstalledAppFragment : Fragment(R.layout.layout_recycler_view) {
 
-    private val binding: ActivityListBinding by viewBinding()
+    private val binding: LayoutRecyclerViewBinding by viewBinding()
     private val viewModel: InstalledAppsViewModel by viewModels()
 
     private val pagingListAdapter =
