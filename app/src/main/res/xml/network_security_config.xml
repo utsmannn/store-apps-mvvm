@@ -7,5 +7,6 @@
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">ws75.aptoide.com</domain>
         <domain includeSubdomains="true">pool.img.aptoide.com</domain>
+        <domain includeSubdomains="true">pool.apk.aptoide.com</domain>
     </domain-config>
 </network-security-config>

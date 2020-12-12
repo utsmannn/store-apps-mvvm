@@ -13,13 +13,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.Operation
 import com.utsman.abstraction.interactor.ResultState
 import com.utsman.data.model.dto.detail.DetailView
-import com.utsman.data.store.CurrentWorkerPreferences
+import com.utsman.data.model.dto.worker.FileDownload
+import com.utsman.data.model.dto.worker.WorkerAppsMap
 import com.utsman.detail.domain.DetailUseCase
 import kotlinx.coroutines.launch
 
 class DetailViewModel @ViewModelInject constructor(
-    private val detailUseCase: DetailUseCase,
-    private val workerPreferences: CurrentWorkerPreferences
+    private val detailUseCase: DetailUseCase
 ) :
     ViewModel() {
 
@@ -31,11 +31,8 @@ class DetailViewModel @ViewModelInject constructor(
     val workerState: LiveData<Operation.State?>
         get() = detailUseCase.workerState.asLiveData(viewModelScope.coroutineContext)
 
-    val checkAppIsDownload
-        get() = workerPreferences.currentPackage.asLiveData(viewModelScope.coroutineContext)
-
-    val checkWorkerId
-        get() = workerPreferences.currentUUID.asLiveData(viewModelScope.coroutineContext)
+    val saveApps: LiveData<List<WorkerAppsMap>>?
+        get() = detailUseCase.currentApps?.asLiveData(viewModelScope.coroutineContext)
 
     val workStateResult
         get() = detailUseCase.workInfoState.asLiveData(viewModelScope.coroutineContext)
@@ -44,23 +41,12 @@ class DetailViewModel @ViewModelInject constructor(
         detailUseCase.getDetail(this, packageName)
     }
 
-    fun requestDownload(fileUrl: String, packageName: String) = viewModelScope.launch {
-        val uuid =
-            detailUseCase.requestDownload(viewModelScope, workerPreferences, fileUrl, packageName)
-        workerPreferences.saveCurrentPackage(packageName)
-        workerPreferences.saveUUID(uuid)
+    fun requestDownload(fileDownload: FileDownload) = viewModelScope.launch {
+        detailUseCase.requestDownload(viewModelScope, fileDownload)
     }
 
     fun observerWorkInfo(packageName: String) = viewModelScope.launch {
-        detailUseCase.observerWorkInfoResult(this, workerPreferences, packageName)
-    }
-
-    fun markIsDownloadStart(packageName: String) = viewModelScope.launch {
-        workerPreferences.saveCurrentPackage(packageName)
-    }
-
-    fun markIsDownloadComplete() = viewModelScope.launch {
-        workerPreferences.clearCurrentPackage()
+        detailUseCase.observerWorkInfoResult(this, packageName)
     }
 
     fun restartState() = viewModelScope.launch {

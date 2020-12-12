@@ -6,8 +6,7 @@
 package com.utsman.network.interceptor
 
 import com.squareup.moshi.JsonEncodingException
-import com.utsman.abstraction.ext.logi
-import com.utsman.network.toJson
+import com.utsman.abstraction.extensions.logi
 import okhttp3.logging.HttpLoggingInterceptor
 
 class LogInterceptor : HttpLoggingInterceptor.Logger {

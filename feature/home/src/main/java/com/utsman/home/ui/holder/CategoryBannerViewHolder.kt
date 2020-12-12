@@ -8,8 +8,8 @@ package com.utsman.home.ui.holder
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.utsman.abstraction.ext.intentTo
-import com.utsman.abstraction.ext.loadUrl
+import com.utsman.abstraction.extensions.intentTo
+import com.utsman.abstraction.extensions.loadUrl
 import com.utsman.data.model.dto.list.CategorySealedView
 import com.utsman.home.databinding.ItemAppsCategoryBannerBinding
 import com.utsman.home.ui.adapter.AppsAdapter

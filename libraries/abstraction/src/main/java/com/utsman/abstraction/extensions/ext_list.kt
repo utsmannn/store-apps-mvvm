@@ -3,7 +3,7 @@
  * Copyright (c) 2020 . All rights reserved.
  */
 
-package com.utsman.abstraction.ext
+package com.utsman.abstraction.extensions
 
 fun <T> List<T>.safeSingle(): T? {
     return when (size) {

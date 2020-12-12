@@ -15,9 +15,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import com.utsman.abstraction.base.PagingStateAdapter
-import com.utsman.abstraction.ext.booleanExtras
-import com.utsman.abstraction.ext.initialLoadState
-import com.utsman.abstraction.ext.stringExtras
+import com.utsman.abstraction.extensions.booleanExtras
+import com.utsman.abstraction.extensions.initialLoadState
+import com.utsman.abstraction.extensions.stringExtras
 import com.utsman.listing.databinding.ActivityListBinding
 import com.utsman.listing.ui.adapter.PagingListAdapter
 import com.utsman.listing.viewmodel.PagingViewModel

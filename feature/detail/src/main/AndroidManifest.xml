@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Created by Muhammad Utsman on 28/11/20 3:54 PM
   ~ Copyright (c) 2020 . All rights reserved.
   -->
@@ -7,9 +6,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.utsman.detail">
 
-    <application>
-        <activity android:name=".ui.DetailActivity"/>
+    <application android:requestLegacyExternalStorage="true">
+        <activity android:name=".ui.DetailActivity" />
 
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.utsman.storeapps.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider" />
+        </provider>
     </application>
 
 </manifest>

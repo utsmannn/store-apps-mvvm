@@ -8,7 +8,7 @@ package com.utsman.listing.ui.adapter
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.utsman.abstraction.ext.inflate
+import com.utsman.abstraction.extensions.inflate
 import com.utsman.data.diffutil.AppsViewDiffUtil
 import com.utsman.data.model.dto.list.AppsSealedView.AppsView
 import com.utsman.listing.R

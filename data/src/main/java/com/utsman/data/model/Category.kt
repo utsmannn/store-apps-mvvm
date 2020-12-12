@@ -5,8 +5,7 @@
 
 package com.utsman.data.model
 
-import com.utsman.abstraction.ext.capital
-import java.util.*
+import com.utsman.abstraction.extensions.capital
 
 data class Category(
     var name: String = "",

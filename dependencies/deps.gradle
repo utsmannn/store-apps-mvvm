@@ -34,9 +34,20 @@ dependencies {
 
     // retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.okhttp3:okhttp:4.2.2'
+    implementation 'com.squareup.okhttp3:okhttp:4.7.2'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.2.1'
+
+    // moshi
     implementation 'com.squareup.retrofit2:converter-moshi:2.4.0'
+    implementation 'com.squareup.moshi:moshi-kotlin:1.11.0'
+    kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.11.0'
+
+    // dexter permission
+    implementation 'com.karumi:dexter:6.2.2'
+
+    // fetch downloader
+    implementation "androidx.tonyodev.fetch2:xfetch2:3.1.5"
+    implementation "androidx.tonyodev.fetch2okhttp:xfetch2okhttp:3.1.5"
 
     // fluent icon
     implementation 'com.microsoft.design:fluent-system-icons:1.1.86'

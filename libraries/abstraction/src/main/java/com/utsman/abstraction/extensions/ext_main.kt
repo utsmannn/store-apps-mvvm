@@ -5,10 +5,14 @@
 
 @file:Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 
-package com.utsman.abstraction.ext
+package com.utsman.abstraction.extensions
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
+import androidx.core.content.FileProvider
 import com.utsman.abstraction.BuildConfig
+import java.io.File
 
 fun loge(msg: String?) = Log.e("Store_Apps ---------", msg)
 fun logi(msg: String?, tag: String = "Store_Apps ---------") {
@@ -23,6 +27,10 @@ fun logi(msg: String?, tag: String = "Store_Apps ---------") {
         }
     }
 }
+
+
+fun Context.getUriFromFile(file: File): Uri =
+    FileProvider.getUriForFile(this, "com.utsman.storeapps.fileprovider", file)
 
 fun debug(action: () -> Unit) {
     if (BuildConfig.DEBUG) {

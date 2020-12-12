@@ -5,19 +5,23 @@
 
 package com.utsman.detail.domain
 
+import android.content.Context
 import androidx.lifecycle.asFlow
 import androidx.work.*
 import com.utsman.abstraction.interactor.ResultState
 import com.utsman.abstraction.interactor.fetch
 import com.utsman.abstraction.interactor.stateOf
-import com.utsman.abstraction.ext.logi
+import com.utsman.abstraction.extensions.logi
 import com.utsman.data.model.dto.detail.DetailView
 import com.utsman.data.model.dto.detail.toDetailView
+import com.utsman.data.model.dto.worker.FileDownload
 import com.utsman.data.model.dto.worker.WorkInfoResult
+import com.utsman.data.model.dto.worker.WorkerAppsMap
 import com.utsman.data.repository.list.InstalledAppsRepository
 import com.utsman.data.repository.meta.MetaRepository
-import com.utsman.data.store.CurrentWorkerPreferences
+import com.utsman.data.utils.DataStoreUtils
 import com.utsman.data.worker.DownloadAppWorker
+import com.utsman.network.toJson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
@@ -27,6 +31,7 @@ import java.util.*
 import javax.inject.Inject
 
 class DetailUseCase @Inject constructor(
+    context: Context,
     private val metaRepository: MetaRepository,
     private val installedAppsRepository: InstalledAppsRepository,
     private val workManager: WorkManager
@@ -34,8 +39,10 @@ class DetailUseCase @Inject constructor(
 
     val detailView = stateOf<DetailView>()
     val workerState = MutableStateFlow<Operation.State?>(null)
-
     val workInfoState = MutableStateFlow<WorkInfoResult>(WorkInfoResult.Stopped())
+
+    val currentApps
+        get() = DataStoreUtils.currentApps
 
     suspend fun getDetail(scope: CoroutineScope, packageName: String) = scope.launch {
         fetch {
@@ -48,101 +55,85 @@ class DetailUseCase @Inject constructor(
     }
 
     private suspend fun flowWorkResultBuilder(
-        preferences: CurrentWorkerPreferences,
-        packageName: String
+        packageName: String,
+        scope: CoroutineScope,
     ): Flow<WorkInfoResult> = channelFlow {
         offer(WorkInfoResult.Stopped())
 
-        preferences.currentPackage
-            .collect { current ->
-                preferences.currentUUID.collect { uuid ->
-                    workManager.getWorkInfoByIdLiveData(UUID.fromString(uuid))
-                        .asFlow()
-                        .collect { workInfo ->
-                            when {
-                                current == packageName -> {
-                                    offer(WorkInfoResult.Running(workInfo, current))
-                                    val doneData = workInfo.outputData.getBoolean("done", false)
-                                    logi("done is ---> $doneData")
-                                    if (doneData) {
-                                        preferences.clearCurrentPackage()
-                                        offer(WorkInfoResult.Stopped())
-                                    }
-                                }
-                                current.isEmpty() -> {
-                                    logi("stopped")
-                                    offer(WorkInfoResult.Stopped())
-                                }
-                                else -> {
-                                    logi("waiting")
-                                    offer(WorkInfoResult.Waiting())
-                                }
-                            }
-                        }
-                }
-            }
-
-        /*preferences.run {
-            var currentPackageValue = ""
-            currentPackage
-                .flatMapConcat {
-                    currentPackageValue = it
-                    currentUUID
-                }
-                .flatMapMerge {
-                    workManager.getWorkInfoByIdLiveData(UUID.fromString(it)).asFlow()
-                }
-                .collect {
-                    logi("current is -> || $currentPackageValue ||")
-                    offer(WorkInfoResult.Running(it, currentPackageValue))
-                    val doneData = it.outputData.getBoolean("done", false)
-                    logi("done is ---> $doneData")
-                    if (doneData) {
-                        clearCurrentPackage()
-                        offer(WorkInfoResult.Stopped())
+        logi("try observing uuid...")
+        scope.launch {
+            if (currentApps != null) {
+                currentApps!!
+                    .mapNotNull {
+                        it.find { a -> a.packageName == packageName }
                     }
-                }
-        }*/
+                    .flatMapMerge { app ->
+                        workManager.getWorkInfoByIdLiveData(UUID.fromString(app.uuid))
+                            .asFlow()
+                    }
+                    .collect { workInfo ->
+                        logi("work info in use case is -> $workInfo")
+
+                        offer(WorkInfoResult.Downloading(workInfo, packageName))
+                        if (workInfo != null) {
+                            val progressData = workInfo.outputData.getBoolean("done", false)
+                            logi("done data is -> $progressData")
+                            if (progressData) {
+                                offer(WorkInfoResult.Stopped())
+                            }
+                        } else {
+                            logi("work info is null")
+                            DataStoreUtils.removeApp(packageName)
+                            offer(WorkInfoResult.Stopped())
+                        }
+                    }
+            }
+        }
 
         awaitClose { cancel() }
     }
 
     suspend fun observerWorkInfoResult(
         scope: CoroutineScope,
-        preferences: CurrentWorkerPreferences,
         packageName: String
     ) = scope.launch {
-        flowWorkResultBuilder(preferences, packageName).collect {
+        flowWorkResultBuilder(packageName, scope).collect {
             workInfoState.value = it
         }
     }
 
-    fun requestDownload(
+    suspend fun requestDownload(
         scope: CoroutineScope,
-        store: CurrentWorkerPreferences,
-        url: String,
-        tag: String
-    ): UUID = run {
-        val inputData = workDataOf("file_url" to url)
+        file: FileDownload
+    ) = scope.launch {
+
+        val fileString = file.toJson()
+        val inputData = workDataOf("file" to fileString)
+
         val worker = OneTimeWorkRequestBuilder<DownloadAppWorker>()
-            .addTag(tag)
+            .addTag(file.packageName ?: "")
             .setInputData(inputData)
             .build()
+
+        val workerAppsMap = WorkerAppsMap(
+            packageName = file.packageName ?: "",
+            uuid = worker.id.toString(),
+            name = file.name ?: ""
+        )
+
+        DataStoreUtils.saveApp(workerAppsMap)
 
         scope.launch {
             workManager.enqueue(worker)
                 .state
                 .asFlow()
                 .collect {
-                    /*when (it) {
-                        is Operation.State.IN_PROGRESS ->
-                    }*/
-                    logi("worker status -----> $it")
+
+                    //observerWorkInfoResult(this, file.packageName ?: "")
                     workerState.value = it
+                    logi("state is --> $it")
                 }
         }
-
-        worker.id
     }
 
     fun restartState(scope: CoroutineScope) = scope.launch {

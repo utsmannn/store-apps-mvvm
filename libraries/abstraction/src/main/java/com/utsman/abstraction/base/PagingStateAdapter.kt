@@ -13,7 +13,7 @@ import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.utsman.abstraction.R
 import com.utsman.abstraction.databinding.ItemListLoaderBinding
-import com.utsman.abstraction.ext.inflate
+import com.utsman.abstraction.extensions.inflate
 
 class PagingStateAdapter(private val retry: () -> Unit) : LoadStateAdapter<PagingStateAdapter.PagingStateViewHolder>() {
 
