@@ -7,8 +7,8 @@ package com.utsman.data.repository.list
 
 import android.content.Context
 import android.content.pm.ApplicationInfo
-import com.utsman.abstraction.ext.logi
-import com.utsman.abstraction.ext.safeSingle
+import com.utsman.abstraction.extensions.logi
+import com.utsman.abstraction.extensions.safeSingle
 import com.utsman.data.R
 import com.utsman.data.model.dto.detail.DetailView
 import com.utsman.data.model.response.list.AppsItem

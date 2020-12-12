@@ -7,7 +7,7 @@ package com.utsman.home.ui.holder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.utsman.abstraction.ext.loadUrl
+import com.utsman.abstraction.extensions.loadUrl
 import com.utsman.data.model.dto.list.AppsSealedView
 import com.utsman.home.databinding.ItemAppsMiniBinding
 

@@ -8,10 +8,10 @@ package com.utsman.home.ui.holder
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import com.utsman.abstraction.ext.bytesToString
-import com.utsman.abstraction.ext.detailFor
-import com.utsman.abstraction.ext.loadRes
-import com.utsman.abstraction.ext.loadUrl
+import com.utsman.abstraction.extensions.bytesToString
+import com.utsman.abstraction.extensions.detailFor
+import com.utsman.abstraction.extensions.loadRes
+import com.utsman.abstraction.extensions.loadUrl
 import com.utsman.data.model.dto.list.AppsSealedView
 import com.utsman.home.databinding.ItemAppsBinding
 

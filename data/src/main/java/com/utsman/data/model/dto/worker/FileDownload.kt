@@ -6,6 +6,7 @@
 package com.utsman.data.model.dto.worker
 
 data class FileDownload(
+    var id: Int? = 0,
     var name: String? = "",
     var url: String? = "",
     var packageName: String? = "",

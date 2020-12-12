@@ -5,9 +5,9 @@
 
 package com.utsman.network
 
-import com.utsman.abstraction.dimanual.moduleOf
-import com.utsman.abstraction.ext.debug
-import com.utsman.network.di.moshi
+import com.utsman.abstraction.extensions.getValueOfSafety
+import com.utsman.abstraction.extensions.debug
+import com.utsman.network.di._moshi
 import com.utsman.network.interceptor.LogInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -21,7 +21,7 @@ object Network {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
-    private val moshiModule by moduleOf(moshi)
+    private val moshiModule by getValueOfSafety(_moshi)
 
     private fun okHttp() = OkHttpClient.Builder()
         .retryOnConnectionFailure(true)
@@ -37,7 +37,7 @@ object Network {
 
     fun builder(url: String): Retrofit = Retrofit.Builder()
         .baseUrl(url)
-        .addConverterFactory(MoshiConverterFactory.create(moshiModule))
+        .addConverterFactory(MoshiConverterFactory.create(moshiModule!!))
         .client(okHttp())
         .build()
 }

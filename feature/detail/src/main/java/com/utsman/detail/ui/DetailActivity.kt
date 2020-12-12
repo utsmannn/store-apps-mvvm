@@ -12,19 +12,23 @@ import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.datastore.preferences.core.preferencesKey
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.work.Operation
 import com.utsman.abstraction.interactor.listenOn
-import com.utsman.abstraction.ext.*
+import com.utsman.abstraction.extensions.*
 import com.utsman.abstraction.listener.ResultStateListener
+import com.utsman.data.di._dataStore
 import com.utsman.data.model.dto.detail.DetailView
 import com.utsman.data.model.dto.worker.FileDownload
 import com.utsman.data.model.dto.worker.WorkInfoResult
+import com.utsman.data.utils.DownloadUtils
 import com.utsman.detail.databinding.ActivityDetailBinding
 import com.utsman.detail.viewmodel.DetailViewModel
 import com.utsman.network.toJson
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.File
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class DetailActivity : AppCompatActivity() {
@@ -92,6 +96,7 @@ class DetailActivity : AppCompatActivity() {
                 if (deniedList.isEmpty()) {
                     val fileName = "${data.packageName}-${data.appVersion.apiCode}"
                     val fileDownload = FileDownload.simple {
+                        this.id = data.id
                         this.name = data.name
                         this.fileName = fileName
                         this.packageName = data.packageName
@@ -104,7 +109,7 @@ class DetailActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.saveApps.observe(this@DetailActivity, Observer {
+        viewModel.saveApps?.observe(this@DetailActivity, Observer {
             logi("hmmmm -> ${it.toJson()}")
         })
 
@@ -117,12 +122,26 @@ class DetailActivity : AppCompatActivity() {
                 is WorkInfoResult.Downloading -> {
                     val workInfo = result.workData
                     if (workInfo != null) {
-                        val progress = workInfo.progress.getString("data")
                         val doneData = workInfo.outputData.getBoolean("done", false)
-                        if (progress != null) btnDownload.text = progress
-                        logi("done data is -> $doneData")
-                        btnDownload.text = "Downloading..."
+                        val dataString = workInfo.progress.getString("data")
+                        val fileObserver =
+                            DownloadUtils.FileSizeObserver.convertFromString(dataString)
 
+                        if (fileObserver != null) {
+                            val progress = fileObserver.sizeReadable.progress
+                            val total = fileObserver.sizeReadable.total
+                            val soFar = fileObserver.sizeReadable.soFar
+
+                            val textInButton = if (fileObserver.total <= 0) {
+                                "Preparing download..."
+                            } else {
+                                "$soFar / $total ($progress)"
+                            }
+
+                            btnDownload.text = textInButton
+                        }
+
+                        logi("done data is -> $doneData")
                     } else {
                         btnDownload.text = downloadTitle
                     }
@@ -140,7 +159,6 @@ class DetailActivity : AppCompatActivity() {
         }
 
         viewModel.workerState.observe(this, Observer { state ->
-            //logi("worker state is -> $state")
             when (state) {
                 is Operation.State.IN_PROGRESS -> {
                     binding.txtDeveloper.text = "in progress"
@@ -173,4 +191,5 @@ class DetailActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
 }

@@ -11,9 +11,8 @@ import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
 import androidx.appcompat.app.AppCompatActivity
 import com.utsman.abstraction.base.SimplePagerAdapter
-import com.utsman.abstraction.ext.intentTo
+import com.utsman.abstraction.extensions.intentTo
 import com.utsman.home.ui.HomeFragment
-import com.utsman.listing.ui.fragment.InstalledAppFragment
 import com.utsman.storeapps.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 

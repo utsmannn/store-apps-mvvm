@@ -12,7 +12,6 @@ import com.utsman.data.repository.list.*
 import com.utsman.data.repository.meta.MetaRepository
 import com.utsman.data.repository.meta.MetaRepositoryImpl
 import com.utsman.data.route.Services
-import com.utsman.data.store.CurrentWorkerPreferences
 import com.utsman.network.Network
 import dagger.Module
 import dagger.Provides
@@ -42,10 +41,10 @@ class DataModule {
         return context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
     }
 
-    @Provides
+    /*@Provides
     @Singleton
     fun provideDataStore(@ApplicationContext context: Context) =
-        CurrentWorkerPreferences(context)
+        CurrentWorkerPreferences(context)*/
 
     @Provides
     @Singleton

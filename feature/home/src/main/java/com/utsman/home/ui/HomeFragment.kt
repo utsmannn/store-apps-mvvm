@@ -14,7 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.utsman.abstraction.base.PagingStateAdapter
-import com.utsman.abstraction.ext.initialLoadState
+import com.utsman.abstraction.extensions.initialLoadState
 import com.utsman.home.R
 import com.utsman.home.databinding.FragmentHomeBinding
 import com.utsman.home.ui.adapter.CategoryAdapter

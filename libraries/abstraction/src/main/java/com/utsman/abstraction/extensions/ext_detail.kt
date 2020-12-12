@@ -3,7 +3,7 @@
  * Copyright (c) 2020 . All rights reserved.
  */
 
-package com.utsman.abstraction.ext
+package com.utsman.abstraction.extensions
 
 import android.view.View
 

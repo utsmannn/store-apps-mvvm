@@ -15,5 +15,9 @@ data class WorkerAppsMap(
     @Json(name = "uuid")
     val uuid: String,
     @Json(name = "name")
-    val name: String
+    val name: String,
+    @Json(name = "is_run")
+    var isRun: Boolean = false,
+    @Json(name = "download_id")
+    var downloadId: Long? = null
 )

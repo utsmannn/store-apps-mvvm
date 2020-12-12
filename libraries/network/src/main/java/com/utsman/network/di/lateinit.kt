@@ -6,8 +6,16 @@
 package com.utsman.network.di
 
 import com.squareup.moshi.Moshi
-import com.utsman.abstraction.dimanual.Module
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.utsman.network.utils.JsonBeautifier
+import kotlinx.coroutines.flow.MutableStateFlow
 
-lateinit var moshi: Module<Moshi>
-lateinit var jsonBeautifier: Module<JsonBeautifier>
+val _moshi: MutableStateFlow<Moshi?> = MutableStateFlow(null)
+val _jsonBeautifier: MutableStateFlow<JsonBeautifier?> = MutableStateFlow(null)
+
+fun provideMoshi(): Moshi = Moshi
+    .Builder()
+    .add(KotlinJsonAdapterFactory())
+    .build()
+
+fun provideJsonBeautifier() = JsonBeautifier()

@@ -15,7 +15,6 @@ import com.utsman.abstraction.interactor.ResultState
 import com.utsman.data.model.dto.detail.DetailView
 import com.utsman.data.model.dto.worker.FileDownload
 import com.utsman.data.model.dto.worker.WorkerAppsMap
-import com.utsman.data.store.CurrentWorkerPreferences
 import com.utsman.detail.domain.DetailUseCase
 import kotlinx.coroutines.launch
 
@@ -32,8 +31,8 @@ class DetailViewModel @ViewModelInject constructor(
     val workerState: LiveData<Operation.State?>
         get() = detailUseCase.workerState.asLiveData(viewModelScope.coroutineContext)
 
-    val saveApps: LiveData<List<WorkerAppsMap>>
-        get() = detailUseCase.currentApps.asLiveData(viewModelScope.coroutineContext)
+    val saveApps: LiveData<List<WorkerAppsMap>>?
+        get() = detailUseCase.currentApps?.asLiveData(viewModelScope.coroutineContext)
 
     val workStateResult
         get() = detailUseCase.workInfoState.asLiveData(viewModelScope.coroutineContext)

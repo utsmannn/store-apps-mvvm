@@ -5,19 +5,22 @@
 
 package com.utsman.network
 
-import com.utsman.network.di.jsonBeautifier
+import com.utsman.abstraction.extensions.getValueOfSafety
+import com.utsman.network.di._jsonBeautifier
+
+private val jsonBeauty by getValueOfSafety(_jsonBeautifier)
 
 fun Any.toJson(): String {
     return when (this) {
-        is String -> jsonBeautifier.data.fromString(this)
-        else -> jsonBeautifier.data.fromAny(this, Any::class.java)
+        is String -> jsonBeauty?.fromString(this) ?: ""
+        else -> jsonBeauty?.fromAny(this, Any::class.java) ?: ""
     }
 }
 
 fun <T: Any>String.toAny(type: Class<T>): T? {
-    return jsonBeautifier.data.toAny(this, type)
+    return jsonBeauty?.toAny(this, type)
 }
 
 fun <T: Any>String.toAnyList(type: Class<T>): List<T>? {
-    return jsonBeautifier.data.toAnyList(this, type)
+    return jsonBeauty?.toAnyList(this, type)
 }

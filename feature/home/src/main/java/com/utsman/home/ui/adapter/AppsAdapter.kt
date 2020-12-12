@@ -7,7 +7,7 @@ package com.utsman.home.ui.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.utsman.abstraction.ext.inflate
+import com.utsman.abstraction.extensions.inflate
 import com.utsman.data.model.dto.list.AppsSealedView
 import com.utsman.data.model.dto.list.AppsSealedView.AppsBannerView
 import com.utsman.data.model.dto.list.AppsSealedView.AppsView

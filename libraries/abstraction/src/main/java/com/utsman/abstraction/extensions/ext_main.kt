@@ -5,7 +5,7 @@
 
 @file:Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 
-package com.utsman.abstraction.ext
+package com.utsman.abstraction.extensions
 
 import android.content.Context
 import android.net.Uri

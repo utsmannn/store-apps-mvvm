@@ -12,8 +12,9 @@ import android.content.Context
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import com.utsman.abstraction.base.GlideApp
-import com.utsman.network.di.jsonBeautifier
-import com.utsman.network.di.moshi
+import com.utsman.data.di.*
+import com.utsman.network.di._jsonBeautifier
+import com.utsman.network.di._moshi
 import com.utsman.network.di.provideJsonBeautifier
 import com.utsman.network.di.provideMoshi
 import dagger.hilt.android.HiltAndroidApp
@@ -27,8 +28,11 @@ class MainApplication : Application() {
         createNotificationChannel()
 
         // provide manual di
-        moshi = provideMoshi()
-        jsonBeautifier = provideJsonBeautifier()
+        _moshi.value = provideMoshi()
+        _jsonBeautifier.value = provideJsonBeautifier()
+        _context.value = this
+        _dataStore.value = provideDataStore(this)
+        _downloadManager.value = provideDownloadManager(this)
     }
 
     override fun onLowMemory() {
