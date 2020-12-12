@@ -29,6 +29,11 @@ dependencies {
     // work manager
     implementation 'androidx.work:work-runtime-ktx:2.4.0'
 
+    // room
+    implementation 'androidx.room:room-runtime:2.2.5'
+    implementation 'androidx.room:room-ktx:2.2.5'
+    kapt 'androidx.room:room-compiler:2.2.5'
+
     // data store
     implementation "androidx.datastore:datastore-preferences:1.0.0-alpha05"
 
@@ -44,10 +49,6 @@ dependencies {
 
     // dexter permission
     implementation 'com.karumi:dexter:6.2.2'
-
-    // fetch downloader
-    implementation "androidx.tonyodev.fetch2:xfetch2:3.1.5"
-    implementation "androidx.tonyodev.fetch2okhttp:xfetch2okhttp:3.1.5"
 
     // fluent icon
     implementation 'com.microsoft.design:fluent-system-icons:1.1.86'

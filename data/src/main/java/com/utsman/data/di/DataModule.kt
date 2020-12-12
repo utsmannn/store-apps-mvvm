@@ -7,11 +7,15 @@ package com.utsman.data.di
 
 import android.app.DownloadManager
 import android.content.Context
+import androidx.room.Room
 import androidx.work.WorkManager
+import com.utsman.data.dao.CurrentDownloadDao
+import com.utsman.data.database.CurrentDownloadDatabase
 import com.utsman.data.repository.list.*
 import com.utsman.data.repository.meta.MetaRepository
 import com.utsman.data.repository.meta.MetaRepositoryImpl
 import com.utsman.data.route.Services
+import com.utsman.data.utils.CurrentDownloadHelper
 import com.utsman.network.Network
 import dagger.Module
 import dagger.Provides
@@ -41,10 +45,24 @@ class DataModule {
         return context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
     }
 
-    /*@Provides
+    @Provides
+    fun provideCurrentDownloadDao(currentDownloadDatabase: CurrentDownloadDatabase): CurrentDownloadDao {
+        return currentDownloadDatabase.currentDownloadDao()
+    }
+
+    @Provides
     @Singleton
-    fun provideDataStore(@ApplicationContext context: Context) =
-        CurrentWorkerPreferences(context)*/
+    fun provideCurrentDownloadDatabase(@ApplicationContext context: Context): CurrentDownloadDatabase {
+        return Room
+            .databaseBuilder(context, CurrentDownloadDatabase::class.java, "download")
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCurrentDownloadHelper(currentDownloadDao: CurrentDownloadDao): CurrentDownloadHelper {
+        return CurrentDownloadHelper(currentDownloadDao)
+    }
 
     @Provides
     @Singleton

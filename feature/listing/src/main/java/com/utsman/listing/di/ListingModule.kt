@@ -5,8 +5,12 @@
 
 package com.utsman.listing.di
 
+import androidx.work.WorkManager
+import com.utsman.data.dao.CurrentDownloadDao
 import com.utsman.data.repository.list.InstalledAppsRepository
 import com.utsman.data.repository.list.PagingAppRepository
+import com.utsman.data.utils.CurrentDownloadHelper
+import com.utsman.listing.domain.DownloadedUseCase
 import com.utsman.listing.domain.InstalledAppUseCase
 import com.utsman.listing.domain.PagingUseCase
 import dagger.Module
@@ -29,5 +33,11 @@ class ListingModule {
     @Singleton
     fun provideInstalledAppUseCase(installedAppsRepository: InstalledAppsRepository): InstalledAppUseCase {
         return InstalledAppUseCase(installedAppsRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDownloadedUseCase(workManager: WorkManager, currentDownloadHelper: CurrentDownloadHelper): DownloadedUseCase {
+        return DownloadedUseCase(workManager, currentDownloadHelper)
     }
 }

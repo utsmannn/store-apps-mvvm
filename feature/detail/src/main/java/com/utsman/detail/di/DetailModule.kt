@@ -24,11 +24,10 @@ class DetailModule {
     @Provides
     @Singleton
     fun provideDetailUseCase(
-        @ApplicationContext context: Context,
         metaRepository: MetaRepository,
         installedAppsRepository: InstalledAppsRepository,
         workManager: WorkManager
     ): DetailUseCase {
-        return DetailUseCase(context, metaRepository, installedAppsRepository, workManager)
+        return DetailUseCase(metaRepository, installedAppsRepository, workManager)
     }
 }

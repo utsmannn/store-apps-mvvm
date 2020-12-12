@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.utsman.abstraction.base.SimplePagerAdapter
 import com.utsman.abstraction.extensions.intentTo
 import com.utsman.home.ui.HomeFragment
+import com.utsman.listing.ui.fragment.DownloadedFragment
 import com.utsman.storeapps.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,9 +26,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val homeFragment = HomeFragment()
+        val downloadedApps = DownloadedFragment()
         //val installedAppFragment = InstalledAppFragment()
+
         val pagerAdapter = SimplePagerAdapter(supportFragmentManager).apply {
-            addFragment(homeFragment)
+            addFragment(homeFragment, downloadedApps)
         }
 
         binding.run {

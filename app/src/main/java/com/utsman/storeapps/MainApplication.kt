@@ -6,21 +6,31 @@
 package com.utsman.storeapps
 
 import android.app.Application
+import android.app.DownloadManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import com.utsman.abstraction.base.GlideApp
+import com.utsman.data.dao.CurrentDownloadDao
 import com.utsman.data.di.*
+import com.utsman.data.utils.CurrentDownloadHelper
 import com.utsman.network.di._jsonBeautifier
 import com.utsman.network.di._moshi
 import com.utsman.network.di.provideJsonBeautifier
 import com.utsman.network.di.provideMoshi
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
 @HiltAndroidApp
 class MainApplication : Application() {
+
+    @Inject
+    lateinit var currentDownloadHelper: CurrentDownloadHelper
+
+    @Inject
+    lateinit var downloadManager: DownloadManager
 
     override fun onCreate() {
         super.onCreate()
@@ -32,7 +42,8 @@ class MainApplication : Application() {
         _jsonBeautifier.value = provideJsonBeautifier()
         _context.value = this
         _dataStore.value = provideDataStore(this)
-        _downloadManager.value = provideDownloadManager(this)
+        _downloadManager.value = downloadManager
+        _currentDownloadHelper.value = currentDownloadHelper
     }
 
     override fun onLowMemory() {

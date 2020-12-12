@@ -19,6 +19,7 @@ import androidx.work.Operation
 import com.utsman.abstraction.interactor.listenOn
 import com.utsman.abstraction.extensions.*
 import com.utsman.abstraction.listener.ResultStateListener
+import com.utsman.data.di._currentDownloadHelper
 import com.utsman.data.di._dataStore
 import com.utsman.data.model.dto.detail.DetailView
 import com.utsman.data.model.dto.worker.FileDownload
@@ -28,6 +29,7 @@ import com.utsman.detail.databinding.ActivityDetailBinding
 import com.utsman.detail.viewmodel.DetailViewModel
 import com.utsman.network.toJson
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -36,6 +38,8 @@ class DetailActivity : AppCompatActivity() {
     private val binding: ActivityDetailBinding by viewBinding()
     private val packageApps by stringExtras("package_name")
     private val viewModel: DetailViewModel by viewModels()
+
+    private val databaseHelper = getValueOf(_currentDownloadHelper)
 
     private val resultListener = object : ResultStateListener<DetailView> {
         override fun onIdle() {
@@ -87,31 +91,32 @@ class DetailActivity : AppCompatActivity() {
         }
 
         btnDownload.setOnClickListener {
-            val permissions = listOf(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            )
+            if (isInstalled) {
+                // open app
+            } else {
+                // download
+                val permissions = listOf(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                )
 
-            withPermissions(permissions) { _, deniedList ->
-                if (deniedList.isEmpty()) {
-                    val fileName = "${data.packageName}-${data.appVersion.apiCode}"
-                    val fileDownload = FileDownload.simple {
-                        this.id = data.id
-                        this.name = data.name
-                        this.fileName = fileName
-                        this.packageName = data.packageName
-                        this.url = data.file.url
+                withPermissions(permissions) { _, deniedList ->
+                    if (deniedList.isEmpty()) {
+                        val fileName = "${data.packageName}-${data.appVersion.apiCode}"
+                        val fileDownload = FileDownload.simple {
+                            this.id = data.id
+                            this.name = data.name
+                            this.fileName = fileName
+                            this.packageName = data.packageName
+                            this.url = data.file.url
+                        }
+                        viewModel.requestDownload(fileDownload)
+                    } else {
+                        toast("permission denied")
                     }
-                    viewModel.requestDownload(fileDownload)
-                } else {
-                    toast("permission denied")
                 }
             }
         }
-
-        viewModel.saveApps?.observe(this@DetailActivity, Observer {
-            logi("hmmmm -> ${it.toJson()}")
-        })
 
         viewModel.observerWorkInfo(packageApps)
         viewModel.workStateResult.observe(this@DetailActivity, Observer { result ->
@@ -148,6 +153,12 @@ class DetailActivity : AppCompatActivity() {
                 }
             }
         })
+
+        lifecycleScope.launch {
+            databaseHelper?.getCurrentAppsFlow()?.collect { apps ->
+                logi("current apps -> $apps")
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

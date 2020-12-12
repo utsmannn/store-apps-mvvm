@@ -10,9 +10,10 @@ import android.database.Cursor
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import com.utsman.abstraction.extensions.getValueOf
 import com.utsman.abstraction.extensions.logi
+import com.utsman.data.di._currentDownloadHelper
 import com.utsman.data.model.dto.worker.FileDownload
-import com.utsman.data.utils.DataStoreUtils
 import com.utsman.data.utils.DownloadUtils
 import com.utsman.network.toAny
 import kotlinx.coroutines.*
@@ -28,6 +29,7 @@ class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
     private var finished = false
     private var progress = 0L
     private val doneData = workDataOf("done" to true)
+    private val databaseHelper = getValueOf(_currentDownloadHelper)
 
     @InternalCoroutinesApi
     override suspend fun doWork() = withContext(Dispatchers.IO) {
@@ -43,13 +45,13 @@ class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
             logi("file is ----> $file")
             val packageName = file?.packageName
 
-            val downloadIdSaved = DataStoreUtils.getDownloadId(packageName)
-            if (downloadIdSaved != null && DataStoreUtils.checkIsRun(packageName)) {
+            val downloadIdSaved = databaseHelper?.getDownloadId(packageName)
+            if (downloadIdSaved != null && databaseHelper?.checkIsRun(packageName) == true) {
                 task.observingDownload(downloadIdSaved, packageName)
             } else {
                 val downloadId = DownloadUtils.startDownload(file)
 
-                DataStoreUtils.markIsRun(packageName, downloadId)
+                databaseHelper?.markIsRun(this, packageName, downloadId)
                 task.observingDownload(downloadId, packageName)
             }
         }
@@ -65,7 +67,7 @@ class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
         DownloadUtils.setDownloadListener(downloadId, object : DownloadUtils.DownloadListener {
             override suspend fun onSuccess(cursor: Cursor) {
                 logi("success....")
-                DataStoreUtils.removeApp(packageName)
+                databaseHelper?.removeApp(packageName)
 
                 progress = 100
                 finished = true
@@ -86,8 +88,6 @@ class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
                 val soFar = fileSizeObserver.sizeReadable.soFar
                 val progress = fileSizeObserver.sizeReadable.progress
 
-                logi("size: $size | downloaded: $soFar | $progress")
-
                 val progressData = workDataOf(
                     "progress" to fileSizeObserver.progress,
                     "data" to fileSizeObserver.convertToString()
@@ -105,7 +105,7 @@ class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
 
             override suspend fun onFailed(cursor: Cursor) {
                 logi("failed...")
-                DataStoreUtils.removeApp(packageName)
+                databaseHelper?.removeApp(packageName)
 
                 finished = true
                 if (task.isActive) {
@@ -117,7 +117,7 @@ class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
 
             override suspend fun onCancel() {
                 logi("cancel....")
-                DataStoreUtils.removeApp(packageName)
+                databaseHelper?.removeApp(packageName)
 
                 progress = 100
                 finished = true

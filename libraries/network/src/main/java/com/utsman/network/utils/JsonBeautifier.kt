@@ -5,6 +5,7 @@
 
 package com.utsman.network.utils
 
+import com.squareup.moshi.JsonEncodingException
 import com.squareup.moshi.JsonReader
 import com.squareup.moshi.Types
 import com.utsman.abstraction.extensions.getValueOfSafety
@@ -22,8 +23,12 @@ class JsonBeautifier {
             .apply {
                 isLenient = true
             }
-        val data = reader.readJsonValue()
-        return adapter?.toJson(data) ?: ""
+        return try {
+            val data = reader.readJsonValue()
+            adapter?.toJson(data) ?: ""
+        } catch (e: JsonEncodingException) {
+            ""
+        }
     }
 
     fun <T: Any>fromAny(source: Any, type: Class<T>): String {

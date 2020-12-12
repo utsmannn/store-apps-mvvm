@@ -74,7 +74,6 @@ object DownloadUtils {
                         this.progress = progress
                     }
 
-                    logi("anjay ----> ${fileSizeObserver.sizeReadable}")
                     listener.onRunning(cursor, fileSizeObserver)
                 }
                 DownloadManager.STATUS_PAUSED -> {
