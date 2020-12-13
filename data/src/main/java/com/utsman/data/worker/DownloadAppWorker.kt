@@ -68,6 +68,9 @@ class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
             override suspend fun onSuccess(cursor: Cursor) {
                 logi("success....")
                 databaseHelper?.removeApp(packageName)
+                val statusString = "Success"
+                val progressData = workDataOf("status_string" to statusString)
+                setProgress(progressData)
 
                 progress = 100
                 finished = true
@@ -88,23 +91,35 @@ class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
                 val soFar = fileSizeObserver.sizeReadable.soFar
                 val progress = fileSizeObserver.sizeReadable.progress
 
+                val statusString = "$soFar downloaded of $size ($progress)"
+
                 val progressData = workDataOf(
                     "progress" to fileSizeObserver.progress,
-                    "data" to fileSizeObserver.convertToString()
+                    "data" to fileSizeObserver.convertToString(),
+                    "status_string" to statusString
                 )
                 setProgress(progressData)
             }
 
             override suspend fun onPaused(cursor: Cursor) {
                 logi("paused....")
+                val statusString = "Paused"
+                val progressData = workDataOf("status_string" to statusString)
+                setProgress(progressData)
             }
 
             override suspend fun onPending(cursor: Cursor) {
                 logi("pending...")
+                val statusString = "Pending..."
+                val progressData = workDataOf("status_string" to statusString)
+                setProgress(progressData)
             }
 
             override suspend fun onFailed(cursor: Cursor) {
                 logi("failed...")
+                val statusString = "Failed"
+                val progressData = workDataOf("status_string" to statusString)
+                setProgress(progressData)
                 databaseHelper?.removeApp(packageName)
 
                 finished = true
@@ -117,7 +132,15 @@ class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
 
             override suspend fun onCancel() {
                 logi("cancel....")
+                val statusString = "Canceling..."
+                val progressData = workDataOf("status_string" to statusString)
+                setProgress(progressData)
                 databaseHelper?.removeApp(packageName)
+
+                delay(1000)
+                val statusString2 = "Cancel"
+                val progressData2 = workDataOf("status_string" to statusString2)
+                setProgress(progressData2)
 
                 progress = 100
                 finished = true

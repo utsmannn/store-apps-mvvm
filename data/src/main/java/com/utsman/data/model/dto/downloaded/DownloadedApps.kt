@@ -7,9 +7,12 @@ package com.utsman.data.model.dto.downloaded
 
 import androidx.lifecycle.LiveData
 import androidx.work.WorkInfo
+import com.utsman.data.model.dto.list.AppsSealedView
 
 data class DownloadedApps(
     val id: String,
     val name: String,
-    val workInfoLiveData: LiveData<WorkInfo>
+    val downloadId: Long?,
+    val workInfoLiveData: LiveData<WorkInfo>,
+    val appsView: AppsSealedView.AppsView?
 )

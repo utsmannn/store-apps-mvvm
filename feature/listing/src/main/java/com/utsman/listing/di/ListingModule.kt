@@ -7,6 +7,7 @@ package com.utsman.listing.di
 
 import androidx.work.WorkManager
 import com.utsman.data.dao.CurrentDownloadDao
+import com.utsman.data.repository.list.AppsRepository
 import com.utsman.data.repository.list.InstalledAppsRepository
 import com.utsman.data.repository.list.PagingAppRepository
 import com.utsman.data.utils.CurrentDownloadHelper
@@ -37,7 +38,7 @@ class ListingModule {
 
     @Provides
     @Singleton
-    fun provideDownloadedUseCase(workManager: WorkManager, currentDownloadHelper: CurrentDownloadHelper): DownloadedUseCase {
-        return DownloadedUseCase(workManager, currentDownloadHelper)
+    fun provideDownloadedUseCase(workManager: WorkManager, appsRepository: AppsRepository, currentDownloadHelper: CurrentDownloadHelper): DownloadedUseCase {
+        return DownloadedUseCase(workManager, appsRepository, currentDownloadHelper)
     }
 }

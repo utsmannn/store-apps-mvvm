@@ -10,11 +10,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.utsman.abstraction.extensions.inflate
-import com.utsman.abstraction.extensions.logi
 import com.utsman.data.model.dto.downloaded.DownloadedApps
 import com.utsman.listing.R
 import com.utsman.listing.ui.viewholder.DownloadedViewHolder
-import com.utsman.network.toJson
 
 class DownloadedListAdapter(private val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<DownloadedViewHolder>() {
     private val list: MutableList<DownloadedApps?> = mutableListOf()
@@ -44,7 +42,7 @@ class DownloadedListAdapter(private val lifecycleOwner: LifecycleOwner) : Recycl
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DownloadedViewHolder {
-        val view = parent.inflate(R.layout.item_simple_test)
+        val view = parent.inflate(R.layout.item_list_downloaded)
         return DownloadedViewHolder(view)
     }
 

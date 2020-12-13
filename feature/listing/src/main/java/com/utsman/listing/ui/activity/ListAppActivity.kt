@@ -18,7 +18,7 @@ import com.utsman.abstraction.base.PagingStateAdapter
 import com.utsman.abstraction.extensions.booleanExtras
 import com.utsman.abstraction.extensions.initialLoadState
 import com.utsman.abstraction.extensions.stringExtras
-import com.utsman.listing.databinding.ActivityListBinding
+import com.utsman.listing.databinding.LayoutRecyclerViewBinding
 import com.utsman.listing.ui.adapter.PagingListAdapter
 import com.utsman.listing.viewmodel.PagingViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class ListAppActivity : AppCompatActivity() {
 
-    private val binding: ActivityListBinding by viewBinding()
+    private val binding: LayoutRecyclerViewBinding by viewBinding()
     private val viewModel: PagingViewModel by viewModels()
 
     private val query by stringExtras("query")

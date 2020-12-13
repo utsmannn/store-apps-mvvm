@@ -17,10 +17,12 @@ import com.utsman.data.di._downloadManager
 import com.utsman.data.model.dto.worker.FileDownload
 import com.utsman.network.toAny
 import com.utsman.network.toJson
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.launch
 
 object DownloadUtils {
 
@@ -52,6 +54,12 @@ object DownloadUtils {
             downloadManager()?.query(query)
         } else {
             null
+        }
+    }
+
+    suspend fun cancel(scope: CoroutineScope, downloadId: Long?) = scope.launch {
+        if (downloadId != null) {
+            downloadManager()?.remove(downloadId)
         }
     }
 

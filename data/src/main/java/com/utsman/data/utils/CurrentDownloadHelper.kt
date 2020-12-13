@@ -17,8 +17,6 @@ class CurrentDownloadHelper @Inject constructor(private val dao: CurrentDownload
 
     fun getCurrentAppsFlow() = dao.currentAppsFlow()
 
-    //fun getCurrentApps() = dao.currentApps().distinct()
-
     fun markIsRun(scope: CoroutineScope, packageName: String?, downloadId: Long?) = scope.launch {
         val found = dao.getCurrentApps(packageName)
         if (found != null) {
