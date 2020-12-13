@@ -34,7 +34,7 @@ class ListAppActivity : AppCompatActivity() {
     private val title by stringExtras("title")
     private val isSearch by booleanExtras("is_search")
 
-    private val pagingListAdapter = PagingListAdapter {
+    private val pagingListAdapter = PagingListAdapter(lifecycleOwner = this) {
 
     }
 

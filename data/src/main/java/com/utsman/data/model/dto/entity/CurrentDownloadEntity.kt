@@ -21,5 +21,7 @@ data class CurrentDownloadEntity(
     @ColumnInfo(name = "is_run")
     var isRun: Boolean = false,
     @ColumnInfo(name = "download_id")
-    var downloadId: Long? = null
+    var downloadId: Long? = null,
+    @ColumnInfo(name = "file_name")
+    var fileName: String? = null
 )

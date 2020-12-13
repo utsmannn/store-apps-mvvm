@@ -12,22 +12,19 @@ import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.datastore.preferences.core.preferencesKey
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.work.Operation
 import com.utsman.abstraction.interactor.listenOn
 import com.utsman.abstraction.extensions.*
 import com.utsman.abstraction.listener.ResultStateListener
-import com.utsman.data.di._currentDownloadHelper
-import com.utsman.data.di._dataStore
+import com.utsman.data.di._downloadedRepository
 import com.utsman.data.model.dto.detail.DetailView
 import com.utsman.data.model.dto.worker.FileDownload
 import com.utsman.data.model.dto.worker.WorkInfoResult
 import com.utsman.data.utils.DownloadUtils
 import com.utsman.detail.databinding.ActivityDetailBinding
 import com.utsman.detail.viewmodel.DetailViewModel
-import com.utsman.network.toJson
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -39,7 +36,7 @@ class DetailActivity : AppCompatActivity() {
     private val packageApps by stringExtras("package_name")
     private val viewModel: DetailViewModel by viewModels()
 
-    private val databaseHelper = getValueOf(_currentDownloadHelper)
+    private val downloadedRepository = getValueOf(_downloadedRepository)
 
     private val resultListener = object : ResultStateListener<DetailView> {
         override fun onIdle() {
@@ -69,7 +66,7 @@ class DetailActivity : AppCompatActivity() {
         txtDeveloper.text = data.developer.name
         txtDesc.text = data.description
 
-        val size = data.file.size.bytesToString()
+        val size = data.file.size.toBytesReadable()
         val isUpdate = data.appVersion.run {
             code != 0L && apiCode > code
         }
@@ -155,7 +152,7 @@ class DetailActivity : AppCompatActivity() {
         })
 
         lifecycleScope.launch {
-            databaseHelper?.getCurrentAppsFlow()?.collect { apps ->
+            downloadedRepository.getCurrentAppsSuspendFlow().collect { apps ->
                 logi("current apps -> $apps")
             }
         }

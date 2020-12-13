@@ -5,8 +5,7 @@
 
 package com.utsman.detail.di
 
-import android.content.Context
-import androidx.work.WorkManager
+import com.utsman.data.repository.download.DownloadRepository
 import com.utsman.data.repository.list.InstalledAppsRepository
 import com.utsman.data.repository.meta.MetaRepository
 import com.utsman.detail.domain.DetailUseCase
@@ -14,7 +13,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Singleton
 
 @Module
@@ -26,8 +24,8 @@ class DetailModule {
     fun provideDetailUseCase(
         metaRepository: MetaRepository,
         installedAppsRepository: InstalledAppsRepository,
-        workManager: WorkManager
+        downloadRepository: DownloadRepository
     ): DetailUseCase {
-        return DetailUseCase(metaRepository, installedAppsRepository, workManager)
+        return DetailUseCase(metaRepository, installedAppsRepository, downloadRepository)
     }
 }

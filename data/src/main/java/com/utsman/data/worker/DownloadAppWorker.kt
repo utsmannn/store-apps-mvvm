@@ -11,8 +11,9 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.utsman.abstraction.extensions.getValueOf
+import com.utsman.abstraction.extensions.getValueSafeOf
 import com.utsman.abstraction.extensions.logi
-import com.utsman.data.di._currentDownloadHelper
+import com.utsman.data.di._downloadedRepository
 import com.utsman.data.model.dto.worker.FileDownload
 import com.utsman.data.utils.DownloadUtils
 import com.utsman.network.toAny
@@ -29,7 +30,7 @@ class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
     private var finished = false
     private var progress = 0L
     private val doneData = workDataOf("done" to true)
-    private val databaseHelper = getValueOf(_currentDownloadHelper)
+    private val databaseHelper = getValueSafeOf(_downloadedRepository)
 
     @InternalCoroutinesApi
     override suspend fun doWork() = withContext(Dispatchers.IO) {
@@ -45,32 +46,40 @@ class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
             logi("file is ----> $file")
             val packageName = file?.packageName
 
-            val downloadIdSaved = databaseHelper?.getDownloadId(packageName)
-            if (downloadIdSaved != null && databaseHelper?.checkIsRun(packageName) == true) {
-                task.observingDownload(downloadIdSaved, packageName)
+            val downloadIsRunForApp = databaseHelper?.checkIsRun(packageName) ?: false
+            logi("download is run for ${file?.name} -> $downloadIsRunForApp")
+
+            if (downloadIsRunForApp) {
+                val downloadIdSaved = databaseHelper?.getDownloadId(packageName)
+                databaseHelper?.markIsRun(this, packageName, downloadIdSaved)
+                task.observingDownload(this, downloadIdSaved, packageName)
             } else {
                 val downloadId = DownloadUtils.startDownload(file)
-
                 databaseHelper?.markIsRun(this, packageName, downloadId)
-                task.observingDownload(downloadId, packageName)
+                task.observingDownload(this, downloadId, packageName)
             }
         }
     }
 
     @InternalCoroutinesApi
     private suspend fun CancellableContinuation<Result>.observingDownload(
+        scope: CoroutineScope,
         downloadId: Long?,
         packageName: String?
     ) {
 
+        val progressPreparing = workDataOf("status_string" to "Preparing")
+        setProgress(progressPreparing)
+
         val task = this
         DownloadUtils.setDownloadListener(downloadId, object : DownloadUtils.DownloadListener {
             override suspend fun onSuccess(cursor: Cursor) {
-                logi("success....")
-                databaseHelper?.removeApp(packageName)
                 val statusString = "Success"
                 val progressData = workDataOf("status_string" to statusString)
                 setProgress(progressData)
+
+                logi("success....")
+                databaseHelper?.markIsComplete(scope, packageName, downloadId)
 
                 progress = 100
                 finished = true
@@ -120,7 +129,7 @@ class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
                 val statusString = "Failed"
                 val progressData = workDataOf("status_string" to statusString)
                 setProgress(progressData)
-                databaseHelper?.removeApp(packageName)
+                databaseHelper?.removeApp(scope, packageName)
 
                 finished = true
                 if (task.isActive) {
@@ -135,12 +144,14 @@ class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
                 val statusString = "Canceling..."
                 val progressData = workDataOf("status_string" to statusString)
                 setProgress(progressData)
-                databaseHelper?.removeApp(packageName)
 
                 delay(1000)
                 val statusString2 = "Cancel"
                 val progressData2 = workDataOf("status_string" to statusString2)
                 setProgress(progressData2)
+
+                databaseHelper?.markIsComplete(scope, packageName, downloadId)
+                databaseHelper?.removeApp(scope, packageName)
 
                 progress = 100
                 finished = true

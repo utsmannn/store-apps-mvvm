@@ -19,5 +19,7 @@ data class WorkerAppsMap(
     @Json(name = "is_run")
     var isRun: Boolean = false,
     @Json(name = "download_id")
-    var downloadId: Long? = null
+    var downloadId: Long? = null,
+    @Json(name = "file_name")
+    var fileName: String? = null
 )

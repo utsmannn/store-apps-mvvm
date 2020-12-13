@@ -24,7 +24,7 @@ fun ViewGroup.inflate(layoutResId: Int): View = LayoutInflater.from(context).inf
     false
 )
 
-fun Long.bytesToString() = when {
+fun Long.toBytesReadable() = when {
     this == Long.MIN_VALUE || this < 0 -> "N/A"
     this < 1024L -> "$this B"
     this <= 0xfffccccccccccccL shr 40 -> "%.1f KB".format(this.toDouble() / (0x1 shl 10))

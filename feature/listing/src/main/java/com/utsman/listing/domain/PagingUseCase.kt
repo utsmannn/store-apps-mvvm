@@ -7,20 +7,28 @@ package com.utsman.listing.domain
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.*
+import androidx.work.WorkManager
+import com.utsman.data.model.dto.entity.toDownloadedApps
 import com.utsman.data.model.dto.list.AppsSealedView.AppsView
 import com.utsman.data.model.dto.list.toAppsView
+import com.utsman.data.repository.database.DownloadedRepository
 import com.utsman.data.repository.list.InstalledAppsRepository
 import com.utsman.data.repository.list.PagingAppRepository
 import com.utsman.data.source.AppsPagingSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 class PagingUseCase @Inject constructor(
     private val pagingAppRepository: PagingAppRepository,
-    private val installedAppsRepository: InstalledAppsRepository
+    private val installedAppsRepository: InstalledAppsRepository,
+    private val downloadedRepository: DownloadedRepository,
+    private val workManager: WorkManager
 ) {
     val pagingData = MutableLiveData<PagingData<AppsView>>()
 
@@ -30,8 +38,11 @@ class PagingUseCase @Inject constructor(
         }.flow
             .cachedIn(GlobalScope)
             .collect {
-                val appsViewPaging = it.mapSync { ap ->
-                    ap.toAppsView()
+                val appsViewPaging = it.map { ap ->
+
+                    val entityFound = downloadedRepository.getCurrentApp(ap.`package`)
+                    val downloadedApps = entityFound?.toDownloadedApps()
+                    ap.toAppsView(downloadedApps)
                 }.map { ap ->
                     installedAppsRepository.checkInstalledApps(ap)
                 }

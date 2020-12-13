@@ -29,7 +29,10 @@ class InstalledAppFragment : Fragment(R.layout.layout_recycler_view) {
     private val viewModel: InstalledAppsViewModel by viewModels()
 
     private val pagingListAdapter =
-        PagingListAdapter(holderType = PagingListAdapter.HolderType.UPDATED) {
+        PagingListAdapter(
+            holderType = PagingListAdapter.HolderType.UPDATED,
+            lifecycleOwner = viewLifecycleOwner
+        ) {
 
         }
 

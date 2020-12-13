@@ -7,7 +7,7 @@ package com.utsman.listing.ui.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.utsman.abstraction.extensions.bytesToString
+import com.utsman.abstraction.extensions.toBytesReadable
 import com.utsman.abstraction.extensions.detailFor
 import com.utsman.abstraction.extensions.loadUrl
 import com.utsman.data.model.dto.list.AppsSealedView
@@ -18,7 +18,7 @@ class UpdatedAppViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     fun bind(item: AppsSealedView.AppsView, click: (AppsSealedView.AppsView) -> Unit) = binding.run {
         txtTitle.text = item.name
-        txtSize.text = item.size.bytesToString()
+        txtSize.text = item.size.toBytesReadable()
         imgItem.loadUrl(item.icon, item.id.toString())
 
         val versionString =

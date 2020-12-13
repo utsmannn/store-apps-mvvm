@@ -14,5 +14,8 @@ data class DownloadedApps(
     val name: String,
     val downloadId: Long?,
     val workInfoLiveData: LiveData<WorkInfo>,
-    val appsView: AppsSealedView.AppsView?
+    val appsView: AppsSealedView.AppsView?,
+    val isRun: Boolean,
+    val appStatus: AppStatus,
+    val fileName: String
 )

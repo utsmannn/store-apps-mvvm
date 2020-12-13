@@ -8,9 +8,9 @@ package com.utsman.data.model.dto.worker
 import com.utsman.data.model.dto.entity.CurrentDownloadEntity
 
 fun WorkerAppsMap.toEntity(): CurrentDownloadEntity {
-    return CurrentDownloadEntity(packageName, uuid, name, isRun, downloadId)
+    return CurrentDownloadEntity(packageName, uuid, name, isRun, downloadId, fileName)
 }
 
 fun CurrentDownloadEntity.toAppsMap(): WorkerAppsMap {
-    return WorkerAppsMap(packageName, uuid, name, isRun, downloadId)
+    return WorkerAppsMap(packageName, uuid, name, isRun, downloadId, fileName)
 }

@@ -11,13 +11,15 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:background="?attr/selectableItemBackground"
-    android:padding="6dp">
+    android:paddingStart="6dp"
+    android:paddingEnd="6dp">
 
     <androidx.cardview.widget.CardView
         android:layout_width="60dp"
         android:layout_height="60dp"
         app:cardCornerRadius="12dp"
-        app:cardElevation="0dp">
+        app:cardElevation="0dp"
+        android:layout_margin="6dp">
 
         <ImageView
             android:id="@+id/img_item"
@@ -33,6 +35,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:paddingStart="6dp"
+        android:layout_margin="6dp"
         android:paddingEnd="6dp">
 
         <TextView
@@ -40,13 +43,13 @@
             android:layout_height="wrap_content"
             android:text="Title"
             android:maxLines="1"
+            android:ellipsize="end"
             android:id="@+id/txt_title"
             android:textSize="16sp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Downloading..."
             android:id="@+id/txt_download_status"
             android:alpha="0.6"
             android:textSize="10sp"
@@ -56,6 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/progress_horizontal_download"
+            android:indeterminate="true"
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
 
     </LinearLayout>
@@ -66,15 +70,33 @@
         android:layout_gravity="center"
         app:cardElevation="0dp"
         android:id="@+id/btn_stop_download"
-        app:cardCornerRadius="13dp"
+        app:cardCornerRadius="8dp"
         android:layout_height="40dp">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_fluent_stop_16_filled"
-            app:tint="@android:color/holo_red_dark" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/img_button_download"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_fluent_stop_24_filled"
+                app:tint="@android:color/holo_red_dark" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:textColor="@color/purple_500"
+                android:id="@+id/txt_download_action"
+                android:textSize="10sp"
+                tools:ignore="SmallSp" />
+
+        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 

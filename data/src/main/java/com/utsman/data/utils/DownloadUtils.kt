@@ -6,12 +6,16 @@
 package com.utsman.data.utils
 
 import android.app.DownloadManager
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
-import com.utsman.abstraction.extensions.getValueOf
-import com.utsman.abstraction.extensions.logi
-import com.utsman.abstraction.extensions.toSumReadable
+import androidx.core.content.FileProvider
+import com.utsman.abstraction.extensions.*
 import com.utsman.data.di._context
 import com.utsman.data.di._downloadManager
 import com.utsman.data.model.dto.worker.FileDownload
@@ -23,6 +27,7 @@ import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
+import java.io.File
 
 object DownloadUtils {
 
@@ -38,7 +43,7 @@ object DownloadUtils {
             setTitle("Downloading ${fileDownload?.name}")
         }
 
-        return downloadManager()?.enqueue(downloadRequest)
+        return downloadManager().enqueue(downloadRequest)
     }
 
     suspend fun setDownloadListener(downloadId: Long?, listener: DownloadListener) {
@@ -51,15 +56,64 @@ object DownloadUtils {
     private fun getCursor(downloadId: Long?): Cursor? {
         return if (downloadId != null) {
             val query = DownloadManager.Query().setFilterById(downloadId)
-            downloadManager()?.query(query)
+            downloadManager().query(query)
         } else {
             null
         }
     }
 
-    suspend fun cancel(scope: CoroutineScope, downloadId: Long?) = scope.launch {
+    fun cancel(scope: CoroutineScope, downloadId: Long?) = scope.launch {
         if (downloadId != null) {
-            downloadManager()?.remove(downloadId)
+            downloadManager().remove(downloadId)
+        }
+    }
+
+    fun checkAppIsDownloaded(context: Context, fileName: String): Boolean {
+        val dir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+        val file = File(dir, "$fileName.apk")
+        return file.exists()
+    }
+
+    fun whenAppIsDownloaded(context: Context, fileName: String, action: () -> Unit) {
+        if (checkAppIsDownloaded(context, fileName)) {
+            action.invoke()
+        }
+    }
+
+    fun checkAppIsInstalled(packageName: String): Boolean {
+        val packageManager = getContext().packageManager
+        return try {
+            packageManager.getPackageInfo(packageName, 0)
+            true
+        } catch (e: PackageManager.NameNotFoundException) {
+            false
+        }
+    }
+
+    fun openDownloadFile(context: Context, fileName: String) {
+        val dir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+        val file = File(dir, "$fileName.apk")
+        logi("file uri -> ${file.absolutePath}")
+        logi("file is exist --> ${file.exists()}")
+
+        val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            FileProvider.getUriForFile(context, "com.utsman.storeapps.fileprovider", file)
+        } else {
+            Uri.fromFile(file)
+        }
+
+        val type = "application/vnd.android.package-archive"
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(uri, type)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
+        try {
+            logi("start activity...")
+            context.startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            loge(e.message)
         }
     }
 
@@ -82,7 +136,13 @@ object DownloadUtils {
                         this.progress = progress
                     }
 
-                    listener.onRunning(cursor, fileSizeObserver)
+                    if (total > 1 && total == soFar) {
+                        listener.onSuccess(cursor)
+                        cancel()
+                    } else {
+                        listener.onRunning(cursor, fileSizeObserver)
+                    }
+
                 }
                 DownloadManager.STATUS_PAUSED -> {
                     listener.onPaused(cursor)
@@ -121,8 +181,8 @@ object DownloadUtils {
             fun simple(sizeObserver: FileSizeObserver.() -> Unit) = FileSizeObserver()
                 .apply(sizeObserver)
                 .apply {
-                    val totalRead = this.total.toSumReadable()
-                    val soFarRead = this.soFar.toSumReadable()
+                    val totalRead = this.total.toBytesReadable()
+                    val soFarRead = this.soFar.toBytesReadable()
                     val progress = "$progress %"
                     sizeReadable = FileSizeReadable(total = totalRead, soFar = soFarRead, progress = progress)
                 }

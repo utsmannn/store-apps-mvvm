@@ -5,6 +5,11 @@
 
 package com.utsman.data.model.dto.list
 
+import androidx.lifecycle.LiveData
+import androidx.work.WorkInfo
+import com.utsman.data.model.dto.downloaded.DownloadedApps
+import com.utsman.data.model.dto.worker.WorkInfoResult
+
 enum class AppsViewType {
     BANNER, REGULAR
 }
@@ -33,7 +38,8 @@ sealed class AppsSealedView(val viewType: AppsViewType) {
         var appVersion: AppVersion = AppVersion(),
         var size: Long = 0,
         var icon: String = "",
-        var iconLabel: Int? = null
+        var iconLabel: Int? = null,
+        var downloadedApps: DownloadedApps? = null
     ) : AppsSealedView(AppsViewType.REGULAR) {
         companion object {
             fun simple(appsView: AppsView.() -> Unit) = AppsView().apply(appsView)

@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.Flow
 interface CurrentDownloadDao {
 
     @Query("select * from current_downloads")
-    fun currentApps(): List<CurrentDownloadEntity>
+    suspend fun currentApps(): List<CurrentDownloadEntity>
 
     @Query("select * from current_downloads")
     fun currentAppsFlow(): Flow<List<CurrentDownloadEntity>>

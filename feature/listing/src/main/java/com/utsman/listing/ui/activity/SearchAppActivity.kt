@@ -34,7 +34,10 @@ class SearchAppActivity : AppCompatActivity() {
     private val viewModel: SearchPagingViewModel by viewModels()
     private var searchView: SearchView? = null
 
-    private val pagingListAdapter = PagingListAdapter(holderType = PagingListAdapter.HolderType.SEARCH) {
+    private val pagingListAdapter = PagingListAdapter(
+        holderType = PagingListAdapter.HolderType.SEARCH,
+        lifecycleOwner = this
+    ) {
 
     }
 

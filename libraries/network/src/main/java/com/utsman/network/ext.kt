@@ -5,10 +5,10 @@
 
 package com.utsman.network
 
-import com.utsman.abstraction.extensions.getValueOfSafety
+import com.utsman.abstraction.extensions.getValueLazyOf
 import com.utsman.network.di._jsonBeautifier
 
-private val jsonBeauty by getValueOfSafety(_jsonBeautifier)
+private val jsonBeauty by getValueLazyOf(_jsonBeautifier)
 
 fun Any.toJson(): String {
     return when (this) {

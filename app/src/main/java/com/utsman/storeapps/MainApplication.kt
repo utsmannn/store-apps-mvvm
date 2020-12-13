@@ -12,14 +12,15 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.work.WorkManager
+import com.squareup.moshi.Moshi
 import com.utsman.abstraction.base.GlideApp
-import com.utsman.data.dao.CurrentDownloadDao
 import com.utsman.data.di.*
-import com.utsman.data.utils.CurrentDownloadHelper
+import com.utsman.data.repository.database.DownloadedRepository
+import com.utsman.data.repository.list.AppsRepository
 import com.utsman.network.di._jsonBeautifier
 import com.utsman.network.di._moshi
-import com.utsman.network.di.provideJsonBeautifier
-import com.utsman.network.di.provideMoshi
+import com.utsman.network.utils.JsonBeautifier
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
@@ -27,23 +28,36 @@ import javax.inject.Inject
 class MainApplication : Application() {
 
     @Inject
-    lateinit var currentDownloadHelper: CurrentDownloadHelper
+    lateinit var moshi: Moshi
+
+    @Inject
+    lateinit var jsonBeautifier: JsonBeautifier
 
     @Inject
     lateinit var downloadManager: DownloadManager
 
+    @Inject
+    lateinit var workManager: WorkManager
+
+    @Inject
+    lateinit var appsRepository: AppsRepository
+
+    @Inject
+    lateinit var downloadedRepository: DownloadedRepository
+
     override fun onCreate() {
         super.onCreate()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        createNotificationChannel()
 
         // provide manual di
-        _moshi.value = provideMoshi()
-        _jsonBeautifier.value = provideJsonBeautifier()
+        _moshi.value = moshi
+        _jsonBeautifier.value = jsonBeautifier
         _context.value = this
         _dataStore.value = provideDataStore(this)
         _downloadManager.value = downloadManager
-        _currentDownloadHelper.value = currentDownloadHelper
+        _workManager.value = workManager
+        _appsRepository.value = appsRepository
+        _downloadedRepository.value = downloadedRepository
     }
 
     override fun onLowMemory() {

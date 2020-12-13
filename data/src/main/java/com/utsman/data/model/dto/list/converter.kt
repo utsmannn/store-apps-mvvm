@@ -5,9 +5,12 @@
 
 package com.utsman.data.model.dto.list
 
+import androidx.lifecycle.LiveData
+import androidx.work.WorkInfo
 import com.utsman.data.model.response.list.AppsItem
 import com.utsman.data.model.response.list.Aptoide
 import com.utsman.data.model.Category
+import com.utsman.data.model.dto.downloaded.DownloadedApps
 
 fun Aptoide.toCategoryBannerView(category: Category?): CategorySealedView.CategoryBannerView? {
     val list = datalist?.list?.map { app ->
@@ -62,7 +65,7 @@ fun AppsItem.toAppsBannerView(): AppsSealedView.AppsBannerView {
     }
 }
 
-fun AppsItem.toAppsView(): AppsSealedView.AppsView {
+fun AppsItem.toAppsView(downloaded: DownloadedApps? = null): AppsSealedView.AppsView {
     return AppsSealedView.AppsView.simple {
         id = this@toAppsView.id ?: 0
         name = this@toAppsView.name ?: ""
@@ -70,5 +73,6 @@ fun AppsItem.toAppsView(): AppsSealedView.AppsView {
         size = this@toAppsView.size ?: 0
         icon = this@toAppsView.icon ?: ""
         appVersion = AppVersion.fromItem(this@toAppsView)
+        downloadedApps = downloaded
     }
 }
