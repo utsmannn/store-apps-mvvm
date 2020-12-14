@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Created by Muhammad Utsman on 14/12/20 4:36 PM
+  ~ Copyright (c) 2020 . All rights reserved.
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/ic_fluent_home_24_filled"
+        android:iconTint="@color/purple_500"
+        android:title="Home" />
+
+    <item
+        android:id="@+id/download"
+        android:icon="@drawable/ic_fluent_arrow_download_24_filled"
+        android:iconTint="@color/purple_500"
+        android:title="Download" />
+</menu>

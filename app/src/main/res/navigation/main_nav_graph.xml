@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Created by Muhammad Utsman on 14/12/20 4:23 PM
+  ~ Copyright (c) 2020 . All rights reserved.
+  -->
+
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/store_nav"
+    app:startDestination="@id/home"
+    tools:ignore="MissingDefaultResource">
+
+    <fragment
+        android:id="@+id/home"
+        android:name="com.utsman.home.ui.HomeFragment"
+        android:label="HomeFragment" />
+
+    <fragment
+        android:id="@+id/download"
+        android:name="com.utsman.listing.ui.fragment.DownloadedFragment"
+        android:label="Downloaded"/>
+</navigation>

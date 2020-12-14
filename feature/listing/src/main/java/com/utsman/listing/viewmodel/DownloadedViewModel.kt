@@ -5,23 +5,49 @@
 
 package com.utsman.listing.viewmodel
 
+import android.os.Parcelable
+import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.RecyclerView
 import com.utsman.data.model.dto.downloaded.DownloadedApps
 import com.utsman.listing.domain.DownloadedUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class DownloadedViewModel @ViewModelInject constructor(private val downloadedUseCase: DownloadedUseCase) :
-    ViewModel() {
+class DownloadedViewModel @ViewModelInject constructor(
+    private val downloadedUseCase: DownloadedUseCase,
+    @Assisted private val state: SavedStateHandle
+) : ViewModel() {
+
+    companion object {
+        val STATE_RV = "state_rv_${DownloadedViewModel::class.java.canonicalName}"
+    }
+
+    private var stateRecyclerView: Parcelable?
+        get() = state.get(STATE_RV)
+        set(value) {
+            state.set(STATE_RV, value)
+        }
 
     val downloadedList = downloadedUseCase
         .list.asLiveData(viewModelScope.coroutineContext)
 
     fun markIsDone(downloadedApps: DownloadedApps) = CoroutineScope(Dispatchers.IO).launch {
         downloadedUseCase.markIsDone(this, downloadedApps)
+    }
+
+    fun onResumeRecyclerView(recyclerView: RecyclerView?) {
+        if (stateRecyclerView != null) {
+            recyclerView?.layoutManager?.onRestoreInstanceState(stateRecyclerView)
+        }
+    }
+
+    fun onPausedRecyclerView(recyclerView: RecyclerView?) {
+        stateRecyclerView = recyclerView?.layoutManager?.onSaveInstanceState()
     }
 }

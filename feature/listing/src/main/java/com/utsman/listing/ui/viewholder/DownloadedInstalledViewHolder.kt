@@ -1,10 +1,11 @@
 /*
- * Created by Muhammad Utsman on 13/12/20 2:24 AM
+ * Created by Muhammad Utsman on 14/12/20 7:20 PM
  * Copyright (c) 2020 . All rights reserved.
  */
 
 package com.utsman.listing.ui.viewholder
 
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
 import android.view.View
@@ -17,12 +18,10 @@ import com.utsman.abstraction.extensions.detailFor
 import com.utsman.abstraction.extensions.loadUrl
 import com.utsman.abstraction.extensions.logi
 import com.utsman.data.model.dto.downloaded.DownloadedApps
-import com.utsman.data.utils.DownloadUtils
 import com.utsman.listing.R
 import com.utsman.listing.databinding.ItemListDownloadedBinding
 
-class DownloadedViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
+class DownloadedInstalledViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val binding = ItemListDownloadedBinding.bind(view)
 
     fun bind(downloadedApps: DownloadedApps, lifecycleOwner: LifecycleOwner) = binding.run {
@@ -37,40 +36,38 @@ class DownloadedViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         txtDownloadStatus.text = "Observing..."
         root detailFor packageName
 
-        downloadedApps.workInfoLiveData.observe(lifecycleOwner, Observer { workInfo ->
-
-            val dataString = workInfo.progress.getString("data")
-            val statusString = workInfo.progress.getString("status_string")
-
+        downloadedApps.workInfoLiveData.observe(lifecycleOwner, Observer {
             icon?.let {
                 imgItem.loadUrl(it, downloadedApps.id)
             }
 
-            txtDownloadStatus.text = statusString
+            txtDownloadStatus.text = "Installed"
             btnStopDownload.setOnClickListener {
-                DownloadUtils.openDownloadFile(root.context, fileName)
+                openApps(root.context, packageName)
             }
 
             val colorFilterProgressBar = ContextCompat.getColor(root.context, R.color.purple_500)
             val colorFilterButtonAction = ContextCompat.getColor(root.context, R.color.purple_500)
-            val drawableDownloaded = ContextCompat.getDrawable(root.context, R.drawable.ic_fluent_cloud_sync_complete_24_regular)
-            val actionStringDownloaded = "Install"
+            val drawableInstalled = ContextCompat.getDrawable(root.context, R.drawable.ic_fluent_checkmark_circle_24_regular)
+
+            val actionStringInstalled = "Open"
 
             progressHorizontalDownload.progressTintList = ColorStateList.valueOf(colorFilterProgressBar)
             imgButtonDownload.setColorFilter(colorFilterButtonAction, PorterDuff.Mode.SRC_IN)
 
             logi("app status is -> $name | ${appStatus.name}")
-            val isExist = DownloadUtils.checkAppIsDownloaded(root.context, fileName)
-            if (isExist) {
-                txtDownloadStatus.text = "Downloaded"
-                txtDownloadAction.text = actionStringDownloaded
-                imgButtonDownload.setImageDrawable(drawableDownloaded)
-                progressHorizontalDownload.isVisible = false
-            } else {
-                txtDownloadStatus.text = "File not exist"
-                btnStopDownload.alpha = 0.3f
-                progressHorizontalDownload.isVisible = false
-            }
+            txtDownloadAction.text = actionStringInstalled
+            imgButtonDownload.setImageDrawable(drawableInstalled)
+            progressHorizontalDownload.isVisible = false
         })
     }
+
+    private fun openApps(context: Context, packageName: String?) {
+        val packageManager = context.packageManager
+        if (packageName != null) {
+            val intent = packageManager.getLaunchIntentForPackage(packageName)
+            context.startActivity(intent)
+        }
+    }
+
 }

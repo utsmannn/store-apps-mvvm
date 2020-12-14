@@ -10,6 +10,7 @@ import android.view.View
 import android.viewbinding.library.fragment.viewBinding
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,8 +27,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class DownloadedFragment : Fragment(R.layout.layout_recycler_view) {
 
-    private val binding: LayoutRecyclerViewBinding by viewBinding()
-    private val viewModel: DownloadedViewModel by viewModels()
+    private val binding: LayoutRecyclerViewBinding? by viewBinding()
+    private val viewModel: DownloadedViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -37,20 +38,19 @@ class DownloadedFragment : Fragment(R.layout.layout_recycler_view) {
             viewModel.markIsDone(downloaded)
         }
 
-        binding.rvList.run {
+        binding?.rvList?.run {
             layoutManager = LinearLayoutManager(context)
             adapter = downloadedAdapter
         }
 
         hideProgress()
-
         viewModel.downloadedList.observe(viewLifecycleOwner, Observer { apps ->
             logi("apps is -> $apps")
             downloadedAdapter.updateList(apps)
         })
     }
 
-    private fun hideProgress() = binding.layoutProgress.run {
+    private fun hideProgress() = binding?.layoutProgress?.run {
         txtMsg.isVisible = false
         btnRetry.isVisible = false
         progressCircular.isVisible = false

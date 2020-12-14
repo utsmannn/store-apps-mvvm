@@ -23,6 +23,10 @@ dependencies {
     //noinspection LifecycleAnnotationProcessorWithJava8
     kapt 'androidx.lifecycle:lifecycle-compiler:2.2.0'
 
+    // navigation component
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.2'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.2'
+
     // paging3
     implementation 'androidx.paging:paging-runtime:3.0.0-alpha10'
 

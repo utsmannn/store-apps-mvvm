@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Created by Muhammad Utsman on 14/12/20 5:25 PM
+  ~ Copyright (c) 2020 . All rights reserved.
+  -->
+
+<resources>
+    <item name="store_nav" type="id"/>
+</resources>

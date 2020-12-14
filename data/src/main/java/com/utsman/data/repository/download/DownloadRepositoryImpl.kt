@@ -62,7 +62,7 @@ class DownloadRepositoryImpl @Inject constructor(
             scope.launch {
                 getCurrentApps()
                     .mapNotNull {
-                        it.find { a -> a.packageName == packageName }
+                        it.find { a -> a?.packageName == packageName }
                     }
                     .flatMapMerge { app ->
                         workManager.getWorkInfoByIdLiveData(UUID.fromString(app.uuid))

@@ -16,6 +16,7 @@ import com.utsman.data.repository.list.InstalledAppsRepository
 import com.utsman.data.repository.list.PagingAppRepository
 import com.utsman.data.source.AppsPagingSource
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapMerge
@@ -32,7 +33,7 @@ class PagingUseCase @Inject constructor(
 ) {
     val pagingData = MutableLiveData<PagingData<AppsView>>()
 
-    fun searchApps(scope: CoroutineScope, query: String? = null, isSearch: Boolean) = scope.launch {
+    fun searchApps(scope: CoroutineScope, query: String? = null, isSearch: Boolean) = CoroutineScope(Dispatchers.IO).launch {
         Pager(PagingConfig(pageSize = 10)) {
             AppsPagingSource(query, isSearch, pagingAppRepository)
         }.flow

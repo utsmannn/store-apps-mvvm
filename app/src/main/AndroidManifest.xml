@@ -25,7 +25,7 @@
         android:theme="@style/Theme.StoreApps"
         tools:ignore="AllowBackup,UnusedAttribute">
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivityNavigation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
