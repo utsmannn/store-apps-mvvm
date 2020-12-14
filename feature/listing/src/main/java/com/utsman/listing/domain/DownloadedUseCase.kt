@@ -21,9 +21,9 @@ class DownloadedUseCase @Inject constructor(
         .mapNotNull { entities ->
             entities
                 .map { a -> a.toDownloadedApps() }
-                .filter { a ->
+                /*.filter { a ->
                     DownloadUtils.checkAppIsDownloaded(context, a.fileName)
-                }
+                }*/
                 .sortedBy { a ->
                     a.appStatus.ordinal
                 }

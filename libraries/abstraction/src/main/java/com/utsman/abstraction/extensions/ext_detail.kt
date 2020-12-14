@@ -7,7 +7,7 @@ package com.utsman.abstraction.extensions
 
 import android.view.View
 
-infix fun View.detailFor(packageName: String) {
+infix fun View.detailFor(packageName: String?) {
     setOnClickListener {
         context.intentTo("com.utsman.detail.ui.DetailActivity") {
             putExtra("package_name", packageName)

@@ -16,6 +16,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.hasKeyWithValueOfType
+import com.utsman.abstraction.extensions.detailFor
 import com.utsman.abstraction.extensions.intentTo
 import com.utsman.abstraction.extensions.loadUrl
 import com.utsman.abstraction.extensions.logi
@@ -41,6 +42,7 @@ class DownloadedViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         txtTitle.text = name
         txtDownloadStatus.text = "Observing..."
+        root detailFor packageName
 
         downloadedApps.workInfoLiveData.observe(lifecycleOwner, Observer { workInfo ->
 
@@ -75,12 +77,6 @@ class DownloadedViewHolder(view: View) : RecyclerView.ViewHolder(view) {
                         // installed
                         openApps(root.context, packageName)
                     }
-                }
-            }
-
-            root.setOnClickListener {
-                it.context.intentTo("com.utsman.detail.ui.DetailActivity") {
-                    putExtra("package_name", packageName)
                 }
             }
 

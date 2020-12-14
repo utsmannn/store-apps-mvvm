@@ -26,11 +26,6 @@ class GridAppViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         imgLabel.isVisible = item.iconLabel != null
         if (item.iconLabel != null) imgLabel.loadRes(item.iconLabel, item.id.toString())
 
-
         root detailFor item.packageName
-
-        /*root.setOnClickListener {
-            click.invoke(item)
-        }*/
     }
 }
