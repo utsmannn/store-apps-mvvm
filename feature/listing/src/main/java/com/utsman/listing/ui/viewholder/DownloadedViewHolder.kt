@@ -95,19 +95,20 @@ class DownloadedViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
             logi("app status is -> $name | ${appStatus.name}")
             when (appStatus) {
-                AppStatus.RUNNING -> {
+                /*AppStatus.RUNNING -> {
                     if (workInfo.progress.hasKeyWithValueOfType<String>("data")) {
                         runningView(actionStringDownloading, drawableDownloading, progress)
                     } else {
                         downloadedView(actionStringDownloaded, drawableDownloaded, fileName)
                     }
-                }
+                }*/
                 AppStatus.DOWNLOADED -> {
                     downloadedView(actionStringDownloaded, drawableDownloaded, fileName)
                 }
                 AppStatus.INSTALLED -> {
                     installedView(actionStringInstalled, drawableInstalled)
                 }
+                else -> {}
             }
         })
     }
@@ -135,6 +136,7 @@ class DownloadedViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         } else {
             txtDownloadStatus.text = "File not exist"
             btnStopDownload.alpha = 0.3f
+            progressHorizontalDownload.isVisible = false
         }
     }
 

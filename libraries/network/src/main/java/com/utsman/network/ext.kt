@@ -24,3 +24,7 @@ fun <T: Any>String.toAny(type: Class<T>): T? {
 fun <T: Any>String.toAnyList(type: Class<T>): List<T>? {
     return jsonBeauty?.toAnyList(this, type)
 }
+
+fun <T: Any>List<T>.toJsonList(type: Class<T>): String? {
+    return jsonBeauty?.fromAnyList(this, type)
+}

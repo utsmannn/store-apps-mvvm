@@ -5,14 +5,13 @@
 
 package com.utsman.data.repository.database
 
+import com.utsman.abstraction.extensions.logi
 import com.utsman.data.dao.CurrentDownloadDao
 import com.utsman.data.model.dto.entity.CurrentDownloadEntity
 import com.utsman.data.model.dto.worker.WorkerAppsMap
 import com.utsman.data.model.dto.worker.toEntity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class DownloadedRepositoryImpl @Inject constructor(private val dao: CurrentDownloadDao) : DownloadedRepository {
@@ -56,6 +55,7 @@ class DownloadedRepositoryImpl @Inject constructor(private val dao: CurrentDownl
     ): Job {
         return scope.launch {
             val found = dao.getCurrentApps(packageName)
+            logi("mark is complete --> $found")
             if (found != null) {
                 found.apply {
                     this.isRun = false

@@ -44,13 +44,15 @@ suspend fun CurrentDownloadEntity.toDownloadedApps(): DownloadedApps {
         }
     }
 
+    val isRun = this.isRun && workInfo.value?.progress?.getBoolean("done", false) ?: false
+
     return DownloadedApps(
         id = id,
         name = name,
         downloadId = downloadId,
         workInfoLiveData = workInfo,
         appsView = appsFound,
-        isRun = this.isRun,
+        isRun = isRun,
         appStatus = appStatus,
         fileName = this.fileName ?: ""
     )
