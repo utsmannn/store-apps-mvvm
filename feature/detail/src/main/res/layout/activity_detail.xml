@@ -87,17 +87,18 @@
                 app:layout_constraintStart_toStartOf="@+id/txt_version"
                 app:layout_constraintTop_toBottomOf="@+id/txt_version" />
 
-            <Button
-                android:id="@+id/btn_download"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_action_download"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_margin="12dp"
-                android:background="@drawable/selector_btn"
                 android:text="Download"
                 android:textAllCaps="false"
+                android:background="@drawable/bg_list"
                 android:textColor="@color/white"
-                app:layout_constraintTop_toBottomOf="@+id/cardView"
-                tools:layout_editor_absoluteX="12dp" />
+                app:backgroundTint="@null"
+                android:textSize="12sp"
+                app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_graphics"
@@ -108,7 +109,7 @@
                 android:padding="6dp"
                 android:visibility="gone"
                 android:clipToPadding="false"
-                app:layout_constraintTop_toBottomOf="@+id/btn_download" />
+                app:layout_constraintTop_toBottomOf="@+id/btn_action_download" />
 
             <TextView
                 android:layout_width="match_parent"

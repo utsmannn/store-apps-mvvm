@@ -18,10 +18,13 @@ import android.os.Environment
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.work.WorkInfo
 import com.utsman.abstraction.extensions.*
 import com.utsman.data.di._context
 import com.utsman.data.di._downloadManager
+import com.utsman.data.model.dto.downloaded.Download
 import com.utsman.data.model.dto.worker.FileDownload
+import com.utsman.data.model.dto.worker.WorkInfoResult
 import com.utsman.network.toAny
 import com.utsman.network.toJson
 import kotlinx.coroutines.CoroutineScope
@@ -51,6 +54,8 @@ object DownloadUtils {
 
     suspend fun setDownloadListener(downloadId: Long?, listener: DownloadListener) {
         val ticker = ticker(1000)
+        logi("preparing............")
+        listener.onRunning(null, Download.Status.preparing())
         ticker.consumeAsFlow().collect {
             ticker.observingCursor(downloadId, listener)
         }
@@ -69,6 +74,11 @@ object DownloadUtils {
         if (downloadId != null) {
             downloadManager().remove(downloadId)
         }
+    }
+
+    fun getStatus(workInfo: WorkInfo): Download.Status? {
+        val statusJson = workInfo.progress.getString("status")
+        return statusJson?.toAny(Download.Status::class.java)
     }
 
     fun checkAppIsDownloaded(context: Context, fileName: String): Boolean {
@@ -115,16 +125,6 @@ object DownloadUtils {
         }
 
         try {
-
-            // val startForResult = registerForActivityResult(StartActivityForResult()) { result: ActivityResult ->
-            //    if (result.resultCode == Activity.RESULT_OK) {
-            //        val intent = result.intent
-            //        // Handle the Intent
-            //    }
-            //}
-
-            //val startResult = (activity as AppCompatActivity?)?.register
-
             logi("start activity...")
             activity?.startActivityForResult(intent, requestCode)
             fragment?.startActivityForResult(intent, requestCode)
@@ -135,13 +135,20 @@ object DownloadUtils {
 
     private suspend fun ReceiveChannel<Unit>.observingCursor(downloadId: Long?, listener: DownloadListener) {
         val cursor = getCursor(downloadId)
+
         if (cursor != null && cursor.moveToFirst()) {
+            val colStatus = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+            logi("column status is ----> $colStatus")
+            logi("column name is ----> ${cursor.getColumnName(colStatus)}")
+
             when (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
                 DownloadManager.STATUS_SUCCESSFUL -> {
-                    listener.onSuccess(cursor)
+                    logi("state success...")
+                    listener.onSuccess(cursor, Download.Status.success())
                     cancel()
                 }
                 DownloadManager.STATUS_RUNNING -> {
+                    logi("state running...")
                     val total = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
                     val soFar = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
                     val progress = (soFar * 100L) / total
@@ -150,46 +157,61 @@ object DownloadUtils {
                         this.total = total
                         this.soFar = soFar
                         this.progress = progress
+                        this.downloadId = downloadId
                     }
 
-                    if (total > 1 && total == soFar) {
-                        listener.onSuccess(cursor)
+                    logi("total bytes is --> $total")
+
+                    if (total <= 0) {
+                        logi("preparing............")
+                        listener.onRunning(fileSizeObserver, Download.Status.preparing())
+                    } else if (total > 1 && total == soFar) {
+                        logi("success...........")
+                        listener.onSuccess(cursor, Download.Status.success())
                         cancel()
                     } else {
-                        listener.onRunning(cursor, fileSizeObserver)
+                        logi("downloading.........")
+                        val fileObserverReadable = fileSizeObserver.sizeReadable
+                        val logString = "${fileObserverReadable.soFar} / ${fileObserverReadable.total} (${fileObserverReadable.total})"
+                        listener.onRunning(fileSizeObserver, Download.Status.downloading(logString))
                     }
 
                 }
                 DownloadManager.STATUS_PAUSED -> {
-                    listener.onPaused(cursor)
+                    logi("state paused...")
+                    listener.onPaused(cursor, Download.Status.paused())
                 }
                 DownloadManager.STATUS_PENDING -> {
-                    listener.onPending(cursor)
+                    logi("state pending...")
+                    listener.onPending(cursor, Download.Status.pending())
                 }
                 DownloadManager.STATUS_FAILED -> {
-                    listener.onFailed(cursor)
+                    logi("state failed...")
+                    listener.onFailed(cursor, Download.Status.failed())
                     cancel()
                 }
             }
         } else {
-            listener.onCancel()
+            logi("state cancel...")
+            listener.onCancel(Download.Status.canceling())
             cancel()
         }
     }
 
     interface DownloadListener {
-        suspend fun onSuccess(cursor: Cursor)
-        suspend fun onRunning(cursor: Cursor, fileSizeObserver: FileSizeObserver)
-        suspend fun onPaused(cursor: Cursor)
-        suspend fun onPending(cursor: Cursor)
-        suspend fun onFailed(cursor: Cursor)
-        suspend fun onCancel()
+        suspend fun onSuccess(cursor: Cursor, status: Download.Status)
+        suspend fun onRunning(fileSizeObserver: FileSizeObserver?, status: Download.Status)
+        suspend fun onPaused(cursor: Cursor, status: Download.Status)
+        suspend fun onPending(cursor: Cursor, status: Download.Status)
+        suspend fun onFailed(cursor: Cursor, status: Download.Status)
+        suspend fun onCancel(status: Download.Status)
     }
 
     data class FileSizeObserver(
         var total: Long = 0L,
         var soFar: Long = 0L,
         var progress: Long = 0,
+        var downloadId: Long? = 0,
         var sizeReadable: FileSizeReadable = FileSizeReadable()
     ) {
 

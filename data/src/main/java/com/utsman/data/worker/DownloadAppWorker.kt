@@ -10,13 +10,14 @@ import android.database.Cursor
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.utsman.abstraction.extensions.getValueOf
 import com.utsman.abstraction.extensions.getValueSafeOf
 import com.utsman.abstraction.extensions.logi
 import com.utsman.data.di._downloadedRepository
+import com.utsman.data.model.dto.downloaded.Download
 import com.utsman.data.model.dto.worker.FileDownload
 import com.utsman.data.utils.DownloadUtils
 import com.utsman.network.toAny
+import com.utsman.network.toJson
 import kotlinx.coroutines.*
 import kotlin.coroutines.resume
 
@@ -38,28 +39,29 @@ class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
     }
 
     @InternalCoroutinesApi
-    private suspend fun callFunction(scope: CoroutineScope): Result = suspendCancellableCoroutine { task ->
-        scope.launch {
-            val fileString = inputData.getString("file")
-            val file = fileString?.toAny(FileDownload::class.java)
+    private suspend fun callFunction(scope: CoroutineScope): Result =
+        suspendCancellableCoroutine { task ->
+            scope.launch {
+                val fileString = inputData.getString("file")
+                val file = fileString?.toAny(FileDownload::class.java)
 
-            logi("file is ----> $file")
-            val packageName = file?.packageName
+                logi("file is ----> $file")
+                val packageName = file?.packageName
 
-            val downloadIsRunForApp = databaseHelper?.checkIsRun(packageName) ?: false
-            logi("download is run for ${file?.name} -> $downloadIsRunForApp")
+                val downloadIsRunForApp = databaseHelper?.checkIsRun(packageName) ?: false
+                logi("download is run for ${file?.name} -> $downloadIsRunForApp")
 
-            if (downloadIsRunForApp) {
-                val downloadIdSaved = databaseHelper?.getDownloadId(packageName)
-                databaseHelper?.markIsRun(this, packageName, downloadIdSaved)
-                task.observingDownload(this, downloadIdSaved, packageName)
-            } else {
-                val downloadId = DownloadUtils.startDownload(file)
-                databaseHelper?.markIsRun(this, packageName, downloadId)
-                task.observingDownload(this, downloadId, packageName)
+                if (downloadIsRunForApp) {
+                    val downloadIdSaved = databaseHelper?.getDownloadId(packageName)
+                    databaseHelper?.markIsRun(this, packageName, downloadIdSaved)
+                    task.observingDownload(this, downloadIdSaved, packageName)
+                } else {
+                    val downloadId = DownloadUtils.startDownload(file)
+                    databaseHelper?.markIsRun(this, packageName, downloadId)
+                    task.observingDownload(this, downloadId, packageName)
+                }
             }
         }
-    }
 
     @InternalCoroutinesApi
     private suspend fun CancellableContinuation<Result>.observingDownload(
@@ -73,9 +75,17 @@ class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
 
         val task = this
         DownloadUtils.setDownloadListener(downloadId, object : DownloadUtils.DownloadListener {
-            override suspend fun onSuccess(cursor: Cursor) {
+            override suspend fun onSuccess(cursor: Cursor, status: Download.Status) {
                 val statusString = "Success"
-                val progressData = workDataOf("status_string" to statusString)
+                val statusJson = status.toJson()
+
+                logi("status json is --> $statusJson")
+
+                val progressData = workDataOf(
+                    "status_string" to statusString,
+                    "status" to statusJson
+                )
+
                 setProgress(progressData)
 
                 logi("success....")
@@ -92,42 +102,65 @@ class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
             }
 
             override suspend fun onRunning(
-                cursor: Cursor,
-                fileSizeObserver: DownloadUtils.FileSizeObserver
+                fileSizeObserver: DownloadUtils.FileSizeObserver?,
+                status: Download.Status
             ) {
-                logi("running")
-                val size = fileSizeObserver.sizeReadable.total
-                val soFar = fileSizeObserver.sizeReadable.soFar
-                val progress = fileSizeObserver.sizeReadable.progress
+                val statusJson = status.toJson()
+                logi("status json is --> $statusJson")
 
-                val statusString = "$soFar downloaded of $size ($progress)"
+                if (fileSizeObserver != null) {
+                    logi("running")
+                    val size = fileSizeObserver.sizeReadable.total
+                    val soFar = fileSizeObserver.sizeReadable.soFar
+                    val progress = fileSizeObserver.sizeReadable.progress
 
+                    val statusString = "$soFar downloaded of $size ($progress)"
+
+                    val progressData = workDataOf(
+                        "progress" to fileSizeObserver.progress,
+                        "data" to fileSizeObserver.convertToString(),
+                        "status_string" to statusString,
+                        "status" to statusJson
+                    )
+                    setProgress(progressData)
+                } else {
+                    val progressData = workDataOf(
+                        "status" to statusJson
+                    )
+                    setProgress(progressData)
+                }
+            }
+
+            override suspend fun onPaused(cursor: Cursor, status: Download.Status) {
+                logi("paused....")
+                val statusString = "Paused"
+                val statusJson = status.toJson()
                 val progressData = workDataOf(
-                    "progress" to fileSizeObserver.progress,
-                    "data" to fileSizeObserver.convertToString(),
-                    "status_string" to statusString
+                    "status_string" to statusString,
+                    "status" to statusJson
                 )
                 setProgress(progressData)
             }
 
-            override suspend fun onPaused(cursor: Cursor) {
-                logi("paused....")
-                val statusString = "Paused"
-                val progressData = workDataOf("status_string" to statusString)
-                setProgress(progressData)
-            }
-
-            override suspend fun onPending(cursor: Cursor) {
+            override suspend fun onPending(cursor: Cursor, status: Download.Status) {
                 logi("pending...")
                 val statusString = "Pending..."
-                val progressData = workDataOf("status_string" to statusString)
+                val statusJson = status.toJson()
+                val progressData = workDataOf(
+                    "status_string" to statusString,
+                    "status" to statusJson
+                )
                 setProgress(progressData)
             }
 
-            override suspend fun onFailed(cursor: Cursor) {
+            override suspend fun onFailed(cursor: Cursor, status: Download.Status) {
                 logi("failed...")
                 val statusString = "Failed"
-                val progressData = workDataOf("status_string" to statusString)
+                val statusJson = status.toJson()
+                val progressData = workDataOf(
+                    "status_string" to statusString,
+                    "status" to statusJson
+                )
                 setProgress(progressData)
                 databaseHelper?.removeApp(scope, packageName)
 
@@ -139,10 +172,14 @@ class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
                 }
             }
 
-            override suspend fun onCancel() {
+            override suspend fun onCancel(status: Download.Status) {
                 logi("cancel....")
                 val statusString = "Canceling..."
-                val progressData = workDataOf("status_string" to statusString)
+                val statusJson = status.toJson()
+                val progressData = workDataOf(
+                    "status_string" to statusString,
+                    "status" to statusJson
+                )
                 setProgress(progressData)
 
                 delay(1000)

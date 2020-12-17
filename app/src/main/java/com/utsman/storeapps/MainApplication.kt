@@ -74,17 +74,4 @@ class MainApplication : Application() {
         super.onTrimMemory(level)
         GlideApp.get(this).onTrimMemory(level)
     }
-
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel("store_app", "Download Notification", importance).apply {
-                description = "Notification for downloading apk"
-            }
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
-    }
-
 }

@@ -5,7 +5,6 @@
 
 package com.utsman.listing.ui.adapter
 
-import android.app.Activity
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.paging.PagingDataAdapter

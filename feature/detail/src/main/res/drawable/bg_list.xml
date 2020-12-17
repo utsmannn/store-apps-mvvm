@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Created by Muhammad Utsman on 17/12/20 4:37 PM
+  ~ Copyright (c) 2020 . All rights reserved.
+  -->
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="8dp"/>
+            <solid android:color="@color/purple_500" />
+        </shape>
+    </item>
+    <item android:id="@+id/clip_drawable">
+        <clip
+            android:clipOrientation="horizontal"
+            android:gravity="start">
+            <shape
+                android:shape="rectangle">
+                <corners android:radius="8dp"/>
+                <solid android:color="@color/purple_700" />
+            </shape>
+        </clip>
+    </item>
+</layer-list>
