@@ -16,8 +16,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.utsman.abstraction.base.PagingStateAdapter
+import com.utsman.abstraction.extensions.initialEmptyState
 import com.utsman.abstraction.extensions.initialLoadState
 import com.utsman.abstraction.extensions.logi
+import com.utsman.abstraction.extensions.showEmpty
 import com.utsman.listing.R
 import com.utsman.listing.databinding.LayoutRecyclerViewBinding
 import com.utsman.listing.ui.adapter.PagingListAdapter
@@ -37,9 +39,7 @@ class SearchAppActivity : AppCompatActivity() {
     private val pagingListAdapter = PagingListAdapter(
         holderType = PagingListAdapter.HolderType.SEARCH,
         lifecycleOwner = this
-    ) {
-
-    }
+    )
 
     private val pagingStateAdapter = PagingStateAdapter {
         pagingListAdapter.retry()
@@ -67,6 +67,14 @@ class SearchAppActivity : AppCompatActivity() {
         })
 
         pagingListAdapter.addLoadStateListener { combinedLoadStates ->
+            val txtMessage = "Application not found"
+            binding.layoutEmpty.initialEmptyState(
+                combinedLoadStates.refresh,
+                txtMessage = txtMessage,
+                imgRes = R.drawable.ic_fluent_emoji_meh_24_regular,
+                itemCount = pagingListAdapter.itemCount
+            )
+
             binding.layoutProgress.initialLoadState(combinedLoadStates.refresh) {
                 pagingListAdapter.retry()
             }

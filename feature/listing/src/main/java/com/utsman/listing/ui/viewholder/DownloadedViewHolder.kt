@@ -5,6 +5,7 @@
 
 package com.utsman.listing.ui.viewholder
 
+import android.app.Activity
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
 import android.view.View
@@ -25,12 +26,11 @@ class DownloadedViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     private val binding = ItemListDownloadedBinding.bind(view)
 
-    fun bind(downloadedApps: DownloadedApps, lifecycleOwner: LifecycleOwner) = binding.run {
+    fun bind(downloadedApps: DownloadedApps, lifecycleOwner: LifecycleOwner, openDownloadFile: ((String) -> Unit)?) = binding.run {
         val name = downloadedApps.name
         val packageName = downloadedApps.appsView?.packageName
         val fileName = downloadedApps.fileName
         val icon = downloadedApps.appsView?.icon
-        val downloadId = downloadedApps.downloadId
         val appStatus = downloadedApps.appStatus
 
         txtTitle.text = name
@@ -38,8 +38,6 @@ class DownloadedViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         root detailFor packageName
 
         downloadedApps.workInfoLiveData.observe(lifecycleOwner, Observer { workInfo ->
-
-            val dataString = workInfo.progress.getString("data")
             val statusString = workInfo.progress.getString("status_string")
 
             icon?.let {
@@ -48,7 +46,7 @@ class DownloadedViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
             txtDownloadStatus.text = statusString
             btnStopDownload.setOnClickListener {
-                DownloadUtils.openDownloadFile(root.context, fileName)
+                openDownloadFile?.invoke(fileName)
             }
 
             val colorFilterProgressBar = ContextCompat.getColor(root.context, R.color.purple_500)

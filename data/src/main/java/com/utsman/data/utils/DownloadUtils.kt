@@ -5,6 +5,7 @@
 
 package com.utsman.data.utils
 
+import android.app.Activity
 import android.app.DownloadManager
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -14,7 +15,9 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.fragment.app.Fragment
 import com.utsman.abstraction.extensions.*
 import com.utsman.data.di._context
 import com.utsman.data.di._downloadManager
@@ -90,7 +93,9 @@ object DownloadUtils {
         }
     }
 
-    fun openDownloadFile(context: Context, fileName: String) {
+    fun openDownloadFile(activity: Activity? = null, fragment: Fragment? = null, fileName: String, requestCode: Int = 30) {
+        val context = activity ?: fragment?.requireContext()!!
+
         val dir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
         val file = File(dir, "$fileName.apk")
         logi("file uri -> ${file.absolutePath}")
@@ -110,8 +115,19 @@ object DownloadUtils {
         }
 
         try {
+
+            // val startForResult = registerForActivityResult(StartActivityForResult()) { result: ActivityResult ->
+            //    if (result.resultCode == Activity.RESULT_OK) {
+            //        val intent = result.intent
+            //        // Handle the Intent
+            //    }
+            //}
+
+            //val startResult = (activity as AppCompatActivity?)?.register
+
             logi("start activity...")
-            context.startActivity(intent)
+            activity?.startActivityForResult(intent, requestCode)
+            fragment?.startActivityForResult(intent, requestCode)
         } catch (e: ActivityNotFoundException) {
             loge(e.message)
         }

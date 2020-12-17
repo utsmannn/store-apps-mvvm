@@ -9,6 +9,7 @@ import androidx.lifecycle.asFlow
 import com.utsman.abstraction.extensions.getValueOf
 import com.utsman.abstraction.extensions.logi
 import com.utsman.data.di._appsRepository
+import com.utsman.data.di._installedAppsRepository
 import com.utsman.data.di._workManager
 import com.utsman.data.model.dto.downloaded.AppStatus
 import com.utsman.data.model.dto.downloaded.DownloadedApps
@@ -20,6 +21,7 @@ import java.util.*
 
 private val workManager = getValueOf(_workManager)
 private val appsRepository = getValueOf(_appsRepository)
+private val installedAppsRepository = getValueOf(_installedAppsRepository)
 
 suspend fun CurrentDownloadEntity.toDownloadedApps(): DownloadedApps {
     val id = "id_${this.packageName}"
@@ -33,12 +35,23 @@ suspend fun CurrentDownloadEntity.toDownloadedApps(): DownloadedApps {
         appsFoundApiService.datalist?.list?.find { i -> i.`package` == this.packageName }
             ?.toAppsView()
 
+    val appVersionIsUpdate = if (appsFound != null) {
+        val appVersionFound = installedAppsRepository.checkInstalledApps(appsFound).appVersion
+        appVersionFound.code != 0L && appVersionFound.apiCode > appVersionFound.code
+    } else {
+        false
+    }
+
     val appStatus: AppStatus = when {
         this.isRun -> {
             AppStatus.RUNNING
         }
         else -> if (DownloadUtils.checkAppIsInstalled(this.packageName)) {
-            AppStatus.INSTALLED
+            if (appVersionIsUpdate) {
+                AppStatus.DOWNLOADED
+            } else {
+                AppStatus.INSTALLED
+            }
         } else {
             AppStatus.DOWNLOADED
         }

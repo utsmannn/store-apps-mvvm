@@ -5,6 +5,7 @@
 
 package com.utsman.storeapps
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -14,13 +15,13 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.utsman.abstraction.extensions.intentTo
+import com.utsman.abstraction.extensions.logi
+import com.utsman.abstraction.extensions.toast
 import com.utsman.storeapps.databinding.ActivityMainNavigationBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivityNavigation : AppCompatActivity() {
-
-    //private val binding: ActivityMainNavigationBinding by viewBinding()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +31,10 @@ class MainActivityNavigation : AppCompatActivity() {
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_container) as NavHostFragment
         NavigationUI.setupWithNavController(bottomNav, navHostFragment.navController)
+
+        navHostFragment.navController.addOnDestinationChangedListener { _, destination, _ ->
+            supportActionBar?.title = destination.label
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -45,5 +50,20 @@ class MainActivityNavigation : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val fragmentDownload = supportFragmentManager.findFragmentById(R.id.nav_host_container) as NavHostFragment
+        //fragmentDownload.onActivityResult(requestCode, resultCode, data)
+        for (fragment in supportFragmentManager.fragments) {
+            fragment.onActivityResult(requestCode, resultCode, data)
+        }
+        /*if (fragmentDownload != null) {
+            toast("not null")
+        } else {
+            toast("null")
+        }*/
+        //toast("from activity -> $requestCode")
     }
 }

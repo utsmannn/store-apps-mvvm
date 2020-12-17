@@ -5,6 +5,7 @@
 
 package com.utsman.listing.ui.adapter
 
+import android.app.Activity
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
@@ -22,6 +23,11 @@ class DownloadedListAdapter(private val lifecycleOwner: LifecycleOwner) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val list: MutableList<DownloadedApps?> = mutableListOf()
     private var markIsDone: ((DownloadedApps) -> Unit)? = null
+    private var openDownload:((String) -> Unit)? = null
+
+    fun openDownloadFile(openDownloadFile: ((String) -> Unit)) {
+        this.openDownload = openDownloadFile
+    }
 
     fun markIsDone(mark: (DownloadedApps) -> Unit) {
         this.markIsDone = mark
@@ -70,7 +76,7 @@ class DownloadedListAdapter(private val lifecycleOwner: LifecycleOwner) :
                 (holder as DownloadedProgressViewHolder).bind(item, lifecycleOwner, markIsDone)
 
             AppStatus.DOWNLOADED -> if (item != null)
-                (holder as DownloadedViewHolder).bind(item, lifecycleOwner)
+                (holder as DownloadedViewHolder).bind(item, lifecycleOwner, openDownload)
 
             AppStatus.INSTALLED -> if (item != null)
                 (holder as DownloadedInstalledViewHolder).bind(item, lifecycleOwner)

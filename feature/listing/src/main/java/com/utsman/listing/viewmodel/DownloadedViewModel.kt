@@ -25,7 +25,7 @@ class DownloadedViewModel @ViewModelInject constructor(
 ) : ViewModel() {
 
     companion object {
-        val STATE_RV = "state_rv_${DownloadedViewModel::class.java.canonicalName}"
+        val STATE_RV = "state_rv_downloaded"
     }
 
     private var stateRecyclerView: Parcelable?

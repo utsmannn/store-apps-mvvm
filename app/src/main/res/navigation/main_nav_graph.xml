@@ -14,10 +14,20 @@
     <fragment
         android:id="@+id/home"
         android:name="com.utsman.home.ui.HomeFragment"
-        android:label="HomeFragment" />
+        android:label="Home" />
+
+    <fragment android:id="@+id/categories"
+        android:name="com.utsman.listing.ui.fragment.CategoriesFragment"
+        android:label="Categories"/>
 
     <fragment
         android:id="@+id/download"
         android:name="com.utsman.listing.ui.fragment.DownloadedFragment"
-        android:label="Downloaded"/>
+        android:label="Download"/>
+
+    <fragment
+        android:id="@+id/installed"
+        android:name="com.utsman.listing.ui.fragment.InstalledAppFragment"
+        android:label="Updated"/>
+
 </navigation>

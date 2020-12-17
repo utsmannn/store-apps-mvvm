@@ -12,8 +12,22 @@
         android:title="Home" />
 
     <item
+        android:id="@+id/categories"
+        android:icon="@drawable/ic_fluent_table_simple_24_filled"
+        android:iconTint="@color/purple_500"
+        android:title="Categories" />
+
+    <item
         android:id="@+id/download"
         android:icon="@drawable/ic_fluent_arrow_download_24_filled"
         android:iconTint="@color/purple_500"
         android:title="Download" />
+
+    <item
+        android:id="@+id/installed"
+        android:icon="@drawable/ic_fluent_phone_mobile_24_filled"
+        android:iconTint="@color/purple_500"
+        android:title="Updated" />
+
+
 </menu>

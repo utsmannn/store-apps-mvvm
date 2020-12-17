@@ -29,7 +29,6 @@ class DownloadedProgressViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     fun bind(downloadedApps: DownloadedApps, lifecycleOwner: LifecycleOwner, mark: ((DownloadedApps) -> Unit)? = null) = binding.run {
         val name = downloadedApps.name
         val packageName = downloadedApps.appsView?.packageName
-        val fileName = downloadedApps.fileName
         val icon = downloadedApps.appsView?.icon
         val downloadId = downloadedApps.downloadId
         val appStatus = downloadedApps.appStatus

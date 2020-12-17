@@ -5,6 +5,7 @@
 
 package com.utsman.listing.ui.adapter
 
+import android.app.Activity
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.paging.PagingDataAdapter
@@ -20,11 +21,21 @@ import com.utsman.listing.ui.viewholder.UpdatedAppViewHolder
 
 class PagingListAdapter(
     private var holderType: HolderType = HolderType.GRID,
-    private val lifecycleOwner: LifecycleOwner,
-    private val onClick: (AppsView) -> Unit
+    private val lifecycleOwner: LifecycleOwner
 ) : PagingDataAdapter<AppsView, RecyclerView.ViewHolder>(
     AppsViewDiffUtil()
 ) {
+
+    private var onClick: ((AppsView) -> Unit)? = null
+    private var openDownload:((String) -> Unit)? = null
+
+    fun onUpdateClick(click: (AppsView) -> Unit) {
+        this.onClick = click
+    }
+
+    fun openDownloadFile(openDownloadFile: ((String) -> Unit)) {
+        this.openDownload = openDownloadFile
+    }
 
     enum class HolderType {
         GRID, UPDATED, SEARCH
@@ -38,12 +49,12 @@ class PagingListAdapter(
         val item = getItem(position)
         if (item != null) {
             when (holderType) {
-                HolderType.GRID -> (holder as GridAppViewHolder).bind(item, onClick)
+                HolderType.GRID -> (holder as GridAppViewHolder).bind(item)
                 HolderType.UPDATED -> (holder as UpdatedAppViewHolder).bind(item, onClick)
                 HolderType.SEARCH -> {
                     when (HolderDownloadedType.values()[getItemViewType(position)]) {
-                        HolderDownloadedType.REGULAR -> (holder as SearchAppViewHolder).bind(item, lifecycleOwner, onClick)
-                        else -> (holder as DownloadedViewHolder).bind(item.downloadedApps!!, lifecycleOwner)
+                        HolderDownloadedType.REGULAR -> (holder as SearchAppViewHolder).bind(item)
+                        else -> (holder as DownloadedViewHolder).bind(item.downloadedApps!!, lifecycleOwner, openDownload)
                     }
                 }
             }
