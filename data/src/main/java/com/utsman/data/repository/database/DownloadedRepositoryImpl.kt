@@ -12,18 +12,20 @@ import com.utsman.data.model.dto.worker.WorkerAppsMap
 import com.utsman.data.model.dto.worker.toEntity
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class DownloadedRepositoryImpl @Inject constructor(private val dao: CurrentDownloadDao) : DownloadedRepository {
-    override suspend fun getCurrentAppsSuspendFlow(): Flow<List<CurrentDownloadEntity>> {
+    override suspend fun getCurrentAppsSuspendFlow(): Flow<List<CurrentDownloadEntity?>> {
         return dao.currentAppsFlow()
     }
 
-    override fun getCurrentAppsFlow(): Flow<List<CurrentDownloadEntity>> {
+    override fun getCurrentAppsFlow(): Flow<List<CurrentDownloadEntity?>> {
         return dao.currentAppsFlow()
     }
 
-    override fun getCurrentApp(packageName: String?): CurrentDownloadEntity? {
+    override suspend fun getCurrentApp(packageName: String?): CurrentDownloadEntity? {
         return dao.getCurrentApps(packageName)
     }
 

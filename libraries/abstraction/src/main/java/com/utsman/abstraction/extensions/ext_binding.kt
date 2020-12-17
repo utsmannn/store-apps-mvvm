@@ -6,9 +6,12 @@
 package com.utsman.abstraction.extensions
 
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.paging.LoadState
+import com.utsman.abstraction.R
 import com.utsman.abstraction.databinding.InitialLoaderBinding
+import com.utsman.abstraction.databinding.ItemListEmptyBinding
 import com.utsman.abstraction.databinding.ItemListLoaderBinding
 import com.utsman.abstraction.interactor.ResultState
 
@@ -27,7 +30,25 @@ fun ItemListLoaderBinding.initialLoadState(state: LoadState, retry: () -> Unit) 
     }
 }
 
-fun <T : Any>ResultState<T>.bindToProgressView(binding: InitialLoaderBinding, parentView: View, retry: () -> Unit) {
+fun ItemListEmptyBinding.initialEmptyState(
+    state: LoadState,
+    itemCount: Int = 0,
+    imgRes: Int = R.drawable.ic_fluent_signed_24_filled,
+    txtMessage: String = "Item empty"
+) = run {
+    logi("end paging is  -> ${state.endOfPaginationReached} | item count is -> $itemCount")
+    if (state !is LoadState.Loading && itemCount == 0) {
+        showEmpty(imgRes, txtMessage)
+    } else {
+        hideEmpty()
+    }
+}
+
+fun <T : Any> ResultState<T>.bindToProgressView(
+    binding: InitialLoaderBinding,
+    parentView: View,
+    retry: () -> Unit
+) {
     binding.run {
         parentView.isVisible = this@bindToProgressView is ResultState.Success
 
@@ -44,4 +65,23 @@ fun <T : Any>ResultState<T>.bindToProgressView(binding: InitialLoaderBinding, pa
             retry.invoke()
         }
     }
+}
+
+
+
+fun ItemListEmptyBinding.showEmpty(
+    imgRes: Int = R.drawable.ic_fluent_signed_24_filled,
+    txtMessage: String = "Item empty"
+) {
+    imgEmpty.isVisible = true
+    txtMessageEmpty.isVisible = true
+
+    val emptyDrawable = ContextCompat.getDrawable(imgEmpty.context, imgRes)
+    imgEmpty.setImageDrawable(emptyDrawable)
+    txtMessageEmpty.text = txtMessage
+}
+
+fun ItemListEmptyBinding.hideEmpty() {
+    imgEmpty.isVisible = false
+    txtMessageEmpty.isVisible = false
 }

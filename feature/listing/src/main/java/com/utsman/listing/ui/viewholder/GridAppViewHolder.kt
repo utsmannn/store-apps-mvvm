@@ -18,7 +18,7 @@ import com.utsman.listing.databinding.ItemListGridBinding
 class GridAppViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val binding = ItemListGridBinding.bind(view)
 
-    fun bind(item: AppsSealedView.AppsView, click: (AppsSealedView.AppsView) -> Unit) = binding.run {
+    fun bind(item: AppsSealedView.AppsView) = binding.run {
         txtTitle.text = item.name
         txtSize.text = item.size.toBytesReadable()
         imgItem.loadUrl(item.icon, item.id.toString())

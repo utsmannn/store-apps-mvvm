@@ -19,10 +19,10 @@ interface CurrentDownloadDao {
     suspend fun currentApps(): List<CurrentDownloadEntity>
 
     @Query("select * from current_downloads")
-    fun currentAppsFlow(): Flow<List<CurrentDownloadEntity>>
+    fun currentAppsFlow(): Flow<List<CurrentDownloadEntity?>>
 
     @Query("select * from current_downloads where package_name = :packageName")
-    fun getCurrentApps(packageName: String?): CurrentDownloadEntity?
+    suspend fun getCurrentApps(packageName: String?): CurrentDownloadEntity?
 
     @Update
     suspend fun updateCurrentApps(currentDownloadEntity: CurrentDownloadEntity)

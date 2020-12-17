@@ -9,5 +9,5 @@ import androidx.work.WorkInfo
 
 sealed class WorkInfoResult(val workData: WorkInfo? = null, val pnData: String? = null) {
     class Stopped : WorkInfoResult()
-    data class Downloading(val data: WorkInfo, val packageName: String) : WorkInfoResult(data, packageName)
+    data class Working(val data: WorkInfo, val packageName: String) : WorkInfoResult(data, packageName)
 }

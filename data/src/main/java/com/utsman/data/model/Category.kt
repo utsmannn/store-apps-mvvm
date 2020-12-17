@@ -11,14 +11,21 @@ data class Category(
     var name: String = "",
     var query: String = "",
     var image: String = "",
+    var iconRes: Int? = null,
     var desc: String = ""
 ) {
     companion object {
         fun simple(category: Category.() -> Unit) = Category().apply(category)
-        fun buildFrom(query: String) : Category {
+
+        fun buildFrom(query: String, iconRes: Int? = null) : Category {
             val name = query.replace("-", " & ")
                 .capital()
-            return Category(name, query)
+
+            return Category(
+                name = name,
+                query = query,
+                iconRes = iconRes
+            )
         }
     }
 }

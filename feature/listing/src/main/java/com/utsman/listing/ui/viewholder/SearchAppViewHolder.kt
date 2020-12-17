@@ -21,7 +21,7 @@ import com.utsman.listing.databinding.ItemListSearchBinding
 class SearchAppViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val binding = ItemListSearchBinding.bind(view)
 
-    fun bind(item: AppsSealedView.AppsView, lifecycleOwner: LifecycleOwner, click: (AppsSealedView.AppsView) -> Unit) = binding.run {
+    fun bind(item: AppsSealedView.AppsView) = binding.run {
         txtTitle.text = item.name
         txtSize.text = item.size.toBytesReadable()
         imgItem.loadUrl(item.icon, item.id.toString())

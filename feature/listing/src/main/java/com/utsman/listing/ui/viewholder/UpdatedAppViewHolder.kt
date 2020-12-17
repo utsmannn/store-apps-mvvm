@@ -16,7 +16,7 @@ import com.utsman.listing.databinding.ItemListUpdatedBinding
 class UpdatedAppViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val binding = ItemListUpdatedBinding.bind(view)
 
-    fun bind(item: AppsSealedView.AppsView, click: (AppsSealedView.AppsView) -> Unit) = binding.run {
+    fun bind(item: AppsSealedView.AppsView, click: ((AppsSealedView.AppsView) -> Unit)?) = binding.run {
         txtTitle.text = item.name
         txtSize.text = item.size.toBytesReadable()
         imgItem.loadUrl(item.icon, item.id.toString())
@@ -24,6 +24,10 @@ class UpdatedAppViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val versionString =
             "Current ver. ${item.appVersion.name}\nUpdated ver. ${item.appVersion.apiName}"
         txtVersion.text = versionString
+
+        btnDownload.setOnClickListener {
+            click?.invoke(item)
+        }
 
         root detailFor item.packageName
     }

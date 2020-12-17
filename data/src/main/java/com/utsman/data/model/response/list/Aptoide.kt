@@ -31,7 +31,10 @@ data class File(
     val vercode: Long? = null,
 
     @Json(name="tags")
-    val tags: List<Any?>? = null
+    val tags: List<Any?>? = null,
+
+    @Json(name="path")
+    val path: String? = null
 )
 
 data class Info(

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Created by Muhammad Utsman on 17/12/20 5:23 PM
+  ~ Copyright (c) 2020 . All rights reserved.
+  -->
+
+<resources>
+    <style name="ButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="background">@android:color/holo_green_light</item>
+    </style>
+</resources>

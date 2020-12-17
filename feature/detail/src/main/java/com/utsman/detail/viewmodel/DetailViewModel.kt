@@ -13,6 +13,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.Operation
 import com.utsman.abstraction.interactor.ResultState
 import com.utsman.data.model.dto.detail.DetailView
+import com.utsman.data.model.dto.list.AppVersion
+import com.utsman.data.model.dto.list.AppsSealedView
 import com.utsman.data.model.dto.worker.FileDownload
 import com.utsman.data.model.dto.worker.WorkerAppsMap
 import com.utsman.data.model.dto.worker.toAppsMap
@@ -44,8 +46,18 @@ class DetailViewModel @ViewModelInject constructor(
         detailUseCase.requestDownload(viewModelScope, fileDownload)
     }
 
+    fun cancelDownload(downloadId: Long?) = viewModelScope.launch {
+        detailUseCase.cancelDownload(this, downloadId)
+    }
+
+    fun checkIsDownloaded(fileName: String) = detailUseCase.checkDownloadedApks(fileName)
+
     fun observerWorkInfo(packageName: String) = viewModelScope.launch {
         detailUseCase.observerWorkInfoResult(this, packageName)
+    }
+
+    fun updateState() = viewModelScope.launch {
+        detailUseCase.updateState(this)
     }
 
     fun restartState() = viewModelScope.launch {

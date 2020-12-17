@@ -15,6 +15,7 @@ import com.utsman.data.model.dto.worker.FileDownload
 import com.utsman.data.model.dto.worker.WorkInfoResult
 import com.utsman.data.model.dto.worker.WorkerAppsMap
 import com.utsman.data.repository.database.DownloadedRepository
+import com.utsman.data.utils.DownloadUtils
 import com.utsman.data.worker.DownloadAppWorker
 import com.utsman.network.toJson
 import kotlinx.coroutines.CoroutineScope
@@ -54,6 +55,10 @@ class DownloadRepositoryImpl @Inject constructor(
             .asFlow()
     }
 
+    override suspend fun cancelDownload(scope: CoroutineScope, downloadId: Long?) {
+        DownloadUtils.cancel(scope, downloadId)
+    }
+
     override suspend fun observerWorkInfo(scope: CoroutineScope, packageName: String): Flow<WorkInfoResult> {
         return channelFlow {
             offer(WorkInfoResult.Stopped())
@@ -62,7 +67,7 @@ class DownloadRepositoryImpl @Inject constructor(
             scope.launch {
                 getCurrentApps()
                     .mapNotNull {
-                        it.find { a -> a.packageName == packageName }
+                        it.find { a -> a?.packageName == packageName }
                     }
                     .flatMapMerge { app ->
                         workManager.getWorkInfoByIdLiveData(UUID.fromString(app.uuid))
@@ -71,13 +76,15 @@ class DownloadRepositoryImpl @Inject constructor(
                     .collect { workInfo ->
                         logi("work info in use case is -> $workInfo")
 
-                        offer(WorkInfoResult.Downloading(workInfo, packageName))
+                        offer(WorkInfoResult.Working(workInfo, packageName))
                         if (workInfo != null) {
                             val progressData = workInfo.outputData.getBoolean("done", false)
                             logi("done data is -> $progressData")
                             if (progressData) {
                                 offer(WorkInfoResult.Stopped())
                             }
+                        } else {
+                            logi("work info null....................")
                         }
                     }
             }

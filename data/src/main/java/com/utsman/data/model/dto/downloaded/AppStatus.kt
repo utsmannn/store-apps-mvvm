@@ -6,5 +6,5 @@
 package com.utsman.data.model.dto.downloaded
 
 enum class AppStatus {
-    RUNNING, DOWNLOADED, INSTALLED
+    RUNNING, DOWNLOAD_DIVIDER, DOWNLOADED, INSTALLED_DIVIDER, INSTALLED
 }

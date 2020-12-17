@@ -18,6 +18,7 @@ import com.utsman.abstraction.base.GlideApp
 import com.utsman.data.di.*
 import com.utsman.data.repository.database.DownloadedRepository
 import com.utsman.data.repository.list.AppsRepository
+import com.utsman.data.repository.list.InstalledAppsRepository
 import com.utsman.network.di._jsonBeautifier
 import com.utsman.network.di._moshi
 import com.utsman.network.utils.JsonBeautifier
@@ -45,6 +46,9 @@ class MainApplication : Application() {
     @Inject
     lateinit var downloadedRepository: DownloadedRepository
 
+    @Inject
+    lateinit var installedAppsRepository: InstalledAppsRepository
+
     override fun onCreate() {
         super.onCreate()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -58,6 +62,7 @@ class MainApplication : Application() {
         _workManager.value = workManager
         _appsRepository.value = appsRepository
         _downloadedRepository.value = downloadedRepository
+        _installedAppsRepository.value = installedAppsRepository
     }
 
     override fun onLowMemory() {
@@ -69,17 +74,4 @@ class MainApplication : Application() {
         super.onTrimMemory(level)
         GlideApp.get(this).onTrimMemory(level)
     }
-
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel("store_app", "Download Notification", importance).apply {
-                description = "Notification for downloading apk"
-            }
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
-    }
-
 }

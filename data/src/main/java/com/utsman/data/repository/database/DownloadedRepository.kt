@@ -12,9 +12,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 
 interface DownloadedRepository {
-    suspend fun getCurrentAppsSuspendFlow(): Flow<List<CurrentDownloadEntity>>
-    fun getCurrentAppsFlow(): Flow<List<CurrentDownloadEntity>>
-    fun getCurrentApp(packageName: String?): CurrentDownloadEntity?
+    suspend fun getCurrentAppsSuspendFlow(): Flow<List<CurrentDownloadEntity?>>
+    fun getCurrentAppsFlow(): Flow<List<CurrentDownloadEntity?>>
+    suspend fun getCurrentApp(packageName: String?): CurrentDownloadEntity?
     suspend fun markIsRun(scope: CoroutineScope, packageName: String?, downloadId: Long?): Job
     suspend fun checkIsRun(packageName: String?): Boolean
     suspend fun markIsComplete(scope: CoroutineScope, packageName: String?, downloadId: Long?): Job

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Created by Muhammad Utsman on 14/12/20 7:31 PM
+  ~ Copyright (c) 2020 . All rights reserved.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:paddingStart="6dp"
+    android:paddingTop="6dp"
+    android:paddingEnd="6dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tool:text="Installed"
+        android:id="@+id/txt_title_divider"
+        android:textStyle="bold"
+        android:layout_margin="6dp"/>
+
+</RelativeLayout>
