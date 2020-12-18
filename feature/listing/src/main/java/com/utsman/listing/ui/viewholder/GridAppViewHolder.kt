@@ -13,10 +13,10 @@ import com.utsman.abstraction.extensions.detailFor
 import com.utsman.abstraction.extensions.loadRes
 import com.utsman.abstraction.extensions.loadUrl
 import com.utsman.data.model.dto.list.AppsSealedView
-import com.utsman.listing.databinding.ItemListGridBinding
+import com.utsman.listing.databinding.ItemGridBinding
 
 class GridAppViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    private val binding = ItemListGridBinding.bind(view)
+    private val binding = ItemGridBinding.bind(view)
 
     fun bind(item: AppsSealedView.AppsView) = binding.run {
         txtTitle.text = item.name

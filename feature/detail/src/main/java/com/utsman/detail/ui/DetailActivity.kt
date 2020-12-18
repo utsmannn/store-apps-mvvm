@@ -12,27 +12,44 @@ import android.graphics.Color
 import android.graphics.drawable.ClipDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.viewbinding.library.activity.viewBinding
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager.widget.ViewPager
 import androidx.work.Operation
+import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.utsman.abstraction.extensions.*
 import com.utsman.abstraction.interactor.listenOn
 import com.utsman.abstraction.listener.ResultStateListener
 import com.utsman.data.di._downloadedRepository
 import com.utsman.data.model.dto.detail.DetailView
 import com.utsman.data.model.dto.downloaded.Download
+import com.utsman.data.model.dto.permission.PermissionData
 import com.utsman.data.model.dto.worker.FileDownload
 import com.utsman.data.model.dto.worker.WorkInfoResult
 import com.utsman.data.utils.DownloadUtils
 import com.utsman.detail.R
 import com.utsman.detail.databinding.ActivityDetailBinding
+import com.utsman.detail.databinding.DialogDescFullBinding
+import com.utsman.detail.databinding.DialogGraphicFullBinding
+import com.utsman.detail.databinding.DialogPermissionFullBinding
+import com.utsman.detail.ui.adapter.GraphicsAdapter
+import com.utsman.detail.ui.adapter.GraphicsPagerAdapter
+import com.utsman.detail.ui.adapter.PermissionAdapter
 import com.utsman.detail.viewmodel.DetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -88,6 +105,86 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
+    private fun createBottomSheetDialog(): BottomSheetDialog {
+        return BottomSheetDialog(this).apply {
+            behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                        dismiss()
+                    }
+                }
+
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                }
+            })
+
+            setOnShowListener {
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        }
+    }
+
+    private val dialogGraphicsBinding by lazy {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_graphic_full, null)
+        DialogGraphicFullBinding.bind(dialogView)
+    }
+
+    private val dialogDescBinding by lazy {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_desc_full, null)
+        DialogDescFullBinding.bind(dialogView)
+    }
+
+    private val dialogPermissionBinding by lazy {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_permission_full, null)
+        DialogPermissionFullBinding.bind(dialogView)
+    }
+
+    private val dialogGraphic by lazy {
+        createBottomSheetDialog()
+    }
+
+    private val dialogDesc by lazy {
+        createBottomSheetDialog()
+    }
+
+    private val dialogPermission by lazy {
+        createBottomSheetDialog()
+    }
+
+    private fun setupDialogGraphic(graphics: List<String?>, onAction: (ViewPager) -> Unit) {
+        dialogGraphic.setContentView(dialogGraphicsBinding.root)
+        dialogGraphicsBinding.graphicViewPager.run {
+            adapter = GraphicsPagerAdapter(graphics)
+            onAction.invoke(this)
+        }
+        dialogGraphicsBinding.btnGraphicClose.setOnClickListener {
+            dialogGraphic.dismiss()
+        }
+    }
+
+    private fun setupDialogDesc(title: String, desc: String) {
+        dialogDesc.setContentView(dialogDescBinding.root)
+        dialogDescBinding.run {
+            txtTitleFull.text = title
+            txtDescFull.text = desc
+            btnDescClose.setOnClickListener {
+                dialogDesc.dismiss()
+            }
+        }
+    }
+
+    private fun setupDialogPermission(permissions: List<PermissionData?>) {
+        dialogPermission.setContentView(dialogPermissionBinding.root)
+        dialogPermissionBinding.rvPermission.run {
+            layoutManager = LinearLayoutManager(dialogPermissionBinding.root.context)
+            adapter = PermissionAdapter(permissions)
+        }
+
+        dialogPermissionBinding.btnPermissionClose.setOnClickListener {
+            dialogPermission.dismiss()
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     private fun setupView(data: DetailView) = binding.run {
         imgDetail.loadUrl(data.icon, data.id.toString())
@@ -95,6 +192,49 @@ class DetailActivity : AppCompatActivity() {
         txtVersion.text = "Version ${data.appVersion.apiName}"
         txtDeveloper.text = data.developer.name
         txtDesc.text = data.description
+            .replace("\\s+", " ")
+            .replace("\n", " ")
+            .replace("\r", " ")
+
+        setupDialogDesc(data.name, data.description)
+        setupDialogPermission(data.permissions)
+
+        if (data.images.isNotEmpty()) {
+            setupDialogGraphic(data.images) { viewPager ->
+                rvGraphics.run {
+                    val snapHelper = GravitySnapHelper(Gravity.START)
+                    snapHelper.attachToRecyclerView(this)
+                    layoutManager = LinearLayoutManager(this@DetailActivity, LinearLayoutManager.HORIZONTAL, false)
+                    adapter = GraphicsAdapter(data.images) { _, index ->
+                        viewPager.currentItem = index
+                        dialogGraphic.show()
+                    }
+                }
+            }
+        } else {
+            rvGraphics.isVisible = false
+        }
+
+        btnDescMore.setOnClickListener {
+            dialogDesc.show()
+        }
+        btnPermissionMore.setOnClickListener {
+            dialogPermission.show()
+        }
+
+        if (!data.permissions.isNullOrEmpty()) {
+            val permissionString = data.permissions.map { permission ->
+                permission?.string
+            }.toString()
+                .replace("[", "")
+                .replace("]", "")
+                .replace(",",", ")
+
+            txtPermissionSimple.text = permissionString
+        }
+
+        txtPermissionSimple.isVisible = !data.permissions.isNullOrEmpty()
+        btnPermissionMore.isVisible = data.permissions.size >= 2
 
         btnActionDownload.setOnClickListener {
             when {
@@ -142,7 +282,6 @@ class DetailActivity : AppCompatActivity() {
         val layerButton = btnActionDownload.background as LayerDrawable
         val clipLayer = layerButton.findDrawableByLayerId(R.id.clip_drawable) as ClipDrawable
 
-        toast("downloaded apk -> ${viewModel.isDownloadedApk()}")
         if (viewModel.isDownloadedApk()) {
             clipLayer.setProgressAnimation(Download.MAX_LEVEL)
         }
@@ -158,7 +297,6 @@ class DetailActivity : AppCompatActivity() {
                     val workInfo = result.workData
 
                     if (workInfo != null) {
-
                         val doneData = workInfo.outputData.getBoolean("done", false)
                         val dataString = workInfo.progress.getString("data")
                         val fileObserver =
@@ -168,9 +306,6 @@ class DetailActivity : AppCompatActivity() {
                         btnActionDownload.text = status?.message ?: viewModel.getDownloadButtonTitle()
 
                         isDownloading = !doneData && status?.type == Download.TypeStatus.DOWNLOADING
-                        logi("set status is ---> ${!doneData && status?.type != Download.TypeStatus.DOWNLOADING}")
-
-                        logi("type status is ----> ${status?.type}")
 
                         when (status?.type) {
                             Download.TypeStatus.SUCCESS -> {
@@ -247,7 +382,8 @@ class DetailActivity : AppCompatActivity() {
                 }
                 is Operation.State.FAILURE -> {
                     val throwable = state.throwable
-                    binding.txtDeveloper.text = throwable.localizedMessage
+                    throwable.printStackTrace()
+                    loge("${throwable.message}")
                 }
                 is Operation.State.SUCCESS -> {
                     // work instance success created

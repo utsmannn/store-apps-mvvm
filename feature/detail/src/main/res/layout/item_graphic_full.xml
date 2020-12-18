@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Created by Muhammad Utsman on 18/12/20 3:48 PM
+  ~ Copyright (c) 2020 . All rights reserved.
+  -->
+
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/img_graphic_full"/>

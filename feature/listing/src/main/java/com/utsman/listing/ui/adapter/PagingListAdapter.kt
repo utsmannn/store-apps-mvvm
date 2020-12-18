@@ -61,11 +61,11 @@ class PagingListAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val viewGrid = parent.inflate(R.layout.item_list_grid)
-        val viewUpdated = parent.inflate(R.layout.item_list_updated)
-        val viewSearch = parent.inflate(R.layout.item_list_search)
+        val viewGrid = parent.inflate(R.layout.item_grid)
+        val viewUpdated = parent.inflate(R.layout.item_updated)
+        val viewSearch = parent.inflate(R.layout.item_search)
 
-        val listDownloadedView = parent.inflate(R.layout.item_list_downloaded)
+        val listDownloadedView = parent.inflate(R.layout.item_downloaded)
 
         return when (holderType) {
             HolderType.GRID -> GridAppViewHolder(viewGrid)

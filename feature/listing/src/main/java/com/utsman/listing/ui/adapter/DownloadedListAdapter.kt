@@ -58,7 +58,7 @@ class DownloadedListAdapter(private val lifecycleOwner: LifecycleOwner) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = parent.inflate(R.layout.item_list_downloaded)
+        val view = parent.inflate(R.layout.item_downloaded)
         val dividerView = parent.inflate(R.layout.item_divider)
         return when (AppStatus.values()[viewType]) {
             AppStatus.RUNNING -> DownloadedProgressViewHolder(view)

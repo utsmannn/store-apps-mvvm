@@ -5,6 +5,7 @@
 
 package com.utsman.data.model.dto.detail
 
+import com.utsman.data.const.PermissionValues
 import com.utsman.data.model.dto.list.AppVersion
 import com.utsman.data.model.response.detail.AptoideMeta
 
@@ -26,7 +27,8 @@ fun AptoideMeta.toDetailView(): DetailView {
                 file.size = d.file?.filesize ?: 0L
                 file.url = d.file?.path ?: ""
             }
-            this.permissions = d.file?.usedPermissions?.map { it ?: "" } ?: emptyList()
+            val permissionData = d.file?.usedPermissions?.map { it ?: "" } ?: emptyList()
+            this.permissions = PermissionValues.setPermissionData(permissionData)
             this.developer = Developer.simple { dev ->
                 dev.name = d.developer?.name ?: ""
                 dev.url = d.developer?.website ?: ""

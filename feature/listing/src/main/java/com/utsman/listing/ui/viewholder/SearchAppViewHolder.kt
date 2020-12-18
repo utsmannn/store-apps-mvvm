@@ -16,10 +16,10 @@ import com.utsman.abstraction.extensions.loadRes
 import com.utsman.abstraction.extensions.loadUrl
 import com.utsman.data.model.dto.list.AppsSealedView
 import com.utsman.data.utils.DownloadUtils
-import com.utsman.listing.databinding.ItemListSearchBinding
+import com.utsman.listing.databinding.ItemSearchBinding
 
 class SearchAppViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    private val binding = ItemListSearchBinding.bind(view)
+    private val binding = ItemSearchBinding.bind(view)
 
     fun bind(item: AppsSealedView.AppsView) = binding.run {
         txtTitle.text = item.name

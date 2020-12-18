@@ -11,10 +11,10 @@ import com.utsman.abstraction.extensions.toBytesReadable
 import com.utsman.abstraction.extensions.detailFor
 import com.utsman.abstraction.extensions.loadUrl
 import com.utsman.data.model.dto.list.AppsSealedView
-import com.utsman.listing.databinding.ItemListUpdatedBinding
+import com.utsman.listing.databinding.ItemUpdatedBinding
 
 class UpdatedAppViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    private val binding = ItemListUpdatedBinding.bind(view)
+    private val binding = ItemUpdatedBinding.bind(view)
 
     fun bind(item: AppsSealedView.AppsView, click: ((AppsSealedView.AppsView) -> Unit)?) = binding.run {
         txtTitle.text = item.name

@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.utsman.abstraction.extensions.intentTo
 import com.utsman.abstraction.extensions.loadRes
 import com.utsman.data.model.Category
-import com.utsman.listing.databinding.ItemListCategoryBinding
+import com.utsman.listing.databinding.ItemCategoryBinding
 
 class CategoriesViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    private val binding = ItemListCategoryBinding.bind(view)
+    private val binding = ItemCategoryBinding.bind(view)
 
     fun bind(category: Category) = binding.run {
         imgCategory.loadRes(category.iconRes, category.query)

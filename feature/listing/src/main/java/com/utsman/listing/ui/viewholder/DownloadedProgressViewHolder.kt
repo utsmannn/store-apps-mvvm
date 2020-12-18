@@ -19,12 +19,12 @@ import com.utsman.abstraction.extensions.logi
 import com.utsman.data.model.dto.downloaded.DownloadedApps
 import com.utsman.data.utils.DownloadUtils
 import com.utsman.listing.R
-import com.utsman.listing.databinding.ItemListDownloadedBinding
+import com.utsman.listing.databinding.ItemDownloadedBinding
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class DownloadedProgressViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    private val binding = ItemListDownloadedBinding.bind(view)
+    private val binding = ItemDownloadedBinding.bind(view)
 
     fun bind(downloadedApps: DownloadedApps, lifecycleOwner: LifecycleOwner, mark: ((DownloadedApps) -> Unit)? = null) = binding.run {
         val name = downloadedApps.name

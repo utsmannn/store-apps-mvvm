@@ -6,6 +6,7 @@
 package com.utsman.data.model.dto.detail
 
 import com.utsman.data.model.dto.list.AppVersion
+import com.utsman.data.model.dto.permission.PermissionData
 
 data class DetailView(
     var id: Int = 0,
@@ -18,7 +19,7 @@ data class DetailView(
     var images: List<String> = emptyList(),
     var description: String = "",
     var file: File = File(),
-    var permissions: List<String> = emptyList(),
+    var permissions: List<PermissionData?> = emptyList(),
     var developer: Developer = Developer()
 ) {
     companion object {

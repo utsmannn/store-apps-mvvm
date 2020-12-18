@@ -1,0 +1,666 @@
+[
+  {
+    "string": "ACCEPT_HANDOVER",
+    "desc": "Allows a calling app to continue a call which was started in another app."
+  },
+  {
+    "string": "ACCESS_BACKGROUND_LOCATION",
+    "desc": "Allows an app to access location in the background."
+  },
+  {
+    "string": "ACCESS_CHECKIN_PROPERTIES",
+    "desc": "Allows read/write access to the properties table in the checkin database, to change values that get uploaded."
+  },
+  {
+    "string": "ACCESS_COARSE_LOCATION",
+    "desc": "Allows an app to access approximate location."
+  },
+  {
+    "string": "ACCESS_FINE_LOCATION",
+    "desc": "Allows an app to access precise location."
+  },
+  {
+    "string": "ACCESS_LOCATION_EXTRA_COMMANDS",
+    "desc": "Allows an application to access extra location provider commands."
+  },
+  {
+    "string": "ACCESS_MEDIA_LOCATION",
+    "desc": "Allows an application to access any geographic locations persisted in the user's shared collection."
+  },
+  {
+    "string": "ACCESS_NETWORK_STATE",
+    "desc": "Allows applications to access information about networks."
+  },
+  {
+    "string": "ACCESS_NOTIFICATION_POLICY",
+    "desc": "Marker permission for applications that wish to access notification policy."
+  },
+  {
+    "string": "ACCESS_WIFI_STATE",
+    "desc": "Allows applications to access information about Wi-Fi networks."
+  },
+  {
+    "string": "ACCOUNT_MANAGER",
+    "desc": "Allows applications to call into AccountAuthenticators."
+  },
+  {
+    "string": "ACTIVITY_RECOGNITION",
+    "desc": "Allows an application to recognize physical activity."
+  },
+  {
+    "string": "ADD_VOICEMAIL",
+    "desc": "Allows an application to add voicemails into the system."
+  },
+  {
+    "string": "ANSWER_PHONE_CALLS",
+    "desc": "Allows the app to answer an incoming phone call."
+  },
+  {
+    "string": "BATTERY_STATS",
+    "desc": "Allows an application to collect battery statistics"
+  },
+  {
+    "string": "BIND_ACCESSIBILITY_SERVICE",
+    "desc": "Must be required by an AccessibilityService, to ensure that only the system can bind to it."
+  },
+  {
+    "string": "BIND_APPWIDGET",
+    "desc": "Allows an application to tell the AppWidget service which application can access AppWidget's data."
+  },
+  {
+    "string": "BIND_AUTOFILL_SERVICE",
+    "desc": "Must be required by a AutofillService, to ensure that only the system can bind to it."
+  },
+  {
+    "string": "BIND_CALL_REDIRECTION_SERVICE",
+    "desc": "Must be required by a CallRedirectionService, to ensure that only the system can bind to it."
+  },
+  {
+    "string": "BIND_CARRIER_MESSAGING_CLIENT_SERVICE",
+    "desc": "A subclass of CarrierMessagingClientService must be protected with this permission."
+  },
+  {
+    "string": "BIND_CARRIER_MESSAGING_SERVICE",
+    "desc": "This constant was deprecated in API level 23. Use BIND_CARRIER_SERVICES instead"
+  },
+  {
+    "string": "BIND_CARRIER_SERVICES",
+    "desc": "The system process that is allowed to bind to services in carrier apps will have this permission."
+  },
+  {
+    "string": "BIND_CHOOSER_TARGET_SERVICE",
+    "desc": "This constant was deprecated in API level 30. For publishing direct share targets, please follow the instructions in https://developer.android.com/training/sharing/receive.html#providing-direct-share-targets instead."
+  },
+  {
+    "string": "BIND_CONDITION_PROVIDER_SERVICE",
+    "desc": "Must be required by a ConditionProviderService, to ensure that only the system can bind to it."
+  },
+  {
+    "string": "BIND_CONTROLS",
+    "desc": "Allows SystemUI to request third party controls."
+  },
+  {
+    "string": "BIND_DEVICE_ADMIN",
+    "desc": "Must be required by device administration receiver, to ensure that only the system can interact with it."
+  },
+  {
+    "string": "BIND_DREAM_SERVICE",
+    "desc": "Must be required by an DreamService, to ensure that only the system can bind to it."
+  },
+  {
+    "string": "BIND_INCALL_SERVICE",
+    "desc": "Must be required by a InCallService, to ensure that only the system can bind to it."
+  },
+  {
+    "string": "BIND_INPUT_METHOD",
+    "desc": "Must be required by an InputMethodService, to ensure that only the system can bind to it."
+  },
+  {
+    "string": "BIND_MIDI_DEVICE_SERVICE",
+    "desc": "Must be required by an MidiDeviceService, to ensure that only the system can bind to it."
+  },
+  {
+    "string": "BIND_NFC_SERVICE",
+    "desc": "Must be required by a HostApduService or OffHostApduService to ensure that only the system can bind to it."
+  },
+  {
+    "string": "BIND_NOTIFICATION_LISTENER_SERVICE",
+    "desc": "Must be required by an NotificationListenerService, to ensure that only the system can bind to it."
+  },
+  {
+    "string": "BIND_PRINT_SERVICE",
+    "desc": "Must be required by a PrintService, to ensure that only the system can bind to it."
+  },
+  {
+    "string": "BIND_QUICK_ACCESS_WALLET_SERVICE",
+    "desc": "Must be required by a QuickAccessWalletService to ensure that only the system can bind to it."
+  },
+  {
+    "string": "BIND_QUICK_SETTINGS_TILE",
+    "desc": "Allows an application to bind to third party quick settings tiles."
+  },
+  {
+    "string": "BIND_REMOTEVIEWS",
+    "desc": "Must be required by a RemoteViewsService, to ensure that only the system can bind to it."
+  },
+  {
+    "string": "BIND_SCREENING_SERVICE",
+    "desc": "Must be required by a CallScreeningService, to ensure that only the system can bind to it."
+  },
+  {
+    "string": "BIND_TELECOM_CONNECTION_SERVICE",
+    "desc": "Must be required by a ConnectionService, to ensure that only the system can bind to it."
+  },
+  {
+    "string": "BIND_TEXT_SERVICE",
+    "desc": "Must be required by a TextService (e.g. SpellCheckerService) to ensure that only the system can bind to it."
+  },
+  {
+    "string": "BIND_TV_INPUT",
+    "desc": "Must be required by a TvInputService to ensure that only the system can bind to it."
+  },
+  {
+    "string": "BIND_VISUAL_VOICEMAIL_SERVICE",
+    "desc": "Must be required by a link VisualVoicemailService to ensure that only the system can bind to it."
+  },
+  {
+    "string": "BIND_VOICE_INTERACTION",
+    "desc": "Must be required by a VoiceInteractionService, to ensure that only the system can bind to it."
+  },
+  {
+    "string": "BIND_VPN_SERVICE",
+    "desc": "Must be required by a VpnService, to ensure that only the system can bind to it."
+  },
+  {
+    "string": "BIND_VR_LISTENER_SERVICE",
+    "desc": "Must be required by an VrListenerService, to ensure that only the system can bind to it."
+  },
+  {
+    "string": "BIND_WALLPAPER",
+    "desc": "Must be required by a WallpaperService, to ensure that only the system can bind to it."
+  },
+  {
+    "string": "BLUETOOTH",
+    "desc": "Allows applications to connect to paired bluetooth devices."
+  },
+  {
+    "string": "BLUETOOTH_ADMIN",
+    "desc": "Allows applications to discover and pair bluetooth devices."
+  },
+  {
+    "string": "BLUETOOTH_PRIVILEGED",
+    "desc": "Allows applications to pair bluetooth devices without user interaction, and to allow or disallow phonebook access or message access."
+  },
+  {
+    "string": "BODY_SENSORS",
+    "desc": "Allows an application to access data from sensors that the user uses to measure what is happening inside their body, such as heart rate."
+  },
+  {
+    "string": "BROADCAST_PACKAGE_REMOVED",
+    "desc": "Allows an application to broadcast a notification that an application package has been removed."
+  },
+  {
+    "string": "BROADCAST_SMS",
+    "desc": "Allows an application to broadcast an SMS receipt notification."
+  },
+  {
+    "string": "BROADCAST_STICKY",
+    "desc": "Allows an application to broadcast sticky intents."
+  },
+  {
+    "string": "BROADCAST_WAP_PUSH",
+    "desc": "Allows an application to broadcast a WAP PUSH receipt notification."
+  },
+  {
+    "string": "CALL_COMPANION_APP",
+    "desc": "Allows an app which implements the InCallService API to be eligible to be enabled as a calling companion app."
+  },
+  {
+    "string": "CALL_PHONE",
+    "desc": "Allows an application to initiate a phone call without going through the Dialer user interface for the user to confirm the call."
+  },
+  {
+    "string": "CALL_PRIVILEGED",
+    "desc": "Allows an application to call any phone number, including emergency numbers, without going through the Dialer user interface for the user to confirm the call being placed."
+  },
+  {
+    "string": "CAMERA",
+    "desc": "Required to be able to access the camera device."
+  },
+  {
+    "string": "CAPTURE_AUDIO_OUTPUT",
+    "desc": "Allows an application to capture audio output."
+  },
+  {
+    "string": "CHANGE_COMPONENT_ENABLED_STATE",
+    "desc": "Allows an application to change whether an application component (other than its own) is enabled or not."
+  },
+  {
+    "string": "CHANGE_CONFIGURATION",
+    "desc": "Allows an application to modify the current configuration, such as locale."
+  },
+  {
+    "string": "CHANGE_NETWORK_STATE",
+    "desc": "Allows applications to change network connectivity state."
+  },
+  {
+    "string": "CHANGE_WIFI_MULTICAST_STATE",
+    "desc": "Allows applications to enter Wi-Fi Multicast mode."
+  },
+  {
+    "string": "CHANGE_WIFI_STATE",
+    "desc": "Allows applications to change Wi-Fi connectivity state."
+  },
+  {
+    "string": "CLEAR_APP_CACHE",
+    "desc": "Allows an application to clear the caches of all installed applications on the device."
+  },
+  {
+    "string": "CONTROL_LOCATION_UPDATES",
+    "desc": "Allows enabling/disabling location update notifications from the radio."
+  },
+  {
+    "string": "DELETE_CACHE_FILES",
+    "desc": "Old permission for deleting an app's cache files, no longer used, but signals for us to quietly ignore calls instead of throwing an exception."
+  },
+  {
+    "string": "DELETE_PACKAGES",
+    "desc": "Allows an application to delete packages."
+  },
+  {
+    "string": "DIAGNOSTIC",
+    "desc": "Allows applications to RW to diagnostic resources."
+  },
+  {
+    "string": "DISABLE_KEYGUARD",
+    "desc": "Allows applications to disable the keyguard if it is not secure."
+  },
+  {
+    "string": "DUMP",
+    "desc": "Allows an application to retrieve state dump information from system services."
+  },
+  {
+    "string": "EXPAND_STATUS_BAR",
+    "desc": "Allows an application to expand or collapse the status bar."
+  },
+  {
+    "string": "FACTORY_TEST",
+    "desc": "Run as a manufacturer test application, running as the root user."
+  },
+  {
+    "string": "FOREGROUND_SERVICE",
+    "desc": "Allows a regular application to use Service.startForeground."
+  },
+  {
+    "string": "GET_ACCOUNTS",
+    "desc": "Allows access to the list of accounts in the Accounts Service."
+  },
+  {
+    "string": "GET_ACCOUNTS_PRIVILEGED",
+    "desc": "Allows access to the list of accounts in the Accounts Service."
+  },
+  {
+    "string": "GET_PACKAGE_SIZE",
+    "desc": "Allows an application to find out the space used by any package."
+  },
+  {
+    "string": "GET_TASKS",
+    "desc": "This constant was deprecated in API level 21. No longer enforced."
+  },
+  {
+    "string": "GLOBAL_SEARCH",
+    "desc": "This permission can be used on content providers to allow the global search system to access their data."
+  },
+  {
+    "string": "INSTALL_LOCATION_PROVIDER",
+    "desc": "Allows an application to install a location provider into the Location Manager."
+  },
+  {
+    "string": "INSTALL_PACKAGES",
+    "desc": "Allows an application to install packages."
+  },
+  {
+    "string": "INSTALL_SHORTCUT",
+    "desc": "Allows an application to install a shortcut in Launcher."
+  },
+  {
+    "string": "INSTANT_APP_FOREGROUND_SERVICE",
+    "desc": "Allows an instant app to create foreground services."
+  },
+  {
+    "string": "INTERACT_ACROSS_PROFILES",
+    "desc": "Allows interaction across profiles in the same profile group."
+  },
+  {
+    "string": "INTERNET",
+    "desc": "Allows applications to open network sockets."
+  },
+  {
+    "string": "KILL_BACKGROUND_PROCESSES",
+    "desc": "Allows an application to call ActivityManager.killBackgroundProcesses"
+  },
+  {
+    "string": "LOADER_USAGE_STATS",
+    "desc": "Allows a data loader to read a package's access logs."
+  },
+  {
+    "string": "LOCATION_HARDWARE",
+    "desc": "Allows an application to use location features in hardware, such as the geofencing api."
+  },
+  {
+    "string": "MANAGE_DOCUMENTS",
+    "desc": "Allows an application to manage access to documents, usually as part of a document picker."
+  },
+  {
+    "string": "MANAGE_EXTERNAL_STORAGE",
+    "desc": "Allows an application a broad access to external storage in scoped storage."
+  },
+  {
+    "string": "MANAGE_OWN_CALLS",
+    "desc": "Allows a calling application which manages it own calls through the self-managed ConnectionService APIs."
+  },
+  {
+    "string": "MASTER_CLEAR",
+    "desc": "Not for use by third-party applications."
+  },
+  {
+    "string": "MEDIA_CONTENT_CONTROL",
+    "desc": "Allows an application to know what content is playing and control its playback."
+  },
+  {
+    "string": "MODIFY_AUDIO_SETTINGS",
+    "desc": "Allows an application to modify global audio settings."
+  },
+  {
+    "string": "MODIFY_PHONE_STATE",
+    "desc": "Allows modification of the telephony state - power on, mmi, etc."
+  },
+  {
+    "string": "MOUNT_FORMAT_FILESYSTEMS",
+    "desc": "Allows formatting file systems for removable storage."
+  },
+  {
+    "string": "MOUNT_UNMOUNT_FILESYSTEMS",
+    "desc": "Allows mounting and unmounting file systems for removable storage."
+  },
+  {
+    "string": "NFC",
+    "desc": "Allows applications to perform I/O operations over NFC."
+  },
+  {
+    "string": "NFC_PREFERRED_PAYMENT_INFO",
+    "desc": "Allows applications to receive NFC preferred payment service information."
+  },
+  {
+    "string": "NFC_TRANSACTION_EVENT",
+    "desc": "Allows applications to receive NFC transaction events."
+  },
+  {
+    "string": "PACKAGE_USAGE_STATS",
+    "desc": "Allows an application to collect component usage statistics"
+  },
+  {
+    "string": "PERSISTENT_ACTIVITY",
+    "desc": "This constant was deprecated in API level 15. This functionality will be removed in the future; please do not use. Allow an application to make its activities persistent."
+  },
+  {
+    "string": "PROCESS_OUTGOING_CALLS",
+    "desc": "This constant was deprecated in API level 29. Applications should use CallRedirectionService instead of the Intent.ACTION_NEW_OUTGOING_CALL broadcast."
+  },
+  {
+    "string": "QUERY_ALL_PACKAGES",
+    "desc": "Allows query of any normal app on the device, regardless of manifest declarations."
+  },
+  {
+    "string": "READ_CALENDAR",
+    "desc": "Allows an application to read the user's calendar data."
+  },
+  {
+    "string": "READ_CALL_LOG",
+    "desc": "Allows an application to read the user's call log."
+  },
+  {
+    "string": "READ_CONTACTS",
+    "desc": "Allows an application to read the user's contacts data."
+  },
+  {
+    "string": "READ_EXTERNAL_STORAGE",
+    "desc": "Allows an application to read from external storage."
+  },
+  {
+    "string": "READ_INPUT_STATE",
+    "desc": "This constant was deprecated in API level 16. The API that used this permission has been removed."
+  },
+  {
+    "string": "READ_LOGS",
+    "desc": "Allows an application to read the low-level system log files."
+  },
+  {
+    "string": "READ_PHONE_NUMBERS",
+    "desc": "Allows read access to the device's phone number(s)."
+  },
+  {
+    "string": "READ_PHONE_STATE",
+    "desc": "Allows read only access to phone state, including the current cellular network information, the status of any ongoing calls, and a list of any PhoneAccounts registered on the device."
+  },
+  {
+    "string": "READ_PRECISE_PHONE_STATE",
+    "desc": "Allows read only access to precise phone state."
+  },
+  {
+    "string": "READ_SMS",
+    "desc": "Allows an application to read SMS messages."
+  },
+  {
+    "string": "READ_SYNC_SETTINGS",
+    "desc": "Allows applications to read the sync settings."
+  },
+  {
+    "string": "READ_SYNC_STATS",
+    "desc": "Allows applications to read the sync stats."
+  },
+  {
+    "string": "READ_VOICEMAIL",
+    "desc": "Allows an application to read voicemails in the system."
+  },
+  {
+    "string": "REBOOT",
+    "desc": "Required to be able to reboot the device."
+  },
+  {
+    "string": "RECEIVE_BOOT_COMPLETED",
+    "desc": "Allows an application to receive the Intent.ACTION_BOOT_COMPLETED that is broadcast after the system finishes booting."
+  },
+  {
+    "string": "RECEIVE_MMS",
+    "desc": "Allows an application to monitor incoming MMS messages."
+  },
+  {
+    "string": "RECEIVE_SMS",
+    "desc": "Allows an application to receive SMS messages."
+  },
+  {
+    "string": "RECEIVE_WAP_PUSH",
+    "desc": "Allows an application to receive WAP push messages."
+  },
+  {
+    "string": "RECORD_AUDIO",
+    "desc": "Allows an application to record audio."
+  },
+  {
+    "string": "REORDER_TASKS",
+    "desc": "Allows an application to change the Z-order of tasks."
+  },
+  {
+    "string": "REQUEST_COMPANION_RUN_IN_BACKGROUND",
+    "desc": "Allows a companion app to run in the background."
+  },
+  {
+    "string": "REQUEST_COMPANION_USE_DATA_IN_BACKGROUND",
+    "desc": "Allows a companion app to use data in the background."
+  },
+  {
+    "string": "REQUEST_DELETE_PACKAGES",
+    "desc": "Allows an application to request deleting packages."
+  },
+  {
+    "string": "REQUEST_IGNORE_BATTERY_OPTIMIZATIONS",
+    "desc": "Permission an application must hold in order to use Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS."
+  },
+  {
+    "string": "REQUEST_INSTALL_PACKAGES",
+    "desc": "Allows an application to request installing packages."
+  },
+  {
+    "string": "REQUEST_PASSWORD_COMPLEXITY",
+    "desc": "Allows an application to request the screen lock complexity and prompt users to update the screen lock to a certain complexity level."
+  },
+  {
+    "string": "RESTART_PACKAGES",
+    "desc": "This constant was deprecated in API level 15. The ActivityManager.restartPackage API is no longer supported."
+  },
+  {
+    "string": "SEND_RESPOND_VIA_MESSAGE",
+    "desc": "Allows an application (Phone) to send a request to other applications to handle the respond-via-message action during incoming calls."
+  },
+  {
+    "string": "SEND_SMS",
+    "desc": "Allows an application to send SMS messages."
+  },
+  {
+    "string": "SET_ALARM",
+    "desc": "Allows an application to broadcast an Intent to set an alarm for the user."
+  },
+  {
+    "string": "SET_ALWAYS_FINISH",
+    "desc": "Allows an application to control whether activities are immediately finished when put in the background."
+  },
+  {
+    "string": "SET_ANIMATION_SCALE",
+    "desc": "Modify the global animation scaling factor."
+  },
+  {
+    "string": "SET_DEBUG_APP",
+    "desc": "Configure an application for debugging."
+  },
+  {
+    "string": "SET_PREFERRED_APPLICATIONS",
+    "desc": "This constant was deprecated in API level 15. No longer useful, see PackageManager.addPackageToPreferred for detaiQend ls."
+  },
+  {
+    "string": "SET_PROCESS_LIMIT",
+    "desc": "Allows an application to set the maximum number of (not needed) application processes that can be running."
+  },
+  {
+    "string": "SET_TIME",
+    "desc": "Allows applications to set the system time directly."
+  },
+  {
+    "string": "SET_TIME_ZONE",
+    "desc": "Allows applications to set the system time zone directly."
+  },
+  {
+    "string": "SET_WALLPAPER",
+    "desc": "Allows applications to set the wallpaper."
+  },
+  {
+    "string": "SET_WALLPAPER_HINTS",
+    "desc": "Allows applications to set the wallpaper hints."
+  },
+  {
+    "string": "SIGNAL_PERSISTENT_PROCESSES",
+    "desc": "Allow an application to request that a signal be sent to all persistent processes."
+  },
+  {
+    "string": "SMS_FINANCIAL_TRANSACTIONS",
+    "desc": "Allows financial apps to read filtered sms messages."
+  },
+  {
+    "string": "START_VIEW_PERMISSION_USAGE",
+    "desc": "Allows the holder to start the permission usage screen for an app."
+  },
+  {
+    "string": "STATUS_BAR",
+    "desc": "Allows an application to open, close, or disable the status bar and its icons."
+  },
+  {
+    "string": "SYSTEM_ALERT_WINDOW",
+    "desc": "Allows an app to create windows using the type WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY, shown on top of all other apps."
+  },
+  {
+    "string": "TRANSMIT_IR",
+    "desc": "Allows using the device's IR transmitter, if available."
+  },
+  {
+    "string": "UNINSTALL_SHORTCUT",
+    "desc": "Don't use this permission in your app."
+  },
+  {
+    "string": "UPDATE_DEVICE_STATS",
+    "desc": "Allows an application to update device statistics."
+  },
+  {
+    "string": "USE_BIOMETRIC",
+    "desc": "Allows an app to use device supported biometric modalities."
+  },
+  {
+    "string": "USE_FINGERPRINT",
+    "desc": "This constant was deprecated in API level 28. Applications should request USE_BIOMETRIC instead"
+  },
+  {
+    "string": "USE_FULL_SCREEN_INTENT",
+    "desc": "Required for apps targeting Build.VERSION_CODES.Q that want to use notification full screen intents."
+  },
+  {
+    "string": "USE_SIP",
+    "desc": "Allows an application to use SIP service."
+  },
+  {
+    "string": "VIBRATE",
+    "desc": "Allows access to the vibrator."
+  },
+  {
+    "string": "WAKE_LOCK",
+    "desc": "Allows using PowerManager WakeLocks to keep processor from sleeping or screen from dimming."
+  },
+  {
+    "string": "WRITE_APN_SETTINGS",
+    "desc": "Allows applications to write the apn settings and read sensitive fields of an existing apn settings like user and password."
+  },
+  {
+    "string": "WRITE_CALENDAR",
+    "desc": "Allows an application to write the user's calendar data."
+  },
+  {
+    "string": "WRITE_CALL_LOG",
+    "desc": "Allows an application to write (but not read) the user's call log data."
+  },
+  {
+    "string": "WRITE_CONTACTS",
+    "desc": "Allows an application to write the user's contacts data."
+  },
+  {
+    "string": "WRITE_EXTERNAL_STORAGE",
+    "desc": "Allows an application to write to external storage."
+  },
+  {
+    "string": "WRITE_GSERVICES",
+    "desc": "Allows an application to modify the Google service map."
+  },
+  {
+    "string": "WRITE_SECURE_SETTINGS",
+    "desc": "Allows an application to read or write the secure system settings."
+  },
+  {
+    "string": "WRITE_SETTINGS",
+    "desc": "Allows an application to read or write the system settings."
+  },
+  {
+    "string": "WRITE_SYNC_SETTINGS",
+    "desc": "Allows applications to write the sync settings."
+  },
+  {
+    "string": "WRITE_VOICEMAIL",
+    "desc": "Allows an application to modify and remove existing voicemails in the system."
+  }
+]

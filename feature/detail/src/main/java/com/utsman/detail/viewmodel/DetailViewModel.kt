@@ -14,13 +14,8 @@ import androidx.work.Operation
 import com.utsman.abstraction.extensions.toBytesReadable
 import com.utsman.abstraction.interactor.ResultState
 import com.utsman.data.model.dto.detail.DetailView
-import com.utsman.data.model.dto.list.AppVersion
-import com.utsman.data.model.dto.list.AppsSealedView
 import com.utsman.data.model.dto.worker.FileDownload
-import com.utsman.data.model.dto.worker.WorkerAppsMap
-import com.utsman.data.model.dto.worker.toAppsMap
 import com.utsman.detail.domain.DetailUseCase
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class DetailViewModel @ViewModelInject constructor(
@@ -39,7 +34,7 @@ class DetailViewModel @ViewModelInject constructor(
     val workStateResult
         get() = detailUseCase.workInfoState.asLiveData(viewModelScope.coroutineContext)
 
-    private fun getData(): DetailView? {
+    private fun getDataSync(): DetailView? {
         return detailUseCase.detailView.value.payload
     }
 
@@ -60,18 +55,19 @@ class DetailViewModel @ViewModelInject constructor(
     }
 
     fun getFileName(): String {
-        return "${getData()?.packageName}-${getData()?.appVersion?.apiCode}"
+        val data = getDataSync()
+        return "${data?.packageName}-${data?.appVersion?.apiCode}"
     }
 
     fun isUpdate(): Boolean {
-        val data = getData()
+        val data = getDataSync()
         return data?.appVersion?.run {
             code != 0L && apiCode > code
         } ?: false
     }
 
     fun isInstalled(): Boolean {
-        val data = getData()
+        val data = getDataSync()
         return data?.appVersion?.run {
             apiCode == code
         } ?: false
@@ -82,7 +78,7 @@ class DetailViewModel @ViewModelInject constructor(
     }
 
     fun getDownloadButtonTitle(): String {
-        val data = getData()
+        val data = getDataSync()
         val size = data?.file?.size?.toBytesReadable()
         return when {
             isUpdate() -> {
