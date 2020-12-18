@@ -76,6 +76,7 @@ class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
         val task = this
         DownloadUtils.setDownloadListener(downloadId, object : DownloadUtils.DownloadListener {
             override suspend fun onSuccess(cursor: Cursor, status: Download.Status) {
+                delay(1000)
                 val statusString = "Success"
                 val statusJson = status.toJson()
 

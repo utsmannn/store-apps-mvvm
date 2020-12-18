@@ -18,6 +18,7 @@ import com.utsman.abstraction.extensions.detailFor
 import com.utsman.abstraction.extensions.loadUrl
 import com.utsman.abstraction.extensions.logi
 import com.utsman.data.model.dto.downloaded.DownloadedApps
+import com.utsman.data.utils.DownloadUtils
 import com.utsman.listing.R
 import com.utsman.listing.databinding.ItemListDownloadedBinding
 
@@ -41,7 +42,7 @@ class DownloadedInstalledViewHolder(view: View) : RecyclerView.ViewHolder(view) 
 
             txtDownloadStatus.text = "Installed"
             btnStopDownload.setOnClickListener {
-                openApps(root.context, packageName)
+                DownloadUtils.openApps(packageName)
             }
 
             val colorFilterProgressBar = ContextCompat.getColor(root.context, R.color.purple_500)
@@ -59,13 +60,4 @@ class DownloadedInstalledViewHolder(view: View) : RecyclerView.ViewHolder(view) 
             progressHorizontalDownload.isVisible = false
         })
     }
-
-    private fun openApps(context: Context, packageName: String?) {
-        val packageManager = context.packageManager
-        if (packageName != null) {
-            val intent = packageManager.getLaunchIntentForPackage(packageName)
-            context.startActivity(intent)
-        }
-    }
-
 }

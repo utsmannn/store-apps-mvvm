@@ -53,7 +53,7 @@ object DownloadUtils {
     }
 
     suspend fun setDownloadListener(downloadId: Long?, listener: DownloadListener) {
-        val ticker = ticker(1000)
+        val ticker = ticker(100)
         logi("preparing............")
         listener.onRunning(null, Download.Status.preparing())
         ticker.consumeAsFlow().collect {
@@ -100,6 +100,14 @@ object DownloadUtils {
             true
         } catch (e: PackageManager.NameNotFoundException) {
             false
+        }
+    }
+
+    fun openApps(packageName: String?) {
+        val packageManager = getContext().packageManager
+        if (packageName != null) {
+            val intent = packageManager.getLaunchIntentForPackage(packageName)
+            getContext().startActivity(intent)
         }
     }
 

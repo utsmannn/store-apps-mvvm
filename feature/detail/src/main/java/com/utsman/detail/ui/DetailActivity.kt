@@ -8,22 +8,20 @@ package com.utsman.detail.ui
 import android.Manifest
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.graphics.drawable.ClipDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
-import android.os.Handler
-import android.os.SystemClock
 import android.view.MenuItem
 import android.view.animation.DecelerateInterpolator
-import android.view.animation.LinearInterpolator
 import android.viewbinding.library.activity.viewBinding
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.work.Operation
-import com.utsman.abstraction.interactor.listenOn
 import com.utsman.abstraction.extensions.*
+import com.utsman.abstraction.interactor.listenOn
 import com.utsman.abstraction.listener.ResultStateListener
 import com.utsman.data.di._downloadedRepository
 import com.utsman.data.model.dto.detail.DetailView
@@ -34,13 +32,10 @@ import com.utsman.data.utils.DownloadUtils
 import com.utsman.detail.R
 import com.utsman.detail.databinding.ActivityDetailBinding
 import com.utsman.detail.viewmodel.DetailViewModel
-import com.utsman.network.toJson
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
+
 
 @AndroidEntryPoint
 class DetailActivity : AppCompatActivity() {
@@ -71,8 +66,27 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
-    private var isDownloaded = false
+    private var isDownloading = false
     private var downloadId: Long? = 0L
+
+    private fun setEnableButtonDrawable(enable: Boolean) {
+        val drawable = getDrawableRes(R.drawable.ic_fluent_dismiss_circle_24_regular, Color.WHITE)
+        if (enable) {
+            binding.btnActionDownload.setCompoundDrawablesWithIntrinsicBounds(
+                null,
+                null,
+                drawable,
+                null
+            )
+        } else {
+            binding.btnActionDownload.setCompoundDrawablesWithIntrinsicBounds(
+                null,
+                null,
+                null,
+                null
+            )
+        }
+    }
 
     @SuppressLint("SetTextI18n")
     private fun setupView(data: DetailView) = binding.run {
@@ -82,65 +96,43 @@ class DetailActivity : AppCompatActivity() {
         txtDeveloper.text = data.developer.name
         txtDesc.text = data.description
 
-        val size = data.file.size.toBytesReadable()
-        val isUpdate = data.appVersion.run {
-            code != 0L && apiCode > code
-        }
-
-        val isInstalled = data.appVersion.run {
-            apiCode == code
-        }
-
-        val fileName = "${data.packageName}-${data.appVersion.code}"
-        val isDownloadedApk = viewModel.checkIsDownloaded(fileName)
-
-        val downloadTitle = when {
-            isUpdate -> {
-                "Update ($size)"
-            }
-            isInstalled -> {
-                "Open"
-            }
-            isDownloadedApk -> {
-                "Install"
-            }
-            else -> {
-                "Download ($size)"
-            }
-        }
-
         btnActionDownload.setOnClickListener {
             when {
-                isInstalled -> {
+                viewModel.isInstalled() -> {
                     // open app
+                    DownloadUtils.openApps(data.packageName)
                 }
-                isDownloadedApk -> {
+                isDownloading -> {
+                    // cancel download
+                    viewModel.cancelDownload(downloadId)
+                }
+                viewModel.isDownloadedApk() -> {
                     // install apk
-                    DownloadUtils.openDownloadFile(activity = this@DetailActivity, fileName = fileName)
+                    if (!isDownloading) {
+                        DownloadUtils.openDownloadFile(activity = this@DetailActivity, fileName = viewModel.getFileName())
+                    } else {
+                        viewModel.cancelDownload(downloadId)
+                    }
                 }
                 else -> {
                     // download or update
-                    if (isDownloaded) {
-                        viewModel.cancelDownload(downloadId)
-                    } else {
-                        val permissions = listOf(
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_EXTERNAL_STORAGE
-                        )
+                    val permissions = listOf(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    )
 
-                        withPermissions(permissions) { _, deniedList ->
-                            if (deniedList.isEmpty()) {
-                                val fileDownload = FileDownload.simple {
-                                    this.id = data.id
-                                    this.name = data.name
-                                    this.fileName = fileName
-                                    this.packageName = data.packageName
-                                    this.url = data.file.url
-                                }
-                                viewModel.requestDownload(fileDownload)
-                            } else {
-                                toast("permission denied")
+                    withPermissions(permissions) { _, deniedList ->
+                        if (deniedList.isEmpty()) {
+                            val fileDownload = FileDownload.simple {
+                                this.id = data.id
+                                this.name = data.name
+                                this.fileName = viewModel.getFileName()
+                                this.packageName = data.packageName
+                                this.url = data.file.url
                             }
+                            viewModel.requestDownload(fileDownload)
+                        } else {
+                            toast("permission denied")
                         }
                     }
                 }
@@ -150,17 +142,21 @@ class DetailActivity : AppCompatActivity() {
         val layerButton = btnActionDownload.background as LayerDrawable
         val clipLayer = layerButton.findDrawableByLayerId(R.id.clip_drawable) as ClipDrawable
 
+        toast("downloaded apk -> ${viewModel.isDownloadedApk()}")
+        if (viewModel.isDownloadedApk()) {
+            clipLayer.setProgressAnimation(Download.MAX_LEVEL)
+        }
+
         viewModel.observerWorkInfo(packageApps)
         viewModel.workStateResult.observe(this@DetailActivity, Observer { result ->
             when (result) {
                 is WorkInfoResult.Stopped -> {
-                    btnActionDownload.text = downloadTitle
-                    isDownloaded = false
+                    btnActionDownload.text = viewModel.getDownloadButtonTitle()
+                    isDownloading = false
                 }
                 is WorkInfoResult.Working -> {
                     val workInfo = result.workData
 
-                    isDownloaded = workInfo != null
                     if (workInfo != null) {
 
                         val doneData = workInfo.outputData.getBoolean("done", false)
@@ -168,44 +164,52 @@ class DetailActivity : AppCompatActivity() {
                         val fileObserver =
                             DownloadUtils.FileSizeObserver.convertFromString(dataString)
 
-                        isDownloaded = fileObserver != null
-
                         val status = DownloadUtils.getStatus(workInfo)
-                        btnActionDownload.text = status?.message
+                        btnActionDownload.text = status?.message ?: viewModel.getDownloadButtonTitle()
 
-                        if (!doneData) {
-                            logi("type status is ----> ${status?.type}")
-                            when (status?.type) {
-                                Download.TypeStatus.SUCCESS -> {
-                                    clipLayer.setProgressAnimation(Download.MAX_LEVEL)
-                                    viewModel.updateState()
-                                }
-                                Download.TypeStatus.DOWNLOADING -> {
-                                    logi("file observer is --> $fileObserver")
-                                    if (fileObserver != null) {
-                                        downloadId = fileObserver.downloadId
+                        isDownloading = !doneData && status?.type == Download.TypeStatus.DOWNLOADING
+                        logi("set status is ---> ${!doneData && status?.type != Download.TypeStatus.DOWNLOADING}")
 
-                                        val soFarProgress = fileObserver.progress.toInt() * 100
-                                        clipLayer.setProgressAnimation(soFarProgress)
-                                    }
-                                }
-                                Download.TypeStatus.PREPARING -> {
-                                    logi("preparing in activity ....")
-                                }
-                                Download.TypeStatus.CANCELING -> {
-                                    clipLayer.setProgressAnimation(0)
-                                }
-                                else -> {
-                                    // else
+                        logi("type status is ----> ${status?.type}")
+
+                        when (status?.type) {
+                            Download.TypeStatus.SUCCESS -> {
+                                setEnableButtonDrawable(false)
+                                clipLayer.setProgressAnimation(Download.MAX_LEVEL)
+                                btnActionDownload.text = viewModel.getDownloadButtonTitle()
+                            }
+                            Download.TypeStatus.DOWNLOADING -> {
+                                setEnableButtonDrawable(true)
+                                logi("file observer is --> $fileObserver")
+                                if (fileObserver != null) {
+                                    downloadId = fileObserver.downloadId
+
+                                    val soFarProgress = fileObserver.progress.toInt() * 100
+                                    clipLayer.setProgressAnimation(soFarProgress)
                                 }
                             }
-                        } else {
+                            Download.TypeStatus.PREPARING -> {
+                                setEnableButtonDrawable(false)
+                                logi("preparing in activity ....")
+                            }
+                            Download.TypeStatus.CANCELING -> {
+                                setEnableButtonDrawable(false)
+                                clipLayer.setProgressAnimation(0)
+                            }
+                            else -> {
+                                setEnableButtonDrawable(false)
+                            }
+                        }
+
+                        if (doneData) {
+                            setEnableButtonDrawable(false)
                             clipLayer.setProgressAnimation(Download.MAX_LEVEL)
                         }
 
                         logi("done data is -> $doneData")
                     } else {
-                        btnActionDownload.text = downloadTitle
+                        setEnableButtonDrawable(false)
+                        btnActionDownload.text = viewModel.getDownloadButtonTitle()
                         clipLayer.setProgressAnimation(0)
                     }
                 }
@@ -221,16 +225,11 @@ class DetailActivity : AppCompatActivity() {
 
     private fun ClipDrawable.setProgressAnimation(toProgress: Int) {
         val animator = ObjectAnimator.ofInt(this, "level", this.level, toProgress).apply {
-            duration = 200
+            duration = 600
             interpolator = DecelerateInterpolator()
         }
 
         if (!animator.isRunning) animator.start()
-
-        logi("progress drawable is --> $toProgress")
-        if (toProgress == Download.MAX_LEVEL) {
-            animator.cancel()
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -244,14 +243,14 @@ class DetailActivity : AppCompatActivity() {
         viewModel.workerState.observe(this, Observer { state ->
             when (state) {
                 is Operation.State.IN_PROGRESS -> {
-                    //binding.txtDeveloper.text = "in progress"
+                    // work instance on progress
                 }
                 is Operation.State.FAILURE -> {
                     val throwable = state.throwable
                     binding.txtDeveloper.text = throwable.localizedMessage
                 }
                 is Operation.State.SUCCESS -> {
-                    //binding.txtDeveloper.text = "success"
+                    // work instance success created
                 }
             }
         })
@@ -273,6 +272,11 @@ class DetailActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.restartState()
     }
 
 }

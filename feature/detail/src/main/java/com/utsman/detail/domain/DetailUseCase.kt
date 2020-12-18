@@ -23,6 +23,8 @@ import com.utsman.data.utils.DownloadUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -48,7 +50,7 @@ class DetailUseCase @Inject constructor(
     }
 
     fun checkDownloadedApks(fileName: String): Boolean {
-        return DownloadUtils.checkAppIsDownloaded(context, "$fileName.apk")
+        return DownloadUtils.checkAppIsDownloaded(context, fileName)
     }
 
     suspend fun observerWorkInfoResult(
@@ -57,16 +59,6 @@ class DetailUseCase @Inject constructor(
     ) {
         downloadRepository.observerWorkInfo(scope, packageName).collect {
             workInfoState.value = it
-        }
-    }
-
-    suspend fun updateState(
-        scope: CoroutineScope
-    ) = scope.launch {
-        val currentDetail = detailView.value.payload
-        if (currentDetail != null) {
-            val detailViewUpdate = installedAppsRepository.checkInstalledApps(currentDetail)
-            detailView.value = ResultState.Success(detailViewUpdate)
         }
     }
 

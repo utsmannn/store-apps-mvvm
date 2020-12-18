@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.work.Operation
+import com.utsman.abstraction.extensions.toBytesReadable
 import com.utsman.abstraction.interactor.ResultState
 import com.utsman.data.model.dto.detail.DetailView
 import com.utsman.data.model.dto.list.AppVersion
@@ -38,6 +39,10 @@ class DetailViewModel @ViewModelInject constructor(
     val workStateResult
         get() = detailUseCase.workInfoState.asLiveData(viewModelScope.coroutineContext)
 
+    private fun getData(): DetailView? {
+        return detailUseCase.detailView.value.payload
+    }
+
     fun getDetailView(packageName: String) = viewModelScope.launch {
         detailUseCase.getDetail(this, packageName)
     }
@@ -50,14 +55,49 @@ class DetailViewModel @ViewModelInject constructor(
         detailUseCase.cancelDownload(this, downloadId)
     }
 
-    fun checkIsDownloaded(fileName: String) = detailUseCase.checkDownloadedApks(fileName)
-
     fun observerWorkInfo(packageName: String) = viewModelScope.launch {
         detailUseCase.observerWorkInfoResult(this, packageName)
     }
 
-    fun updateState() = viewModelScope.launch {
-        detailUseCase.updateState(this)
+    fun getFileName(): String {
+        return "${getData()?.packageName}-${getData()?.appVersion?.apiCode}"
+    }
+
+    fun isUpdate(): Boolean {
+        val data = getData()
+        return data?.appVersion?.run {
+            code != 0L && apiCode > code
+        } ?: false
+    }
+
+    fun isInstalled(): Boolean {
+        val data = getData()
+        return data?.appVersion?.run {
+            apiCode == code
+        } ?: false
+    }
+
+    fun isDownloadedApk(): Boolean {
+        return detailUseCase.checkDownloadedApks(getFileName())
+    }
+
+    fun getDownloadButtonTitle(): String {
+        val data = getData()
+        val size = data?.file?.size?.toBytesReadable()
+        return when {
+            isUpdate() -> {
+                "Update ($size)"
+            }
+            isInstalled() -> {
+                "Open"
+            }
+            isDownloadedApk() -> {
+                "Install"
+            }
+            else -> {
+                "Download ($size)"
+            }
+        }
     }
 
     fun restartState() = viewModelScope.launch {
