@@ -63,7 +63,7 @@ class MainApplication : Application() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         createNotificationChannel()
 
-        // setup dependencies injection lateinit state value
+        // setup dependencies lateinit state value
         _moshi.value = moshi
         _jsonBeautifier.value = jsonBeautifier
         _context.value = this

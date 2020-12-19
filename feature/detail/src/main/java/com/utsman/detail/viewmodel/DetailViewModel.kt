@@ -60,7 +60,7 @@ class DetailViewModel @ViewModelInject constructor(
         return "${data?.packageName}-${data?.appVersion?.apiCode}"
     }
 
-    fun isUpdate(): Boolean {
+    private fun isUpdate(): Boolean {
         val data = getDataSync()
         return data?.appVersion?.run {
             code != 0L && apiCode > code

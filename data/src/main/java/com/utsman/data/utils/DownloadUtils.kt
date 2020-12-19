@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import java.io.File
+import java.lang.NullPointerException
 
 object DownloadUtils {
 
@@ -105,6 +106,8 @@ object DownloadUtils {
             packageManager.getPackageInfo(packageName!!, 0)
             true
         } catch (e: PackageManager.NameNotFoundException) {
+            false
+        } catch (e: NullPointerException) {
             false
         }
     }

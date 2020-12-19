@@ -28,10 +28,6 @@ fun logi(msg: String?, tag: String = "Store_Apps ---------") {
     }
 }
 
-
-fun Context.getUriFromFile(file: File): Uri =
-    FileProvider.getUriForFile(this, "com.utsman.storeapps.fileprovider", file)
-
 fun debug(action: () -> Unit) {
     if (BuildConfig.DEBUG) {
         action.invoke()
