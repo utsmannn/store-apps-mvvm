@@ -94,10 +94,8 @@ object DownloadUtils {
         return file.exists()
     }
 
-    fun whenAppIsDownloaded(context: Context, fileName: String, action: () -> Unit) {
-        if (checkAppIsDownloaded(context, fileName)) {
-            action.invoke()
-        }
+    fun getDownloadDir(): File? {
+        return getContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
     }
 
     fun checkAppIsInstalled(packageName: String?): Boolean {

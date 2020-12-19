@@ -5,22 +5,22 @@
 
 package com.utsman.storeapps.domain
 
-import com.utsman.data.model.dto.setting.SettingData
+import com.utsman.abstraction.extensions.toBytesReadable
 import com.utsman.data.repository.root.RootedRepository
 import com.utsman.data.repository.setting.SettingRepository
-import kotlinx.coroutines.CoroutineScope
+import com.utsman.data.utils.DownloadUtils
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
+import kotlin.coroutines.resume
 
 class SettingsUseCase @Inject constructor(
     rootedRepository: RootedRepository,
     private val settingRepository: SettingRepository
 ) {
     val isRooted = rootedRepository.rooted()
-    val autoInstaller: MutableStateFlow<SettingData> = MutableStateFlow(SettingData.autoInstaller(false))
-    val maturity: MutableStateFlow<SettingData> = MutableStateFlow(SettingData.maturity(false))
+    val sizeDownload: MutableStateFlow<String> = MutableStateFlow("0 KB")
 
     fun toggleAutoInstaller(scope: CoroutineScope) = scope.launch {
         settingRepository.toggleAutoInstaller()
@@ -33,13 +33,45 @@ class SettingsUseCase @Inject constructor(
     suspend fun getValueAutoInstallerSync() = settingRepository.autoInstallerSync()
     suspend fun getValueMaturitySync() = settingRepository.maturitySync()
 
-    fun getValueSettings(scope: CoroutineScope) = scope.launch {
-        settingRepository.autoInstaller().collect {
-            autoInstaller.value = it
-        }
+    @InternalCoroutinesApi
+    private suspend fun calculateDownloadDir(): Long {
+        return suspendCancellableCoroutine { task ->
+            val dir = DownloadUtils.getDownloadDir()
+            val files = dir?.listFiles() ?: emptyArray()
+            val total = files.map { f ->
+                f.length()
+            }.sum()
 
-        settingRepository.maturity().collect {
-            maturity.value = it
+            if (task.isActive) {
+                task.resume(total)
+            } else {
+                task.tryResume(total)
+            }
         }
     }
+
+    @InternalCoroutinesApi
+    suspend fun getSizeDownloadDir() {
+        sizeDownload.value = calculateDownloadDir().toBytesReadable()
+    }
+
+    fun countFile(): Int {
+        val dir = DownloadUtils.getDownloadDir()
+        val files = dir?.listFiles() ?: emptyArray()
+        return files.size
+    }
+
+    @InternalCoroutinesApi
+    suspend fun cleanFiles(): Boolean {
+        return suspendCancellableCoroutine { task ->
+            val dir = DownloadUtils.getDownloadDir()
+            val result = dir?.deleteRecursively() ?: false
+            if (task.isActive) {
+                task.resume(result)
+            } else {
+                task.tryResume(result)
+            }
+        }
+    }
+
 }

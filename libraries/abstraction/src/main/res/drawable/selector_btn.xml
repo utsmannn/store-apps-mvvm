@@ -4,7 +4,7 @@
   -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/bg_list" android:state_enabled="false" />
+    <item android:drawable="@drawable/bg_fill_inactive" android:state_enabled="false" />
     <item android:drawable="@drawable/bg_fill_active" android:state_pressed="true" />
     <item android:drawable="@drawable/bg_fill_active" android:state_enabled="true" />
 

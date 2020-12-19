@@ -7,7 +7,7 @@ package com.utsman.data.source
 
 import androidx.paging.PagingSource
 import com.utsman.data.const.StringValues
-import com.utsman.data.model.Category
+import com.utsman.data.model.dto.list.Category
 import com.utsman.data.model.dto.list.AppsSealedView
 import com.utsman.data.model.dto.list.CategorySealedView
 import com.utsman.data.model.dto.list.CategorySealedView.CategoryView

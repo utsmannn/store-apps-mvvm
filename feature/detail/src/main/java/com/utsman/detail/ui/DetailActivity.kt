@@ -373,6 +373,7 @@ class DetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        viewModel.restartState()
         supportActionBar?.run {
             setDisplayHomeAsUpEnabled(true)
             title = ""
@@ -412,10 +413,4 @@ class DetailActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-    override fun onPause() {
-        super.onPause()
-        viewModel.restartState()
-    }
-
 }

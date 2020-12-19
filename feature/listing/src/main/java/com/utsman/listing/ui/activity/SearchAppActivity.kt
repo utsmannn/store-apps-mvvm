@@ -12,14 +12,15 @@ import android.viewbinding.library.activity.viewBinding
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.chip.Chip
 import com.utsman.abstraction.base.PagingStateAdapter
-import com.utsman.abstraction.extensions.initialEmptyState
-import com.utsman.abstraction.extensions.initialLoadState
-import com.utsman.abstraction.extensions.logi
-import com.utsman.abstraction.extensions.showEmpty
+import com.utsman.abstraction.extensions.*
 import com.utsman.listing.R
 import com.utsman.listing.databinding.LayoutRecyclerViewBinding
 import com.utsman.listing.ui.adapter.PagingListAdapter
@@ -69,30 +70,63 @@ class SearchAppActivity : AppCompatActivity() {
         pagingListAdapter.addLoadStateListener { combinedLoadStates ->
             val txtMessage = "Application not found"
             binding.layoutEmpty.initialEmptyState(
-                combinedLoadStates.refresh,
-                txtMessage = txtMessage,
-                imgRes = R.drawable.ic_fluent_emoji_meh_24_regular,
-                itemCount = pagingListAdapter.itemCount
+                combinedLoadStates,
+                pagingListAdapter.itemCount,
+                R.drawable.ic_fluent_emoji_meh_24_regular,
+                txtMessage
             )
 
             binding.layoutProgress.initialLoadState(combinedLoadStates.refresh) {
                 pagingListAdapter.retry()
             }
 
-            logi("state is -> $combinedLoadStates")
+            binding.chipQuery.isVisible = pagingListAdapter.itemCount == 0
         }
+
+        viewModel.queries.observe(this, Observer { queries ->
+            binding.run {
+                chipQuery.removeAllViews()
+                queries.toMutableList().distinct().run {
+                    take(10).map { q ->
+                        val chip = Chip(root.context).apply {
+                            this.text = q
+                            this.isCloseIconVisible = true
+                        }
+
+                        chip.setOnCloseIconClickListener {
+                            viewModel.removeQuery(q)
+                        }
+                        chip.setOnClickListener {
+                            searchView?.setQuery(q, true)
+                        }
+                        chipQuery.addView(chip)
+                    }
+                }
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.search_menu, menu)
         menu?.findItem(R.id.search_action)?.also { searchMenu ->
             searchMenu.expandActionView()
+            searchMenu.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+                override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+                    return false
+                }
+
+                override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+                    onBackPressed()
+                    return false
+                }
+            })
+
             searchView = searchMenu.actionView as SearchView
             searchView?.run {
                 setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
                         if (!query.isNullOrBlank()) {
-                            searchMenu.collapseActionView()
+                            hideKeyboard()
                             clearFocus()
                             supportActionBar?.title = query
                             viewModel.restartState()
@@ -105,13 +139,12 @@ class SearchAppActivity : AppCompatActivity() {
                     }
 
                     override fun onQueryTextChange(newText: String?): Boolean {
+                        if (newText == "") {
+                            viewModel.restartState()
+                        }
                         return true
                     }
                 })
-                setOnCloseListener {
-                    super.onBackPressed()
-                    true
-                }
             }
         }
         return super.onCreateOptionsMenu(menu)
@@ -125,5 +158,10 @@ class SearchAppActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.chipQuery.removeAllViews()
     }
 }

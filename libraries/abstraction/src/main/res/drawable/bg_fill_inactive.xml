@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Created by Muhammad Utsman on 4/12/20 6:24 PM
+  ~ Created by Muhammad Utsman on 4/12/20 6:23 PM
   ~ Copyright (c) 2020 . All rights reserved.
   -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>
-            <solid android:color="@color/purple_500"/>
+            <solid android:color="#C2B7D1"/>
             <corners android:radius="6dp"/>
         </shape>
     </item>

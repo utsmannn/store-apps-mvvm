@@ -8,6 +8,7 @@ package com.utsman.listing.ui.fragment
 import android.os.Bundle
 import android.view.View
 import android.viewbinding.library.fragment.viewBinding
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -48,6 +49,7 @@ class InstalledAppFragment : Fragment(R.layout.layout_recycler_view) {
                 pagingListAdapter.retry()
             }
 
+            binding?.chipQuery?.isVisible = false
             rvList.run {
                 layoutManager = linearLayout
                 adapter = pagingListAdapter.withLoadStateFooter(pagingStateAdapter)
@@ -70,10 +72,10 @@ class InstalledAppFragment : Fragment(R.layout.layout_recycler_view) {
 
                 val emptyMessage = "No application update"
                 layoutEmpty.initialEmptyState(
-                    state = combinedLoadStates.refresh,
-                    itemCount = pagingListAdapter.itemCount,
-                    imgRes = R.drawable.ic_fluent_signed_24_filled,
-                    txtMessage = emptyMessage
+                    combinedLoadStates,
+                    pagingListAdapter.itemCount,
+                    R.drawable.ic_fluent_signed_24_filled,
+                    emptyMessage
                 )
 
                 layoutProgress.initialLoadState(combinedLoadStates.refresh) {

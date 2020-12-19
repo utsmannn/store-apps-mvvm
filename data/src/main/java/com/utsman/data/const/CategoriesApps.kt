@@ -6,7 +6,7 @@
 package com.utsman.data.const
 
 import com.utsman.data.R
-import com.utsman.data.model.Category
+import com.utsman.data.model.dto.list.Category
 import java.lang.IndexOutOfBoundsException
 
 object CategoriesApps {
