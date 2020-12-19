@@ -28,6 +28,7 @@ class CategoriesFragment : Fragment(R.layout.layout_recycler_view) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding?.chipQuery?.isVisible = false
         binding?.rvList?.run {
             layoutManager = LinearLayoutManager(context)
             adapter = CategoriesAdapter()

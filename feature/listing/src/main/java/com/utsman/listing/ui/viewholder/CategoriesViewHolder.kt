@@ -9,7 +9,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.utsman.abstraction.extensions.intentTo
 import com.utsman.abstraction.extensions.loadRes
-import com.utsman.data.model.Category
+import com.utsman.data.model.dto.list.Category
 import com.utsman.listing.databinding.ItemCategoryBinding
 
 class CategoriesViewHolder(view: View) : RecyclerView.ViewHolder(view) {

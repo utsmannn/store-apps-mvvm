@@ -5,7 +5,7 @@
 
 package com.utsman.data.const
 
-import com.utsman.data.model.Category
+import com.utsman.data.model.dto.list.Category
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
 import org.junit.Test

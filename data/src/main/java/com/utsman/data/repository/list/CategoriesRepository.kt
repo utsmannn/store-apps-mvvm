@@ -6,7 +6,7 @@
 package com.utsman.data.repository.list
 
 import com.utsman.data.model.response.list.Aptoide
-import com.utsman.data.model.Category
+import com.utsman.data.model.dto.list.Category
 import com.utsman.data.model.dto.list.CategorySealedView
 
 interface CategoriesRepository {

@@ -7,7 +7,7 @@ package com.utsman.data.repository.list
 
 import com.utsman.data.const.CategoriesApps
 import com.utsman.data.model.response.list.Aptoide
-import com.utsman.data.model.Category
+import com.utsman.data.model.dto.list.Category
 import com.utsman.data.model.dto.list.CategorySealedView.CategoryView
 import com.utsman.data.model.dto.list.toCategoryView
 import com.utsman.data.route.Services

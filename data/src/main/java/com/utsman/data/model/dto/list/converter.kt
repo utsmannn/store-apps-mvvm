@@ -5,11 +5,8 @@
 
 package com.utsman.data.model.dto.list
 
-import androidx.lifecycle.LiveData
-import androidx.work.WorkInfo
 import com.utsman.data.model.response.list.AppsItem
 import com.utsman.data.model.response.list.Aptoide
-import com.utsman.data.model.Category
 import com.utsman.data.model.dto.downloaded.DownloadedApps
 
 fun Aptoide.toCategoryBannerView(category: Category?): CategorySealedView.CategoryBannerView? {

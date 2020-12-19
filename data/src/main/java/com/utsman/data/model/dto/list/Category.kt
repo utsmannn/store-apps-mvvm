@@ -1,9 +1,9 @@
 /*
- * Created by Muhammad Utsman on 28/11/20 3:54 PM
+ * Created by Muhammad Utsman on 19/12/20 11:50 PM
  * Copyright (c) 2020 . All rights reserved.
  */
 
-package com.utsman.data.model
+package com.utsman.data.model.dto.list
 
 import com.utsman.abstraction.extensions.capital
 

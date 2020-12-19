@@ -5,6 +5,7 @@
 
 package com.utsman.storeapps
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
@@ -20,6 +21,7 @@ import com.utsman.network.toJson
 import com.utsman.storeapps.databinding.ActivitySettingsBinding
 import com.utsman.storeapps.viewmodel.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.InternalCoroutinesApi
 import java.io.File
 
 @AndroidEntryPoint
@@ -27,6 +29,13 @@ class SettingsActivity : AppCompatActivity() {
     private val binding: ActivitySettingsBinding by viewBinding()
     private val viewModel: SettingsViewModel by viewModels()
 
+
+    private val dialogCleanBinding by lazy {
+
+    }
+
+    @InternalCoroutinesApi
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -64,6 +73,11 @@ class SettingsActivity : AppCompatActivity() {
                 }
                 viewModel.toggleMaturity()
             }
+
+            viewModel.getDownloadSize()
+            viewModel.downloadDirSize.observe(this@SettingsActivity, Observer { size ->
+                btnCleanApk.text = "Clean unused apks (${size})"
+            })
         }
     }
 

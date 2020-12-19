@@ -64,9 +64,9 @@ class MainApplication : Application() {
         createNotificationChannel()
 
         // setup dependencies lateinit state value
+        _context.value = this
         _moshi.value = moshi
         _jsonBeautifier.value = jsonBeautifier
-        _context.value = this
         _downloadManager.value = downloadManager
         _workManager.value = workManager
         _appsRepository.value = appsRepository

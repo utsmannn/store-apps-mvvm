@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -63,6 +64,7 @@ class ListAppActivity : AppCompatActivity() {
             }
         }
 
+        binding.chipQuery.isVisible = false
         binding.rvList.run {
             layoutManager = gridLayout
             adapter = pagingListAdapter.withLoadStateFooter(pagingStateAdapter)
@@ -79,10 +81,10 @@ class ListAppActivity : AppCompatActivity() {
         pagingListAdapter.addLoadStateListener { combinedLoadStates ->
             val txtMessage = "Application not found"
             binding.layoutEmpty.initialEmptyState(
-                combinedLoadStates.refresh,
-                txtMessage = txtMessage,
-                imgRes = R.drawable.ic_fluent_emoji_meh_24_regular,
-                itemCount = pagingListAdapter.itemCount
+                combinedLoadStates,
+                pagingListAdapter.itemCount,
+                R.drawable.ic_fluent_emoji_meh_24_regular,
+                txtMessage
             )
 
             binding.layoutProgress.initialLoadState(combinedLoadStates.refresh) {

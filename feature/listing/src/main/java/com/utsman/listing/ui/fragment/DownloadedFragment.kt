@@ -47,6 +47,7 @@ class DownloadedFragment : Fragment(R.layout.layout_recycler_view) {
             DownloadUtils.openDownloadFile(fragment = this, fileName = filename)
         }
 
+        binding?.chipQuery?.isVisible = false
         binding?.rvList?.run {
             layoutManager = LinearLayoutManager(context)
             adapter = downloadedAdapter

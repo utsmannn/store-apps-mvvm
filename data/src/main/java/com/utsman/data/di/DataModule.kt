@@ -15,9 +15,13 @@ import androidx.work.WorkManager
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.utsman.data.dao.CurrentDownloadDao
+import com.utsman.data.dao.RecentQueryDao
 import com.utsman.data.database.CurrentDownloadDatabase
+import com.utsman.data.database.RecentQueryDatabase
 import com.utsman.data.repository.database.DownloadedRepository
 import com.utsman.data.repository.database.DownloadedRepositoryImpl
+import com.utsman.data.repository.database.RecentQueryRepository
+import com.utsman.data.repository.database.RecentQueryRepositoryImpl
 import com.utsman.data.repository.download.DownloadRepository
 import com.utsman.data.repository.download.DownloadRepositoryImpl
 import com.utsman.data.repository.list.*
@@ -107,6 +111,25 @@ class DataModule {
     fun provideCurrentDownloadDatabase(@ApplicationContext context: Context): CurrentDownloadDatabase {
         return Room.databaseBuilder(context, CurrentDownloadDatabase::class.java, "download")
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRecentQueryDao(recentQueryDatabase: RecentQueryDatabase): RecentQueryDao {
+        return recentQueryDatabase.recentQueryDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRecentQueryDatabase(@ApplicationContext context: Context): RecentQueryDatabase {
+        return Room.databaseBuilder(context, RecentQueryDatabase::class.java, "queries")
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRecentQueryRepository(recentQueryDao: RecentQueryDao): RecentQueryRepository {
+        return RecentQueryRepositoryImpl(recentQueryDao)
     }
 
     @Provides
