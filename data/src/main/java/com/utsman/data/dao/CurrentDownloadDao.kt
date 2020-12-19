@@ -5,10 +5,7 @@
 
 package com.utsman.data.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.utsman.data.model.dto.entity.CurrentDownloadEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -32,4 +29,7 @@ interface CurrentDownloadDao {
 
     @Query("delete from current_downloads where package_name = :packageName")
     fun delete(packageName: String?)
+
+    @Query("delete from current_downloads")
+    suspend fun deleteAll()
 }

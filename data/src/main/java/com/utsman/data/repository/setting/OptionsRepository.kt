@@ -9,7 +9,7 @@ import com.utsman.data.model.dto.setting.SettingData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 
-interface SettingRepository {
+interface OptionsRepository {
     suspend fun toggleAutoInstaller()
     suspend fun toggleMaturity()
     suspend fun autoInstaller(): Flow<SettingData>

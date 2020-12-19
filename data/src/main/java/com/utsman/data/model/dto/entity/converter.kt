@@ -14,6 +14,7 @@ import com.utsman.data.di._workManager
 import com.utsman.data.model.dto.downloaded.AppStatus
 import com.utsman.data.model.dto.downloaded.DownloadedApps
 import com.utsman.data.model.dto.list.toAppsView
+import com.utsman.data.model.dto.setting.ErrorLog
 import com.utsman.data.utils.DownloadUtils
 import com.utsman.network.toJson
 import kotlinx.coroutines.flow.collect
@@ -69,4 +70,8 @@ suspend fun CurrentDownloadEntity.toDownloadedApps(): DownloadedApps {
         appStatus = appStatus,
         fileName = this.fileName ?: ""
     )
+}
+
+fun ErrorLogInstallerEntity.toErrorLog(): ErrorLog {
+    return ErrorLog(name, dir, reason, millis)
 }

@@ -91,4 +91,8 @@ class DownloadedRepositoryImpl @Inject constructor(private val dao: CurrentDownl
             dao.delete(packageName)
         }
     }
+
+    override suspend fun removeAll() {
+        dao.deleteAll()
+    }
 }

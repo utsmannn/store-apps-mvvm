@@ -12,7 +12,7 @@
         app:iconTint="@android:color/white"
         app:showAsAction="collapseActionView|ifRoom" />
 
-    <item android:id="@+id/setting_action"
-        android:title="Settings"
+    <item android:id="@+id/options_action"
+        android:title="Options"
         app:showAsAction="never"/>
 </menu>

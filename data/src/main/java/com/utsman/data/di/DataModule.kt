@@ -15,13 +15,12 @@ import androidx.work.WorkManager
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.utsman.data.dao.CurrentDownloadDao
+import com.utsman.data.dao.ErrorLogInstallerDao
 import com.utsman.data.dao.RecentQueryDao
 import com.utsman.data.database.CurrentDownloadDatabase
+import com.utsman.data.database.ErrorLogInstallerDatabase
 import com.utsman.data.database.RecentQueryDatabase
-import com.utsman.data.repository.database.DownloadedRepository
-import com.utsman.data.repository.database.DownloadedRepositoryImpl
-import com.utsman.data.repository.database.RecentQueryRepository
-import com.utsman.data.repository.database.RecentQueryRepositoryImpl
+import com.utsman.data.repository.database.*
 import com.utsman.data.repository.download.DownloadRepository
 import com.utsman.data.repository.download.DownloadRepositoryImpl
 import com.utsman.data.repository.list.*
@@ -29,8 +28,8 @@ import com.utsman.data.repository.meta.MetaRepository
 import com.utsman.data.repository.meta.MetaRepositoryImpl
 import com.utsman.data.repository.root.RootedRepository
 import com.utsman.data.repository.root.RootedRepositoryImplement
-import com.utsman.data.repository.setting.SettingRepository
-import com.utsman.data.repository.setting.SettingRepositoryImpl
+import com.utsman.data.repository.setting.OptionsRepository
+import com.utsman.data.repository.setting.OptionsRepositoryImpl
 import com.utsman.data.route.Services
 import com.utsman.network.Network
 import com.utsman.network.utils.JsonBeautifier
@@ -140,7 +139,10 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun provideDownloadRepository(workManager: WorkManager, downloadedRepository: DownloadedRepository): DownloadRepository {
+    fun provideDownloadRepository(
+        workManager: WorkManager,
+        downloadedRepository: DownloadedRepository
+    ): DownloadRepository {
         return DownloadRepositoryImpl(workManager, downloadedRepository)
     }
 
@@ -152,11 +154,39 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun provideSettingsRepository(dataStore: DataStore<Preferences>): SettingRepository {
-        return SettingRepositoryImpl(dataStore)
+    fun provideSettingsRepository(dataStore: DataStore<Preferences>): OptionsRepository {
+        return OptionsRepositoryImpl(dataStore)
     }
 
     @Provides
     @Singleton
-    fun provideRootedRepository(@ApplicationContext context: Context): RootedRepository = RootedRepositoryImplement(context)
+    fun provideRootedRepository(
+        @ApplicationContext context: Context,
+        errorLogInstallerRepository: ErrorLogInstallerRepository
+    ): RootedRepository {
+        return RootedRepositoryImplement(context, errorLogInstallerRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideErrorLogInstallerDatabase(@ApplicationContext context: Context): ErrorLogInstallerDatabase {
+        return Room.databaseBuilder(
+            context,
+            ErrorLogInstallerDatabase::class.java,
+            "error_log_installer"
+        )
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideErrorLogInstallerDao(errorLogInstallerDatabase: ErrorLogInstallerDatabase): ErrorLogInstallerDao {
+        return errorLogInstallerDatabase.errorLogInstallerDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideErrorLogInstallerRepository(errorLogInstallerDao: ErrorLogInstallerDao): ErrorLogInstallerRepository {
+        return ErrorLogInstallerRepositoryImpl(errorLogInstallerDao)
+    }
 }
