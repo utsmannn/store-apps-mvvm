@@ -22,4 +22,5 @@ interface DownloadedRepository {
     suspend fun getUUIDWorkManager(packageName: String?): String?
     suspend fun saveApp(scope: CoroutineScope, workerAppsMap: WorkerAppsMap): Job
     suspend fun removeApp(scope: CoroutineScope, packageName: String?): Job
+    suspend fun removeAll()
 }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Created by Muhammad Utsman on 20/12/20 5:33 AM
+  ~ Copyright (c) 2020 . All rights reserved.
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/clear_action"
+        android:title="Clear"
+        android:icon="@drawable/ic_fluent_delete_24_filled"
+        app:iconTint="@android:color/white"
+        app:showAsAction="always" />
+</menu>

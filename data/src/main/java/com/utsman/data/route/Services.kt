@@ -6,21 +6,20 @@
 package com.utsman.data.route
 
 import com.utsman.abstraction.extensions.getValueSafeOf
-import com.utsman.data.di._settingRepository
+import com.utsman.data.di._optionRepository
 import com.utsman.data.model.response.detail.AptoideMeta
 import com.utsman.data.model.response.list.Aptoide
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface Services {
 
     companion object {
-        private val settingMaturity = getValueSafeOf(_settingRepository)
+        private val settingMaturity = getValueSafeOf(_optionRepository)
         var isMaturity = false
 
         init {

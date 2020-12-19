@@ -9,12 +9,11 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.utsman.storeapps.domain.SettingsUseCase
-import kotlinx.coroutines.InternalCoroutinesApi
+import com.utsman.storeapps.domain.OptionsUseCase
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SettingsViewModel @ViewModelInject constructor(private val useCase: SettingsUseCase) : ViewModel() {
+class OptionsViewModel @ViewModelInject constructor(private val useCase: OptionsUseCase) : ViewModel() {
 
     val isRoot get() = useCase.isRooted
 
@@ -39,12 +38,10 @@ class SettingsViewModel @ViewModelInject constructor(private val useCase: Settin
         useCase.toggleMaturity(this)
     }
 
-    @InternalCoroutinesApi
     fun getDownloadSize() = viewModelScope.launch {
         useCase.getSizeDownloadDir()
     }
 
-    @InternalCoroutinesApi
     suspend fun deleteFiles() = useCase.cleanFiles()
 
     fun countFile() = useCase.countFile()

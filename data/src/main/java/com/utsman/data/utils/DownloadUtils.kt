@@ -113,8 +113,12 @@ object DownloadUtils {
     fun openApps(packageName: String?) {
         val packageManager = getContext().packageManager
         if (packageName != null) {
-            val intent = packageManager.getLaunchIntentForPackage(packageName)
-            getContext().startActivity(intent)
+            try {
+                val intent = packageManager.getLaunchIntentForPackage(packageName)
+                getContext().startActivity(intent)
+            } catch (e: NullPointerException) {
+                e.printStackTrace()
+            }
         }
     }
 

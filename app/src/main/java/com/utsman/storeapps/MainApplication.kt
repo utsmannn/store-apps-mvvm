@@ -21,7 +21,7 @@ import com.utsman.data.repository.database.DownloadedRepository
 import com.utsman.data.repository.list.AppsRepository
 import com.utsman.data.repository.list.InstalledAppsRepository
 import com.utsman.data.repository.root.RootedRepository
-import com.utsman.data.repository.setting.SettingRepository
+import com.utsman.data.repository.setting.OptionsRepository
 import com.utsman.network.di._jsonBeautifier
 import com.utsman.network.di._moshi
 import com.utsman.network.utils.JsonBeautifier
@@ -53,7 +53,7 @@ class MainApplication : Application() {
     lateinit var installedAppsRepository: InstalledAppsRepository
 
     @Inject
-    lateinit var settingRepository: SettingRepository
+    lateinit var optionsRepository: OptionsRepository
 
     @Inject
     lateinit var rootRepository: RootedRepository
@@ -72,7 +72,7 @@ class MainApplication : Application() {
         _appsRepository.value = appsRepository
         _downloadedRepository.value = downloadedRepository
         _installedAppsRepository.value = installedAppsRepository
-        _settingRepository.value = settingRepository
+        _optionRepository.value = optionsRepository
         _rootRepository.value = rootRepository
     }
 

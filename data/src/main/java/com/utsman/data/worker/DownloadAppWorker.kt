@@ -20,7 +20,7 @@ import com.utsman.data.R
 import com.utsman.data.const.StringValues
 import com.utsman.data.di._downloadedRepository
 import com.utsman.data.di._rootRepository
-import com.utsman.data.di._settingRepository
+import com.utsman.data.di._optionRepository
 import com.utsman.data.model.dto.downloaded.Download
 import com.utsman.data.model.dto.setting.SettingData
 import com.utsman.data.model.dto.worker.FileDownload
@@ -43,15 +43,13 @@ class DownloadAppWorker(private val context: Context, workerParameters: WorkerPa
     private var progress = 0L
     private val doneData = workDataOf("done" to true)
     private val databaseHelper = getValueSafeOf(_downloadedRepository)
-    private val settingRepository = getValueSafeOf(_settingRepository)
+    private val settingRepository = getValueSafeOf(_optionRepository)
     private val rootedRepository = getValueSafeOf(_rootRepository)
 
-    @InternalCoroutinesApi
     override suspend fun doWork() = withContext(Dispatchers.IO) {
         callFunction(this)
     }
 
-    @InternalCoroutinesApi
     private suspend fun callFunction(scope: CoroutineScope): Result =
         suspendCancellableCoroutine { task ->
             scope.launch {
@@ -78,7 +76,6 @@ class DownloadAppWorker(private val context: Context, workerParameters: WorkerPa
             }
         }
 
-    @InternalCoroutinesApi
     private suspend fun CancellableContinuation<Result>.observingDownload(
         scope: CoroutineScope,
         downloadId: Long?,
@@ -131,7 +128,7 @@ class DownloadAppWorker(private val context: Context, workerParameters: WorkerPa
                     val dir =
                         this@DownloadAppWorker.context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
                     val fileDownload = File(dir, "${currentApp?.fileName}.apk")
-                    val result = rootedRepository?.installApk(fileDownload.absolutePath)
+                    val result = rootedRepository?.installApk(fileDownload.absolutePath, file?.name)
                     logi("result is ---> ${result?.toJson()}")
 
                     val notificationCompleteBuilder = NotificationCompat.Builder(

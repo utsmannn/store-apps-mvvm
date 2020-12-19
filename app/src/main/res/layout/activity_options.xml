@@ -17,7 +17,7 @@
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
         android:id="@+id/toggle_auto_installer"
-        android:drawableStart="@drawable/ic_fluent_apps_add_in_24_filled"
+        android:drawableStart="@drawable/ic_fluent_apps_24_filled"
         android:drawablePadding="12dp"
         android:drawableTint="@color/purple_500"
         app:thumbTint="@color/purple_500"
@@ -35,6 +35,25 @@
         app:thumbTint="@color/purple_500"
         android:text="Maturity content"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.7dp"
+        android:background="@android:color/black"
+        android:alpha="0.2"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:paddingStart="12dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:paddingEnd="12dp"
+        android:drawablePadding="12dp"
+        android:id="@+id/btn_bookmark"
+        android:text="Bookmark app"
+        app:drawableStartCompat="@drawable/ic_fluent_star_24_filled"
+        app:drawableTint="@color/purple_500" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -47,5 +66,24 @@
         android:text="Clean unused apk"
         app:drawableStartCompat="@drawable/ic_fluent_delete_24_filled"
         app:drawableTint="@color/purple_500" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:paddingStart="12dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:paddingEnd="12dp"
+        android:drawablePadding="12dp"
+        android:id="@+id/btn_error_log_installer"
+        android:text="Error log installer (required root)"
+        app:drawableStartCompat="@drawable/ic_fluent_document_error_24_filled"
+        app:drawableTint="@color/purple_500" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.7dp"
+        android:background="@android:color/black"
+        android:alpha="0.2"/>
 
 </LinearLayout>

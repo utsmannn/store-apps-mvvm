@@ -10,14 +10,12 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.preferencesKey
 import com.utsman.data.model.dto.setting.SettingData
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class SettingRepositoryImpl @Inject constructor(private val dataStore: DataStore<Preferences>) : SettingRepository {
+class OptionsRepositoryImpl @Inject constructor(private val dataStore: DataStore<Preferences>) : OptionsRepository {
     private val keyAutoInstaller = preferencesKey<Boolean>("auto_installer")
     private val keyMaturity = preferencesKey<Boolean>("maturity")
 

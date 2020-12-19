@@ -43,8 +43,8 @@ class MainActivity : AppCompatActivity() {
                 intentTo("com.utsman.listing.ui.activity.SearchAppActivity")
                 true
             }
-            R.id.setting_action -> {
-                intentTo(SettingsActivity::class.java)
+            R.id.options_action -> {
+                intentTo(OptionsActivity::class.java)
                 true
             }
             else -> super.onOptionsItemSelected(item)

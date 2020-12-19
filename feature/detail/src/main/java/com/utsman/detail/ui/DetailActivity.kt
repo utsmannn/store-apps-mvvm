@@ -273,7 +273,7 @@ class DetailActivity : AppCompatActivity() {
                             }
                             viewModel.requestDownload(fileDownload)
                         } else {
-                            toast("permission denied")
+                            snackbar("permission denied")
                         }
                     }
                 }

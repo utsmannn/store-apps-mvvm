@@ -5,24 +5,36 @@
 
 package com.utsman.abstraction.extensions
 
+import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import com.utsman.abstraction.interactor.ResultState
 import java.util.*
 import kotlin.math.ln
 import kotlin.math.pow
-
-fun Context?.toast(msg: String, duration: Int = Toast.LENGTH_SHORT) = Toast.makeText(this, msg, duration).show()
 
 fun ViewGroup.inflate(layoutResId: Int): View = LayoutInflater.from(context).inflate(
     layoutResId,
     this,
     false
 )
+
+fun Activity.snackbar(msg: String) {
+    val contentView = findViewById<View>(android.R.id.content)
+    Snackbar.make(contentView, msg, Snackbar.LENGTH_SHORT).show()
+}
+
+fun Fragment.snackbar(msg: String) {
+    val contentView = view?.findViewById<View>(android.R.id.content)
+    if (contentView != null) Snackbar.make(contentView, msg, Snackbar.LENGTH_SHORT).show()
+
+}
 
 fun Long.toBytesReadable() = when {
     this == Long.MIN_VALUE || this < 0 -> "N/A"
@@ -45,7 +57,7 @@ fun Long.toSumReadable(): String? {
     )
 }
 
-fun <T : Any>ResultState<T>.bindToProgressView(view: View) {
+fun <T : Any> ResultState<T>.bindToProgressView(view: View) {
     view.isVisible = this is ResultState.Loading
 }
 

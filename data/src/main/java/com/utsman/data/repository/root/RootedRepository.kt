@@ -11,5 +11,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface RootedRepository {
     fun rooted(): Boolean
-    suspend fun installApk(dir: String): CommandResult
+    suspend fun installApk(dir: String, name: String?): CommandResult
 }

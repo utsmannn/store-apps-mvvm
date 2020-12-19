@@ -30,7 +30,7 @@
         app:layout_constraintTop_toBottomOf="@+id/txt_title" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_action_download"
+        android:id="@+id/btn_clean"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@drawable/selector_btn"
@@ -50,12 +50,11 @@
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:indeterminate="true"
         android:layout_margin="6dp"
-        android:indeterminateDuration="600"
+        android:indeterminate="true"
+        android:indeterminateDuration="200"
         android:indeterminateTint="@color/teal_200"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_action_download"
-        app:layout_constraintEnd_toEndOf="@+id/btn_action_download"
-        app:layout_constraintTop_toTopOf="@+id/btn_action_download" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
