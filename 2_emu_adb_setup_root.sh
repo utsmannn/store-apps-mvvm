@@ -1,6 +1,5 @@
 #!/bin/zsh
 
-cd ~
 cd supersu/SuperSU-v2.82-201705271822/x86
 adb root
 adb remount
