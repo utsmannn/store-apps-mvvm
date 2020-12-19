@@ -44,16 +44,16 @@ class HomeViewModel @ViewModelInject constructor(
     val pagingCategories: LiveData<PagingData<CategorySealedView>> get() = homeUseCase.pagingCategories
 
     fun getRandomApps() = viewModelScope.launch {
-        homeUseCase.getRandomApps(this)
+        homeUseCase.getRandomApps()
     }
 
     fun getCategories() = viewModelScope.launch {
-        homeUseCase.getCategories(this)
+        homeUseCase.getCategories()
     }
 
     fun getPagingCategories() = viewModelScope.launch {
         if (pagingCategories.value == null) {
-            homeUseCase.getPagingCategories(this)
+            homeUseCase.getPagingCategories()
         }
     }
 
@@ -68,6 +68,6 @@ class HomeViewModel @ViewModelInject constructor(
     }
 
     fun restartState() = viewModelScope.launch {
-        homeUseCase.restartState(this)
+        homeUseCase.restartState()
     }
 }

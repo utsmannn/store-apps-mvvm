@@ -28,6 +28,7 @@ import com.utsman.data.model.dto.worker.WorkInfoResult
 import com.utsman.network.toAny
 import com.utsman.network.toJson
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.flow.collect
@@ -76,7 +77,7 @@ object DownloadUtils {
         }
     }
 
-    fun cancel(scope: CoroutineScope, downloadId: Long?) = scope.launch {
+    fun cancel(downloadId: Long?) = CoroutineScope(Dispatchers.IO).launch {
         if (downloadId != null) {
             downloadManager().remove(downloadId)
         }
@@ -191,7 +192,7 @@ object DownloadUtils {
                     } else {
                         logi("downloading.........")
                         val fileObserverReadable = fileSizeObserver.sizeReadable
-                        val logString = "${fileObserverReadable.soFar} / ${fileObserverReadable.total} (${fileObserverReadable.total})"
+                        val logString = "${fileObserverReadable.soFar} downloaded of ${fileObserverReadable.total} (${fileObserverReadable.total})"
                         listener.onRunning(fileSizeObserver, Download.Status.downloading(logString))
                     }
 

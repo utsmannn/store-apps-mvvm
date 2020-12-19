@@ -12,7 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 
 interface DownloadRepository {
-    suspend fun requestDownload(scope: CoroutineScope, file: FileDownload): Flow<Operation.State>
-    suspend fun cancelDownload(scope: CoroutineScope, downloadId: Long?)
-    suspend fun observerWorkInfo(scope: CoroutineScope, packageName: String): Flow<WorkInfoResult>
+    suspend fun requestDownload(file: FileDownload): Flow<Operation.State>
+    suspend fun cancelDownload(downloadId: Long?)
+    suspend fun observerWorkInfo(packageName: String): Flow<WorkInfoResult>
 }

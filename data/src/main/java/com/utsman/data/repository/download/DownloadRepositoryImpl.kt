@@ -33,7 +33,7 @@ class DownloadRepositoryImpl @Inject constructor(
 
     private suspend fun getCurrentApps() = downloadedRepository.getCurrentAppsSuspendFlow()
 
-    override suspend fun requestDownload(scope: CoroutineScope, file: FileDownload): Flow<Operation.State> {
+    override suspend fun requestDownload(file: FileDownload): Flow<Operation.State> {
         val fileString = file.toJson()
         val inputData = workDataOf("file" to fileString)
 
@@ -49,45 +49,43 @@ class DownloadRepositoryImpl @Inject constructor(
             fileName = file.fileName
         )
 
-        downloadedRepository.saveApp(scope, workerAppsMap)
+        downloadedRepository.saveApp(workerAppsMap)
         return workManager.enqueue(worker)
             .state
             .asFlow()
     }
 
-    override suspend fun cancelDownload(scope: CoroutineScope, downloadId: Long?) {
-        DownloadUtils.cancel(scope, downloadId)
+    override suspend fun cancelDownload(downloadId: Long?) {
+        DownloadUtils.cancel(downloadId)
     }
 
-    override suspend fun observerWorkInfo(scope: CoroutineScope, packageName: String): Flow<WorkInfoResult> {
+    override suspend fun observerWorkInfo(packageName: String): Flow<WorkInfoResult> {
         return channelFlow {
             offer(WorkInfoResult.Stopped())
 
             logi("try observing uuid...")
-            scope.launch {
-                getCurrentApps()
-                    .mapNotNull {
-                        it.find { a -> a?.packageName == packageName }
-                    }
-                    .flatMapMerge { app ->
-                        workManager.getWorkInfoByIdLiveData(UUID.fromString(app.uuid))
-                            .asFlow()
-                    }
-                    .collect { workInfo ->
-                        logi("work info in use case is -> $workInfo")
+            getCurrentApps()
+                .mapNotNull {
+                    it.find { a -> a?.packageName == packageName }
+                }
+                .flatMapMerge { app ->
+                    workManager.getWorkInfoByIdLiveData(UUID.fromString(app.uuid))
+                        .asFlow()
+                }
+                .collect { workInfo ->
+                    logi("work info in use case is -> $workInfo")
 
-                        offer(WorkInfoResult.Working(workInfo, packageName))
-                        if (workInfo != null) {
-                            val progressData = workInfo.outputData.getBoolean("done", false)
-                            logi("done data is -> $progressData")
-                            if (progressData) {
-                                offer(WorkInfoResult.Stopped())
-                            }
-                        } else {
-                            logi("work info null....................")
+                    offer(WorkInfoResult.Working(workInfo, packageName))
+                    if (workInfo != null) {
+                        val progressData = workInfo.outputData.getBoolean("done", false)
+                        logi("done data is -> $progressData")
+                        if (progressData) {
+                            offer(WorkInfoResult.Stopped())
                         }
+                    } else {
+                        logi("work info null....................")
                     }
-            }
+                }
 
             awaitClose { cancel() }
         }

@@ -38,7 +38,7 @@ class HomeUseCase @Inject constructor(
 
     val pagingCategories = MutableLiveData<PagingData<CategorySealedView>>()
 
-    suspend fun getRandomApps(scope: CoroutineScope) = scope.launch {
+    suspend fun getRandomApps() {
         fetch {
             val response = appsRepository.getTopApps()
             response.datalist?.list?.map { app ->
@@ -49,7 +49,7 @@ class HomeUseCase @Inject constructor(
         }
     }
 
-    suspend fun getCategories(scope: CoroutineScope) = scope.launch {
+    suspend fun getCategories() {
         fetch {
             val response = categoriesRepository.getCategories(CategoriesApps.list)
             response.mapIndexed { index, aptoide ->
@@ -60,7 +60,7 @@ class HomeUseCase @Inject constructor(
         }
     }
 
-    suspend fun getPagingCategories(scope: CoroutineScope) = scope.launch {
+    suspend fun getPagingCategories() {
         Pager(PagingConfig(pageSize = 2)) {
             CategoriesPagingSource(categoriesRepository, appsRepository, installedAppsRepository)
         }.flow
@@ -70,7 +70,7 @@ class HomeUseCase @Inject constructor(
             }
     }
 
-    fun restartState(scope: CoroutineScope) = scope.launch {
+    suspend fun restartState() {
         randomList.value = ResultState.Idle()
         categories.value = ResultState.Idle()
         pagingCategories.postValue(PagingData.empty())

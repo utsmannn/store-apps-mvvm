@@ -53,7 +53,7 @@ class DownloadedUseCase @Inject constructor(
                 }
         }
 
-    fun markIsDone(scope: CoroutineScope, downloadedApps: DownloadedApps) = scope.launch {
-        downloadedRepository.markIsComplete(this, downloadedApps.appsView?.packageName, downloadedApps.downloadId)
+    suspend fun markIsDone(downloadedApps: DownloadedApps) {
+        downloadedRepository.markIsComplete(downloadedApps.appsView?.packageName, downloadedApps.downloadId)
     }
 }

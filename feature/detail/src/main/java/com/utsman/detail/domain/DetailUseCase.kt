@@ -39,7 +39,7 @@ class DetailUseCase @Inject constructor(
     val workerState = MutableStateFlow<Operation.State?>(null)
     val workInfoState = MutableStateFlow<WorkInfoResult>(WorkInfoResult.Stopped())
 
-    suspend fun getDetail(scope: CoroutineScope, packageName: String) = scope.launch {
+    suspend fun getDetail(packageName: String) {
         fetch {
             val response = metaRepository.getDetail(packageName)
             val detailView = response?.toDetailView() ?: DetailView()
@@ -53,26 +53,23 @@ class DetailUseCase @Inject constructor(
         return DownloadUtils.checkAppIsDownloaded(context, fileName)
     }
 
-    suspend fun observerWorkInfoResult(
-        scope: CoroutineScope,
-        packageName: String
-    ) {
-        downloadRepository.observerWorkInfo(scope, packageName).collect {
+    suspend fun observerWorkInfoResult(packageName: String) {
+        downloadRepository.observerWorkInfo(packageName).collect {
             workInfoState.value = it
         }
     }
 
-    suspend fun requestDownload(scope: CoroutineScope, file: FileDownload) {
-        downloadRepository.requestDownload(scope, file).collect {
+    suspend fun requestDownload(file: FileDownload) {
+        downloadRepository.requestDownload(file).collect {
             workerState.value = it
         }
     }
 
-    suspend fun cancelDownload(scope: CoroutineScope, downloadId: Long?) = scope.launch {
-        downloadRepository.cancelDownload(this, downloadId)
+    suspend fun cancelDownload(downloadId: Long?) {
+        downloadRepository.cancelDownload(downloadId)
     }
 
-    fun restartState(scope: CoroutineScope) = scope.launch {
+    suspend fun restartState() {
         detailView.value = ResultState.Idle()
         workerState.value = null
         workInfoState.value = WorkInfoResult.Stopped()

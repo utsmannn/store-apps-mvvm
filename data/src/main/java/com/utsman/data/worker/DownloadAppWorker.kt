@@ -65,12 +65,12 @@ class DownloadAppWorker(private val context: Context, workerParameters: WorkerPa
 
                 if (downloadIsRunForApp) {
                     val downloadIdSaved = databaseHelper?.getDownloadId(packageName)
-                    databaseHelper?.markIsRun(this, packageName, downloadIdSaved)
+                    databaseHelper?.markIsRun(packageName, downloadIdSaved)
                     task.observingDownload(this, downloadIdSaved, file, autoInstaller)
                 } else {
                     val downloadId =
                         DownloadUtils.startDownload(file, !(autoInstaller?.value ?: true))
-                    databaseHelper?.markIsRun(this, packageName, downloadId)
+                    databaseHelper?.markIsRun(packageName, downloadId)
                     task.observingDownload(this, downloadId, file, autoInstaller)
                 }
             }
@@ -121,7 +121,7 @@ class DownloadAppWorker(private val context: Context, workerParameters: WorkerPa
                     )
 
                     setProgress(progressData)
-                    databaseHelper?.markIsComplete(scope, file?.packageName, downloadId)
+                    databaseHelper?.markIsComplete(file?.packageName, downloadId)
 
                     delay(1000)
                     val currentApp = databaseHelper?.getCurrentApp(file?.packageName)
@@ -159,7 +159,7 @@ class DownloadAppWorker(private val context: Context, workerParameters: WorkerPa
                     )
 
                     setProgress(progressData)
-                    databaseHelper?.markIsComplete(scope, file?.packageName, downloadId)
+                    databaseHelper?.markIsComplete(file?.packageName, downloadId)
                 }
 
                 progress = 100
@@ -186,7 +186,7 @@ class DownloadAppWorker(private val context: Context, workerParameters: WorkerPa
                     val soFar = fileSizeObserver.sizeReadable.soFar
                     val progress = fileSizeObserver.sizeReadable.progress
 
-                    val statusString = "$soFar downloaded of $size ($progress)"
+                    val statusString = status.message
 
                     val progressData = workDataOf(
                         "progress" to fileSizeObserver.progress,
@@ -234,7 +234,7 @@ class DownloadAppWorker(private val context: Context, workerParameters: WorkerPa
                     "status" to statusJson
                 )
                 setProgress(progressData)
-                databaseHelper?.removeApp(scope, file?.packageName)
+                databaseHelper?.removeApp(file?.packageName)
 
                 finished = true
                 if (task.isActive) {
@@ -259,8 +259,8 @@ class DownloadAppWorker(private val context: Context, workerParameters: WorkerPa
                 val progressData2 = workDataOf("status_string" to statusString2)
                 setProgress(progressData2)
 
-                databaseHelper?.markIsComplete(scope, file?.packageName, downloadId)
-                databaseHelper?.removeApp(scope, file?.packageName)
+                databaseHelper?.markIsComplete(file?.packageName, downloadId)
+                databaseHelper?.removeApp(file?.packageName)
 
                 progress = 100
                 finished = true

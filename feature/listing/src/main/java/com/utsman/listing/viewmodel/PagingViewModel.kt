@@ -18,10 +18,10 @@ class PagingViewModel @ViewModelInject constructor(private val pagingUseCase: Pa
     val pagingData: LiveData<PagingData<AppsView>> get() = pagingUseCase.pagingData
 
     fun getApps(query: String? = null, isSearch: Boolean = false) = viewModelScope.launch {
-        pagingUseCase.searchApps(this, query, isSearch)
+        pagingUseCase.searchApps(query, isSearch)
     }
 
     fun restartState() = viewModelScope.launch {
-        pagingUseCase.restartState(this)
+        pagingUseCase.restartState()
     }
 }

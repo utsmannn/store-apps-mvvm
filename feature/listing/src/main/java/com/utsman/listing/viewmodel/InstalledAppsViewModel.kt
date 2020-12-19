@@ -40,12 +40,12 @@ class InstalledAppsViewModel @ViewModelInject constructor(
 
     init {
         viewModelScope.launch {
-            installedAppUseCase.getUpdatedApp(this)
+            installedAppUseCase.getUpdatedApp()
         }
     }
 
     fun requestDownload(fileDownload: FileDownload) = viewModelScope.launch {
-        installedAppUseCase.requestDownload(viewModelScope, fileDownload)
+        installedAppUseCase.requestDownload(fileDownload)
     }
 
     fun onResumeRecyclerView(recyclerView: RecyclerView?) {

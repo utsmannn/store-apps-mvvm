@@ -40,19 +40,19 @@ class DetailViewModel @ViewModelInject constructor(
     }
 
     fun getDetailView(packageName: String) = viewModelScope.launch {
-        detailUseCase.getDetail(this, packageName)
+        detailUseCase.getDetail(packageName)
     }
 
     fun requestDownload(fileDownload: FileDownload) = viewModelScope.launch {
-        detailUseCase.requestDownload(viewModelScope, fileDownload)
+        detailUseCase.requestDownload(fileDownload)
     }
 
     fun cancelDownload(downloadId: Long?) = viewModelScope.launch {
-        detailUseCase.cancelDownload(this, downloadId)
+        detailUseCase.cancelDownload(downloadId)
     }
 
     fun observerWorkInfo(packageName: String) = viewModelScope.launch {
-        detailUseCase.observerWorkInfoResult(this, packageName)
+        detailUseCase.observerWorkInfoResult(packageName)
     }
 
     fun getFileName(): String {
@@ -96,6 +96,6 @@ class DetailViewModel @ViewModelInject constructor(
     }
 
     fun restartState() = viewModelScope.launch {
-        detailUseCase.restartState(this)
+        detailUseCase.restartState()
     }
 }

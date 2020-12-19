@@ -25,7 +25,7 @@ class DownloadedViewModel @ViewModelInject constructor(
 ) : ViewModel() {
 
     companion object {
-        val STATE_RV = "state_rv_downloaded"
+        private const val STATE_RV = "state_rv_downloaded"
     }
 
     private var stateRecyclerView: Parcelable?
@@ -37,8 +37,8 @@ class DownloadedViewModel @ViewModelInject constructor(
     val downloadedList = downloadedUseCase
         .list.asLiveData(viewModelScope.coroutineContext)
 
-    fun markIsDone(downloadedApps: DownloadedApps) = CoroutineScope(Dispatchers.IO).launch {
-        downloadedUseCase.markIsDone(this, downloadedApps)
+    fun markIsDone(downloadedApps: DownloadedApps) = viewModelScope.launch {
+        downloadedUseCase.markIsDone(downloadedApps)
     }
 
     fun onResumeRecyclerView(recyclerView: RecyclerView?) {

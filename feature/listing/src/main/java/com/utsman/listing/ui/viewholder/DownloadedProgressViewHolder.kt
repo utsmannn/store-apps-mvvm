@@ -58,7 +58,7 @@ class DownloadedProgressViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             btnStopDownload.setOnClickListener {
                 if (total >= 0) {
                     GlobalScope.launch {
-                        DownloadUtils.cancel(this, downloadId)
+                        DownloadUtils.cancel(downloadId)
                     }
                 }
             }

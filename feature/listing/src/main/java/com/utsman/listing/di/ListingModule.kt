@@ -32,14 +32,12 @@ class ListingModule {
     fun providePagingUseCase(
         pagingAppRepository: PagingAppRepository,
         installedAppsRepository: InstalledAppsRepository,
-        downloadedRepository: DownloadedRepository,
-        workManager: WorkManager
+        downloadedRepository: DownloadedRepository
     ): PagingUseCase {
         return PagingUseCase(
             pagingAppRepository,
             installedAppsRepository,
-            downloadedRepository,
-            workManager
+            downloadedRepository
         )
     }
 

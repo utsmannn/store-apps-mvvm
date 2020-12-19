@@ -30,19 +30,16 @@ class DownloadedRepositoryImpl @Inject constructor(private val dao: CurrentDownl
     }
 
     override suspend fun markIsRun(
-        scope: CoroutineScope,
         packageName: String?,
         downloadId: Long?
-    ): Job {
-        return scope.launch {
-            val found = dao.getCurrentApps(packageName)
-            if (found != null) {
-                found.apply {
-                    this.isRun = true
-                    this.downloadId = downloadId
-                }
-                dao.updateCurrentApps(found)
+    ) {
+        val found = dao.getCurrentApps(packageName)
+        if (found != null) {
+            found.apply {
+                this.isRun = true
+                this.downloadId = downloadId
             }
+            dao.updateCurrentApps(found)
         }
     }
 
@@ -51,20 +48,17 @@ class DownloadedRepositoryImpl @Inject constructor(private val dao: CurrentDownl
     }
 
     override suspend fun markIsComplete(
-        scope: CoroutineScope,
         packageName: String?,
         downloadId: Long?
-    ): Job {
-        return scope.launch {
-            val found = dao.getCurrentApps(packageName)
-            logi("mark is complete --> $found")
-            if (found != null) {
-                found.apply {
-                    this.isRun = false
-                    this.downloadId = downloadId
-                }
-                dao.updateCurrentApps(found)
+    ) {
+        val found = dao.getCurrentApps(packageName)
+        logi("mark is complete --> $found")
+        if (found != null) {
+            found.apply {
+                this.isRun = false
+                this.downloadId = downloadId
             }
+            dao.updateCurrentApps(found)
         }
     }
 
@@ -76,20 +70,16 @@ class DownloadedRepositoryImpl @Inject constructor(private val dao: CurrentDownl
         return dao.getCurrentApps(packageName)?.uuid
     }
 
-    override suspend fun saveApp(scope: CoroutineScope, workerAppsMap: WorkerAppsMap): Job {
-        return scope.launch {
-            val entity = workerAppsMap.toEntity()
-            val currentList = dao.currentApps().distinctBy { it.packageName }
-            if (!currentList.contains(entity)) {
-                dao.insert(entity)
-            }
+    override suspend fun saveApp(workerAppsMap: WorkerAppsMap) {
+        val entity = workerAppsMap.toEntity()
+        val currentList = dao.currentApps().distinctBy { it.packageName }
+        if (!currentList.contains(entity)) {
+            dao.insert(entity)
         }
     }
 
-    override suspend fun removeApp(scope: CoroutineScope, packageName: String?): Job {
-        return scope.launch {
-            dao.delete(packageName)
-        }
+    override suspend fun removeApp(packageName: String?) {
+        dao.delete(packageName)
     }
 
     override suspend fun removeAll() {

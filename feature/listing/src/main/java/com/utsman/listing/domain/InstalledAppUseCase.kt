@@ -25,7 +25,7 @@ class InstalledAppUseCase @Inject constructor(
 
     val pagingData = MutableLiveData<PagingData<AppsSealedView.AppsView>>()
 
-    suspend fun getUpdatedApp(scope: CoroutineScope) = scope.launch {
+    suspend fun getUpdatedApp() {
         Pager(PagingConfig(pageSize = 4)) {
             InstalledPagingSource(installedAppsRepository)
         }.flow
@@ -38,8 +38,8 @@ class InstalledAppUseCase @Inject constructor(
             }
     }
 
-    suspend fun requestDownload(scope: CoroutineScope, file: FileDownload) {
-        downloadRepository.requestDownload(scope, file)
+    suspend fun requestDownload(file: FileDownload) {
+        downloadRepository.requestDownload(file)
     }
 
 }

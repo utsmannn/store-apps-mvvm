@@ -37,11 +37,11 @@ class SearchPagingViewModel @ViewModelInject constructor(
     fun searchApps(query: String?) = viewModelScope.launch {
         if (!query.isNullOrEmpty()) {
             queryUseCase.insert(query)
-            pagingUseCase.searchApps(this, query, true)
+            pagingUseCase.searchApps(query, true)
         }
     }
 
     fun restartState() = viewModelScope.launch {
-        pagingUseCase.restartState(this)
+        pagingUseCase.restartState()
     }
 }

@@ -15,12 +15,12 @@ interface DownloadedRepository {
     suspend fun getCurrentAppsSuspendFlow(): Flow<List<CurrentDownloadEntity?>>
     fun getCurrentAppsFlow(): Flow<List<CurrentDownloadEntity?>>
     suspend fun getCurrentApp(packageName: String?): CurrentDownloadEntity?
-    suspend fun markIsRun(scope: CoroutineScope, packageName: String?, downloadId: Long?): Job
+    suspend fun markIsRun(packageName: String?, downloadId: Long?)
     suspend fun checkIsRun(packageName: String?): Boolean
-    suspend fun markIsComplete(scope: CoroutineScope, packageName: String?, downloadId: Long?): Job
+    suspend fun markIsComplete(packageName: String?, downloadId: Long?)
     suspend fun getDownloadId(packageName: String?): Long?
     suspend fun getUUIDWorkManager(packageName: String?): String?
-    suspend fun saveApp(scope: CoroutineScope, workerAppsMap: WorkerAppsMap): Job
-    suspend fun removeApp(scope: CoroutineScope, packageName: String?): Job
+    suspend fun saveApp(workerAppsMap: WorkerAppsMap)
+    suspend fun removeApp(packageName: String?)
     suspend fun removeAll()
 }

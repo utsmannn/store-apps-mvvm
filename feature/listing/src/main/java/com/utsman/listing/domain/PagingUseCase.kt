@@ -28,12 +28,11 @@ import javax.inject.Inject
 class PagingUseCase @Inject constructor(
     private val pagingAppRepository: PagingAppRepository,
     private val installedAppsRepository: InstalledAppsRepository,
-    private val downloadedRepository: DownloadedRepository,
-    private val workManager: WorkManager
+    private val downloadedRepository: DownloadedRepository
 ) {
     val pagingData = MutableLiveData<PagingData<AppsView>>()
 
-    fun searchApps(scope: CoroutineScope, query: String? = null, isSearch: Boolean) = CoroutineScope(Dispatchers.IO).launch {
+    suspend fun searchApps(query: String? = null, isSearch: Boolean) {
         Pager(PagingConfig(pageSize = 10)) {
             AppsPagingSource(query, isSearch, pagingAppRepository)
         }.flow
@@ -51,7 +50,7 @@ class PagingUseCase @Inject constructor(
             }
     }
 
-    fun restartState(scope: CoroutineScope) = scope.run {
+    suspend fun restartState() {
         pagingData.postValue(PagingData.empty())
     }
 }
