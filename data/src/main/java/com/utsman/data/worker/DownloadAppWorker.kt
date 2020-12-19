@@ -7,21 +7,24 @@ package com.utsman.data.worker
 
 import android.content.Context
 import android.database.Cursor
+import android.os.Environment
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.utsman.abstraction.extensions.getValueSafeOf
 import com.utsman.abstraction.extensions.logi
 import com.utsman.data.di._downloadedRepository
+import com.utsman.data.di._rootRepository
 import com.utsman.data.model.dto.downloaded.Download
 import com.utsman.data.model.dto.worker.FileDownload
 import com.utsman.data.utils.DownloadUtils
 import com.utsman.network.toAny
 import com.utsman.network.toJson
 import kotlinx.coroutines.*
+import java.io.File
 import kotlin.coroutines.resume
 
-class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
+class DownloadAppWorker(private val context: Context, workerParameters: WorkerParameters) :
     CoroutineWorker(context, workerParameters) {
 
     init {
@@ -32,6 +35,7 @@ class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
     private var progress = 0L
     private val doneData = workDataOf("done" to true)
     private val databaseHelper = getValueSafeOf(_downloadedRepository)
+    private val rootedRepository = getValueSafeOf(_rootRepository)
 
     @InternalCoroutinesApi
     override suspend fun doWork() = withContext(Dispatchers.IO) {
@@ -77,7 +81,7 @@ class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
         DownloadUtils.setDownloadListener(downloadId, object : DownloadUtils.DownloadListener {
             override suspend fun onSuccess(cursor: Cursor, status: Download.Status) {
                 delay(1000)
-                val statusString = "Success"
+                val statusString = "Installing..."
                 val statusJson = status.toJson()
 
                 logi("status json is --> $statusJson")
@@ -91,6 +95,13 @@ class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
 
                 logi("success....")
                 databaseHelper?.markIsComplete(scope, packageName, downloadId)
+
+                delay(1000)
+                val currentApp = databaseHelper?.getCurrentApp(packageName)
+                val dir = this@DownloadAppWorker.context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                val file = File(dir, "${currentApp?.fileName}.apk")
+                val result = rootedRepository?.installApk(file.absolutePath)
+                logi("result is ---> ${result?.toJson()}")
 
                 progress = 100
                 finished = true

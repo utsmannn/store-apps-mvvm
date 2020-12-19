@@ -20,6 +20,8 @@ import com.utsman.data.repository.download.DownloadRepositoryImpl
 import com.utsman.data.repository.list.*
 import com.utsman.data.repository.meta.MetaRepository
 import com.utsman.data.repository.meta.MetaRepositoryImpl
+import com.utsman.data.repository.root.RootedRepository
+import com.utsman.data.repository.root.RootedRepositoryImplement
 import com.utsman.data.route.Services
 import com.utsman.network.Network
 import com.utsman.network.utils.JsonBeautifier
@@ -113,4 +115,8 @@ class DataModule {
     fun provideDownloadRepository(workManager: WorkManager, downloadedRepository: DownloadedRepository): DownloadRepository {
         return DownloadRepositoryImpl(workManager, downloadedRepository)
     }
+
+    @Provides
+    @Singleton
+    fun provideRootedRepository(@ApplicationContext context: Context): RootedRepository = RootedRepositoryImplement(context)
 }

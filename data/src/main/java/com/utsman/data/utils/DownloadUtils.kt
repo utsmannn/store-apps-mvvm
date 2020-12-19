@@ -84,6 +84,7 @@ object DownloadUtils {
     fun checkAppIsDownloaded(context: Context, fileName: String): Boolean {
         val dir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
         val file = File(dir, "$fileName.apk")
+        logi("dir is --> ${file.absolutePath}")
         return file.exists()
     }
 

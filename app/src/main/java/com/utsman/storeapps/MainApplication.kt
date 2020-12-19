@@ -19,6 +19,7 @@ import com.utsman.data.di.*
 import com.utsman.data.repository.database.DownloadedRepository
 import com.utsman.data.repository.list.AppsRepository
 import com.utsman.data.repository.list.InstalledAppsRepository
+import com.utsman.data.repository.root.RootedRepository
 import com.utsman.network.di._jsonBeautifier
 import com.utsman.network.di._moshi
 import com.utsman.network.utils.JsonBeautifier
@@ -49,6 +50,9 @@ class MainApplication : Application() {
     @Inject
     lateinit var installedAppsRepository: InstalledAppsRepository
 
+    @Inject
+    lateinit var rootRepository: RootedRepository
+
     override fun onCreate() {
         super.onCreate()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -63,6 +67,7 @@ class MainApplication : Application() {
         _appsRepository.value = appsRepository
         _downloadedRepository.value = downloadedRepository
         _installedAppsRepository.value = installedAppsRepository
+        _rootRepository.value = rootRepository
     }
 
     override fun onLowMemory() {

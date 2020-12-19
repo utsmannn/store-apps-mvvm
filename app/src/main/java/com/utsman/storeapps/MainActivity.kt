@@ -1,5 +1,5 @@
 /*
- * Created by Muhammad Utsman on 28/11/20 3:54 PM
+ * Created by Muhammad Utsman on 14/12/20 4:40 PM
  * Copyright (c) 2020 . All rights reserved.
  */
 
@@ -8,33 +8,27 @@ package com.utsman.storeapps
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.viewbinding.library.activity.viewBinding
 import androidx.appcompat.app.AppCompatActivity
-import com.utsman.abstraction.base.SimplePagerAdapter
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.utsman.abstraction.extensions.intentTo
-import com.utsman.home.ui.HomeFragment
-import com.utsman.listing.ui.fragment.DownloadedFragment
-import com.utsman.storeapps.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val binding: ActivityMainBinding by viewBinding()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-        val homeFragment = HomeFragment()
-        val downloadedApps = DownloadedFragment()
-        //val installedAppFragment = InstalledAppFragment()
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
 
-        val pagerAdapter = SimplePagerAdapter(supportFragmentManager).apply {
-            addFragment(homeFragment, downloadedApps)
-        }
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_container) as NavHostFragment
+        NavigationUI.setupWithNavController(bottomNav, navHostFragment.navController)
 
-        binding.run {
-            mainViewPager.adapter = pagerAdapter
+        navHostFragment.navController.addOnDestinationChangedListener { _, destination, _ ->
+            supportActionBar?.title = destination.label
         }
     }
 
@@ -47,6 +41,10 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.search_action -> {
                 intentTo("com.utsman.listing.ui.activity.SearchAppActivity")
+                true
+            }
+            R.id.setting_action -> {
+                intentTo(SettingsActivity::class.java)
                 true
             }
             else -> super.onOptionsItemSelected(item)
