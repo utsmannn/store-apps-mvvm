@@ -67,6 +67,6 @@ dependencies {
     // snap-helper
     implementation 'com.github.rubensousa:gravitysnaphelper:2.2.1'
 
-    // facebook shimmer
-    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+    // rootbeer
+    implementation 'com.scottyab:rootbeer-lib:0.0.8'
 }

@@ -48,6 +48,7 @@ import com.utsman.detail.ui.adapter.GraphicsAdapter
 import com.utsman.detail.ui.adapter.GraphicsPagerAdapter
 import com.utsman.detail.ui.adapter.PermissionAdapter
 import com.utsman.detail.viewmodel.DetailViewModel
+import com.utsman.network.toJson
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
@@ -299,11 +300,14 @@ class DetailActivity : AppCompatActivity() {
                     if (workInfo != null) {
                         val doneData = workInfo.outputData.getBoolean("done", false)
                         val dataString = workInfo.progress.getString("data")
+                        val statusString = workInfo.progress.getString("status_string")
+
                         val fileObserver =
                             DownloadUtils.FileSizeObserver.convertFromString(dataString)
 
                         val status = DownloadUtils.getStatus(workInfo)
-                        btnActionDownload.text = status?.message ?: viewModel.getDownloadButtonTitle()
+                        logi("status string is --> $statusString")
+                        btnActionDownload.text = statusString ?: viewModel.getDownloadButtonTitle()
 
                         isDownloading = !doneData && status?.type == Download.TypeStatus.DOWNLOADING
 
@@ -311,7 +315,6 @@ class DetailActivity : AppCompatActivity() {
                             Download.TypeStatus.SUCCESS -> {
                                 setEnableButtonDrawable(false)
                                 clipLayer.setProgressAnimation(Download.MAX_LEVEL)
-                                btnActionDownload.text = viewModel.getDownloadButtonTitle()
                             }
                             Download.TypeStatus.DOWNLOADING -> {
                                 setEnableButtonDrawable(true)
@@ -410,8 +413,8 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onPause() {
+        super.onPause()
         viewModel.restartState()
     }
 

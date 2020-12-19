@@ -34,15 +34,21 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import java.io.File
+import java.lang.NullPointerException
 
 object DownloadUtils {
 
     private fun getContext() =  getValueOf(_context)
     private fun downloadManager() = getValueOf(_downloadManager)
 
-    fun startDownload(fileDownload: FileDownload?): Long? {
+    fun startDownload(fileDownload: FileDownload?, showNotificationComplete: Boolean = true): Long? {
         val downloadRequest = DownloadManager.Request(Uri.parse(fileDownload?.url)).apply {
-            setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE or DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            val notifyComplete = if (showNotificationComplete) {
+                DownloadManager.Request.VISIBILITY_VISIBLE or DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
+            } else {
+                DownloadManager.Request.VISIBILITY_VISIBLE
+            }
+            setNotificationVisibility(notifyComplete)
             setDestinationInExternalFilesDir(getContext(), Environment.DIRECTORY_DOWNLOADS, "${fileDownload?.fileName}.apk")
             setAllowedOverMetered(true)
             setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_MOBILE)
@@ -84,6 +90,7 @@ object DownloadUtils {
     fun checkAppIsDownloaded(context: Context, fileName: String): Boolean {
         val dir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
         val file = File(dir, "$fileName.apk")
+        logi("dir is --> ${file.absolutePath}")
         return file.exists()
     }
 
@@ -93,12 +100,14 @@ object DownloadUtils {
         }
     }
 
-    fun checkAppIsInstalled(packageName: String): Boolean {
+    fun checkAppIsInstalled(packageName: String?): Boolean {
         val packageManager = getContext().packageManager
         return try {
-            packageManager.getPackageInfo(packageName, 0)
+            packageManager.getPackageInfo(packageName!!, 0)
             true
         } catch (e: PackageManager.NameNotFoundException) {
+            false
+        } catch (e: NullPointerException) {
             false
         }
     }

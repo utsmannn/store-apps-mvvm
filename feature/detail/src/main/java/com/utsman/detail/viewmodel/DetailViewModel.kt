@@ -15,6 +15,7 @@ import com.utsman.abstraction.extensions.toBytesReadable
 import com.utsman.abstraction.interactor.ResultState
 import com.utsman.data.model.dto.detail.DetailView
 import com.utsman.data.model.dto.worker.FileDownload
+import com.utsman.data.utils.DownloadUtils
 import com.utsman.detail.domain.DetailUseCase
 import kotlinx.coroutines.launch
 
@@ -59,7 +60,7 @@ class DetailViewModel @ViewModelInject constructor(
         return "${data?.packageName}-${data?.appVersion?.apiCode}"
     }
 
-    fun isUpdate(): Boolean {
+    private fun isUpdate(): Boolean {
         val data = getDataSync()
         return data?.appVersion?.run {
             code != 0L && apiCode > code
@@ -68,9 +69,7 @@ class DetailViewModel @ViewModelInject constructor(
 
     fun isInstalled(): Boolean {
         val data = getDataSync()
-        return data?.appVersion?.run {
-            apiCode == code
-        } ?: false
+        return DownloadUtils.checkAppIsInstalled(data?.packageName)
     }
 
     fun isDownloadedApk(): Boolean {

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Created by Muhammad Utsman on 18/12/20 9:26 PM
+  ~ Copyright (c) 2020 . All rights reserved.
+  -->
+
+<LinearLayout
+    android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="MissingDefaultResource,UnusedAttribute">
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:id="@+id/toggle_auto_installer"
+        android:drawableStart="@drawable/ic_fluent_apps_add_in_24_filled"
+        android:drawablePadding="12dp"
+        android:drawableTint="@color/purple_500"
+        app:thumbTint="@color/purple_500"
+        android:text="Auto installer" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:drawableStart="@drawable/ic_fluent_bed_24_filled"
+        android:drawablePadding="12dp"
+        android:id="@+id/toggle_maturity"
+        android:drawableTint="@color/purple_500"
+        app:thumbTint="@color/purple_500"
+        android:text="Maturity content"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:paddingStart="12dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:paddingEnd="12dp"
+        android:drawablePadding="12dp"
+        android:id="@+id/btn_clean_apk"
+        android:text="Clean unused apk"
+        app:drawableStartCompat="@drawable/ic_fluent_delete_24_filled"
+        app:drawableTint="@color/purple_500" />
+
+</LinearLayout>

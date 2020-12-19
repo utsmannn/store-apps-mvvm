@@ -74,5 +74,7 @@ class DetailUseCase @Inject constructor(
 
     fun restartState(scope: CoroutineScope) = scope.launch {
         detailView.value = ResultState.Idle()
+        workerState.value = null
+        workInfoState.value = WorkInfoResult.Stopped()
     }
 }

@@ -9,7 +9,7 @@ object Download {
     const val MAX_LEVEL = 10000
 
     enum class TypeStatus {
-        PREPARING, DOWNLOADING, CANCELING, PAUSED, FAILED, SUCCESS, PENDING
+        PREPARING, DOWNLOADING, CANCELING, PAUSED, FAILED, SUCCESS, PENDING//, INSTALLING
     }
 
     data class Status(
@@ -24,6 +24,7 @@ object Download {
             fun failed(reason: String = "Failed") = Status(TypeStatus.FAILED, reason)
             fun success() = Status(TypeStatus.SUCCESS, "Success")
             fun pending(reason: String = "Pending") = Status(TypeStatus.PENDING, reason)
+            //fun installing(reason: String = "Installing...") = Status(TypeStatus.INSTALLING, reason)
         }
     }
 }

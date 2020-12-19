@@ -11,4 +11,8 @@
         android:icon="@drawable/ic_fluent_search_20_filled"
         app:iconTint="@android:color/white"
         app:showAsAction="collapseActionView|ifRoom" />
+
+    <item android:id="@+id/setting_action"
+        android:title="Settings"
+        app:showAsAction="never"/>
 </menu>

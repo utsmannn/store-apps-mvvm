@@ -7,6 +7,9 @@ package com.utsman.data.di
 
 import android.app.DownloadManager
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.createDataStore
 import androidx.room.Room
 import androidx.work.WorkManager
 import com.squareup.moshi.Moshi
@@ -20,6 +23,10 @@ import com.utsman.data.repository.download.DownloadRepositoryImpl
 import com.utsman.data.repository.list.*
 import com.utsman.data.repository.meta.MetaRepository
 import com.utsman.data.repository.meta.MetaRepositoryImpl
+import com.utsman.data.repository.root.RootedRepository
+import com.utsman.data.repository.root.RootedRepositoryImplement
+import com.utsman.data.repository.setting.SettingRepository
+import com.utsman.data.repository.setting.SettingRepositoryImpl
 import com.utsman.data.route.Services
 import com.utsman.network.Network
 import com.utsman.network.utils.JsonBeautifier
@@ -113,4 +120,20 @@ class DataModule {
     fun provideDownloadRepository(workManager: WorkManager, downloadedRepository: DownloadedRepository): DownloadRepository {
         return DownloadRepositoryImpl(workManager, downloadedRepository)
     }
+
+    @Provides
+    @Singleton
+    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
+        return context.createDataStore(name = "settings_data")
+    }
+
+    @Provides
+    @Singleton
+    fun provideSettingsRepository(dataStore: DataStore<Preferences>): SettingRepository {
+        return SettingRepositoryImpl(dataStore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRootedRepository(@ApplicationContext context: Context): RootedRepository = RootedRepositoryImplement(context)
 }
