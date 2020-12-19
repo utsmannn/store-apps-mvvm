@@ -6,6 +6,7 @@
 package com.utsman.storeapps.di
 
 import com.utsman.data.repository.root.RootedRepository
+import com.utsman.data.repository.setting.SettingRepository
 import com.utsman.storeapps.domain.SettingsUseCase
 import dagger.Module
 import dagger.Provides
@@ -19,6 +20,6 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideSettingUseCase(rootedRepository: RootedRepository) =
-        SettingsUseCase(rootedRepository)
+    fun provideSettingUseCase(rootedRepository: RootedRepository, settingRepository: SettingRepository) =
+        SettingsUseCase(rootedRepository, settingRepository)
 }

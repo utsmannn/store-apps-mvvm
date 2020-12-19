@@ -306,7 +306,7 @@ class DetailActivity : AppCompatActivity() {
                             DownloadUtils.FileSizeObserver.convertFromString(dataString)
 
                         val status = DownloadUtils.getStatus(workInfo)
-                        logi("status result --> ${status?.toJson()}")
+                        logi("status string is --> $statusString")
                         btnActionDownload.text = statusString ?: viewModel.getDownloadButtonTitle()
 
                         isDownloading = !doneData && status?.type == Download.TypeStatus.DOWNLOADING
@@ -315,7 +315,6 @@ class DetailActivity : AppCompatActivity() {
                             Download.TypeStatus.SUCCESS -> {
                                 setEnableButtonDrawable(false)
                                 clipLayer.setProgressAnimation(Download.MAX_LEVEL)
-                                btnActionDownload.text = viewModel.getDownloadButtonTitle()
                             }
                             Download.TypeStatus.DOWNLOADING -> {
                                 setEnableButtonDrawable(true)

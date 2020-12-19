@@ -36,6 +36,7 @@ class DownloadedUseCase @Inject constructor(
                         true
                     }
                 }
+                .filter { it?.appsView?.packageName != null }
                 .toMutableList()
                 .apply {
                     val statusList = this.map { it?.appStatus }
