@@ -1,8 +1,8 @@
 #!/bin/zsh
 
-su root
-cd /system/bin
-chmod 06755 su
-su --install
-su --daemon&
-setenforce 0
+adb -e shell su root
+adb -e shell chmod 06755 /system/bin/su
+adb -e shell /system/bin/su --install
+adb -e shell /system/bin/su --daemon&
+adb -e shell setenforce 0
+exit
