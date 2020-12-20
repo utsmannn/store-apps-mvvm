@@ -15,6 +15,7 @@
 - ViewBinding (with helper by [yogacp](https://github.com/yogacp/android-viewbinding))
 
 ---
+|--|--|
 |![](https://raw.githubusercontent.com/utsmannn/store-apps-mvvm-clean-architecture/master/images/home.png)|![](https://raw.githubusercontent.com/utsmannn/store-apps-mvvm-clean-architecture/master/images/detail.png)|
 |Home|Detail|
 |--|--|
@@ -26,6 +27,7 @@
 |--|--|
 |![](https://raw.githubusercontent.com/utsmannn/store-apps-mvvm-clean-architecture/master/images/options_installer.png)|![](https://raw.githubusercontent.com/utsmannn/store-apps-mvvm-clean-architecture/master/images/updated.png)|
 |Option auto installer|App updated|
+|--|--|
 
 ---
 
