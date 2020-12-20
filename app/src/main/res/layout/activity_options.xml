@@ -49,19 +49,6 @@
         android:foreground="?attr/selectableItemBackground"
         android:paddingEnd="12dp"
         android:drawablePadding="12dp"
-        android:id="@+id/btn_bookmark"
-        android:text="Bookmark app"
-        app:drawableStartCompat="@drawable/ic_fluent_star_24_filled"
-        app:drawableTint="@color/purple_500" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:gravity="center_vertical"
-        android:paddingStart="12dp"
-        android:foreground="?attr/selectableItemBackground"
-        android:paddingEnd="12dp"
-        android:drawablePadding="12dp"
         android:id="@+id/btn_clean_apk"
         android:text="Clean unused apk"
         app:drawableStartCompat="@drawable/ic_fluent_delete_24_filled"
