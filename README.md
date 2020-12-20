@@ -21,3 +21,9 @@
 |Download manager|Auto installer|Options auto installer|App updated|
 |--|--|--|--|
 |![](https://raw.githubusercontent.com/utsmannn/store-apps-mvvm-clean-architecture/master/images/download_manager.png)|![](https://raw.githubusercontent.com/utsmannn/store-apps-mvvm-clean-architecture/master/images/installer.png)|![](https://raw.githubusercontent.com/utsmannn/store-apps-mvvm-clean-architecture/master/images/options_installer.png)|![](https://raw.githubusercontent.com/utsmannn/store-apps-mvvm-clean-architecture/master/images/updated.png)|
+
+
+### Main flow
+![](https://raw.githubusercontent.com/utsmannn/store-apps-mvvm-clean-architecture/master/images/main_flow.png)
+
+---
