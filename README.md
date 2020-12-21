@@ -244,4 +244,26 @@ inline fun <reified T>getValueSafeOf(instanceState: MutableStateFlow<T>): T {
 }
 ```
 
-Ada dua function yang dibuat, `getValueOf()` menghasilkan nilai yang tidak null, karena global variable tersebut bersifat nullable, maka ditambahkan `not-null` assertion, cara ini dapat menyebabkan NPE jika value belum di tetapkan pada `MainApplication`. Sementara `getValueSafeOf()` mengambil nilai yang nullable.
+Ada dua function yang dibuat, `getValueOf()` menghasilkan nilai yang tidak null, karena global variable tersebut bersifat nullable, maka ditambahkan `not-null` assertion, cara ini dapat menyebabkan NPE jika value belum di tetapkan pada `MainApplication`. Sementara `getValueSafeOf()` mengambil nilai yang nullable. Sehingga pemanggilan dependencies nya dapat dilakukan pada class seperti helper, WorkManager, interface dll.
+
+```kotlin
+class DownloadWorkManager(context: Context, workerParameters: WorkerParameters) : CoroutineWorker(context, workerParameters) {
+
+    private val someVarState = getValueSafeOf(_someVarState)
+
+    ...
+
+}
+```
+
+### ViewModel
+ViewModel berfungsi meneruskan dan menyimpan state variable (jika diperlukan) dari UseCase. Stream data (aliran data) berada disini setelah melewati UseCase. Di ViewModel juga ResultState yang bertipe `Flow` dikonversi menjadi `livedata` agar dapat dibinding pada lifecycle sebuah activity/fragment.
+
+```kotlin
+class SomeViewModel(private val useCase: SomeUseCase) : ViewModel() {
+    val resultLiveData 
+            get() = useCase.someResult.asLiveData(viewModelScope.coroutineContext)
+}
+```
+
+---
