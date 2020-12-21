@@ -25,7 +25,7 @@
 ---
 
 ## Stream Data Flow
-![](images/stream_data_flow.png=?raw=true)
+![](images/stream_data_flow.png?raw=true)
 
 - **Network**: Data berasal dari API Aptoide dan dieksekusi pada network threading menggunakan Retrofit.
 - **Repository** : Route retrofit berasal dari api service yang dipanggil oleh repository dengan fungsi interactor flow yang menghasilkan response yang telah wrap oleh class result.
