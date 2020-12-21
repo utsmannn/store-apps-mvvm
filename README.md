@@ -16,11 +16,11 @@
 
 |Home|Detail|Detail downloading|Download monitor|
 |--|--|--|--|
-|![](images/home.png=?raw=true)|![](images/detail.png=?raw=true)|![](images/detail_download.png=?raw=true)|![](images/download_monitor.png=?raw=true)|
+|![](images/home.png?raw=true)|![](images/detail.png?raw=true)|![](images/detail_download.png?raw=true)|![](images/download_monitor.png?raw=true)|
 
 |Download manager|Auto installer|Options auto installer|App updated|
 |--|--|--|--|
-|![](images/download_manager.png?raw=true)|![](images/installer.png=?raw=true)|![](images/options_installer.png=?raw=true)|![](images/updated.png=?raw=true)|
+|![](images/download_manager.png?raw=true)|![](images/installer.png?raw=true)|![](images/options_installer.png?raw=true)|![](images/updated.png?raw=true)|
 
 ---
 
