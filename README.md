@@ -169,4 +169,4 @@ Moshi merupakan JSON Library untuk android dan java yang dikembangkan oleh Squar
 - Moshi memiliki ukuran yang lebih kecil dibanding Gson
 - Moshi dikembangkan oleh developer yang sama dengan Retrofit. Hal ini memastikan update Retrofit kedepan akan kompatible dengan Moshi.
 
-Meski begitu, sulit membuat function converter dari model ke string Json secara generik. Tidak seperti Gson yang hanya butuh type class, Moshi membutuhkan adapter pada tiap class generik dan memerlukan Buffer Reader UTF 8 untuk generate pretty nya. Lihat ([JsonBeautifier](blob/master/libraries/network/src/main/java/com/utsman/network/utils/JsonBeautifier.kt))
+Meski begitu, sulit membuat function converter dari model ke string Json secara generik. Tidak seperti Gson yang hanya butuh type class, Moshi membutuhkan adapter pada tiap class generik dan memerlukan Buffer Reader UTF 8 untuk generate pretty nya. Lihat ([JsonBeautifier](libraries/network/src/main/java/com/utsman/network/utils/JsonBeautifier.kt))
