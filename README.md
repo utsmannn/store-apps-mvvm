@@ -24,7 +24,8 @@
 
 ---
 
-## Stream Data Flow
+## Architecture
+### Stream Data Flow
 ![](images/stream_data_flow.png?raw=true)
 
 - **Network**: Data berasal dari API Aptoide dan dieksekusi pada network threading menggunakan Retrofit.
@@ -35,7 +36,7 @@
 
 ---
 
-## Modularization
+### Modularization
 Dalam proyek ini, saya memisahkan fitur dan layer secara modular sehingga mudah untuk menjaga kode dan tanggungjawab setiap class pada layer masing-masing dan ketergantungannya.
 
 tree:
@@ -52,7 +53,7 @@ root
 ------ network
 ```
 
-### Apa itu layer?
+#### Apa itu layer?
 Layer yang dimaksud dalam prinsip Clean Arch adalah lapisan-lapisan yang mewakili fungsionalitas dari class-class yang membangun sebuah fitur. Untuk gampang nya bisa lihat gambar berikut.
 
 ![](https://miro.medium.com/max/942/1*Jve_0_GCxLEiYzdc2QKogQ.jpeg)
@@ -67,12 +68,12 @@ Lingkaran tersebut berisi macam-macam lapisan atau layer. Layer-layer itulah yan
 
 Khusus untuk layer Data, module dipisah, isi nya berupa repository-repository dan class-class yang dibutuhkan pada module lain. Untuk module lain, dibuat perfitur, masing-masing module menghandle fiturnya masing-masing dimulai dengan fungsi yang disediakan repository pada module data, dengan begitu responsibility akan lebih terjaga.
 
-## UseCase
+### UseCase
 UseCase dalam arsitektur ini menjadi jembatan bagi view dan data, satu level dengan Domain layer. Berisi fungsi-fungsi yang dapat dieksekusi atau diteruskan ke Data layer dan bergantung pada user input Presentasion layer. Dalam project ini, UseCase menghasilkan data yang dibungkus oleh `ResultState`.
 
 Seperti dibahas di awal, layer ini berfungsi untuk menyimpan function-function yang terkait pengambilan data dari layer Data. Dalam project ini, proses tersebut menggunakan sebuah fungsi yang menghasilkan (`return`) `Flow<ResultState>`, fungsi ini dapat disebut dengan interactor.
 
-### ResultState
+#### ResultState
 `ResultState` merupakan class "bungkusan" yang berfungsi membawa data dari hulu menuju hilir, dari layer Data sampai ke View. Class ini menggunakan fungsi `sealed` dari Kotlin yang berisi empat objek, `Loading`, `Idle`, `Success` dan `Error`.
 
 ```kotlin
@@ -108,7 +109,7 @@ viewModel.randomList.observe(viewLifecycleOwner, Observer { state ->
 })
 ```
 
-### Interactor
+#### Interactor
 Interactor merupakan fungsi pengambilan data yang menghasilkan class `Flow<ResultState>`. Digunakan untuk berinteraksi dengan suspend function yang mengambil data atau response dari repository atau dapat juga langsung dari route services. Baca mengenai `Flow` di sini https://kotlinlang.org/docs/reference/coroutines/flow.html
 
 ```kotlin
@@ -159,10 +160,10 @@ class HomeUseCase(private val appsRepository: AppsRepository) {
 }
 ```
 
-## Networking
+### Networking
 Networking menggunakan Retrofit, Coroutines dan Moshi adapter. Alih-alih menggunakan RxJava, Coroutine terlihat lebih *clean* dan simple, bukan berarti RxJava tidak bagus, tapi ini cuman pilihan. Begitu pula dengan Moshi, saya berhenti menggunakan Gson dalam project-project riset seperti ini karena beberapa hal.
 
-### Moshi
+#### Moshi
 Moshi merupakan JSON Library untuk android dan java yang dikembangkan oleh Square, pengembang yang sama untuk Retrofit. Saya sudah lama menggunakan Gson, tapi sepertinya saya harus mempertimbangkan Moshi yang akan jadi pilihan utama kedepan. Setelah baca beberapa artikel, sedikit catatan untuk itu.
 
 - Gson bukan library yang modern, tidak ditulis dengan kotlin, sementara Moshi lebih ramah kotlin. Yang membuat ramah adalah sebagian kode ditulis dengan kotlin.
@@ -170,3 +171,4 @@ Moshi merupakan JSON Library untuk android dan java yang dikembangkan oleh Squar
 - Moshi dikembangkan oleh developer yang sama dengan Retrofit. Hal ini memastikan update Retrofit kedepan akan kompatible dengan Moshi.
 
 Meski begitu, sulit membuat function converter dari model ke string Json secara generik. Tidak seperti Gson yang hanya butuh type class, Moshi membutuhkan adapter pada tiap class generik dan memerlukan Buffer Reader UTF 8 untuk generate pretty nya. Lihat [JsonBeautifier](libraries/network/src/main/java/com/utsman/network/utils/JsonBeautifier.kt)
+
