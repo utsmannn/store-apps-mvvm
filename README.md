@@ -25,6 +25,8 @@
 ---
 
 ## Architecture
+Projek ini berusaha menerapkan Clean Arch yang baik demi pemeliharaan (maintenance) yang baik pula. Penerapan ini juga berusaha mengikuti prinsip-prinsip Clean Arch yang baik yakni SOLID Principles, (baca di sini https://en.wikipedia.org/wiki/SOLID). Untuk lebih jelas mengenai Android Clean Architecture, silahkan baca tulisan om Yoga [Clean Architecture Android](https://medium.com/style-theory-engineering/android-clean-architecture-using-kotlin-48306644ada7).
+
 ### Stream Data Flow
 ![](images/stream_data_flow.png?raw=true)
 
@@ -161,7 +163,7 @@ class HomeUseCase(private val appsRepository: AppsRepository) {
 ```
 
 ### Networking
-Networking menggunakan Retrofit, Coroutines dan Moshi adapter. Alih-alih menggunakan RxJava, Coroutine terlihat lebih *clean* dan simple, bukan berarti RxJava tidak bagus, tapi ini cuman pilihan. Begitu pula dengan Moshi, saya berhenti menggunakan Gson dalam project-project riset seperti ini karena beberapa hal.
+Networking menggunakan Retrofit, Coroutines dan Moshi adapter. Alih-alih menggunakan RxJava, Coroutine terlihat lebih *clean* dan simple, bukan berarti RxJava tidak bagus, tapi ini cuman pilihan. Tidak begitu dengan Moshi, saya berhenti menggunakan Gson dan beralih dengan Moshi dalam project-project riset seperti ini karena peforma dan kompabilitasnya dirasa lebih baik.
 
 #### Moshi
 Moshi merupakan JSON Library untuk android dan java yang dikembangkan oleh Square, pengembang yang sama untuk Retrofit. Saya sudah lama menggunakan Gson, tapi sepertinya saya harus mempertimbangkan Moshi yang akan jadi pilihan utama kedepan. Setelah baca beberapa artikel, sedikit catatan untuk itu.
@@ -170,5 +172,76 @@ Moshi merupakan JSON Library untuk android dan java yang dikembangkan oleh Squar
 - Moshi memiliki ukuran yang lebih kecil dibanding Gson
 - Moshi dikembangkan oleh developer yang sama dengan Retrofit. Hal ini memastikan update Retrofit kedepan akan kompatible dengan Moshi.
 
-Meski begitu, sulit membuat function converter dari model ke string Json secara generik. Tidak seperti Gson yang hanya butuh type class, Moshi membutuhkan adapter pada tiap class generik dan memerlukan Buffer Reader UTF 8 untuk generate pretty nya. Lihat [JsonBeautifier](libraries/network/src/main/java/com/utsman/network/utils/JsonBeautifier.kt)
+Meski begitu, sulit membuat function converter dari model ke string Json secara generik. Tidak seperti Gson yang hanya butuh type class, Moshi membutuhkan adapter pada tiap class generik dan memerlukan Buffer Reader UTF 8 untuk generate pretty nya. Lihat [JsonBeautifier.kt](libraries/network/src/main/java/com/utsman/network/utils/JsonBeautifier.kt)
 
+### Dependencies Injection
+Dependencies Injection (untuk selanjutnya disebut DI) merupakan library wajib bagi saya untuk mengerjakan projek-projek android. Setidaknya ada tiga poin utama yang di kemukakan oleh Google mengenai kelebihan menerapkan DI dalam arsitektur android.
+
+- Penggunaan kembali kode
+- Kemudahan dalam pemfaktoran ulang
+- Kemudahan dalam pengujian
+
+Baca selebihnya pada dokumentasi official Google di sini https://developer.android.com/training/dependency-injection?hl=id
+
+#### Koin
+Koin adalah salah satu library dependencies yang populer dikalangan android developer. Selain yang ramah kotlin, Koin juga mudah dalam penggunaan dan implementasi nya yang sederhana membuat orang yang sedang belajar DI jadi cepat mengerti.
+
+Pada starting project ini, saya menggunakan Koin karena tidak terlalu memikirkan bagaimana peforma library DI bekerja dan fokus pada fitur juga komponen arch yang lain. Untuk melihat kemudahan menggunakan Koin dapat dibaca dokumentasi offical Koin, https://start.insert-koin.io/#/quickstart/android. Kemudian saya beralih pada Hilt, library DI offical Google.
+
+#### Dagger Hilt
+Hilt sama fungsinya seperti Koin, sama-sama library DI. Hanya Hilt merupakan library yang dikembangkan sendiri oleh Google dengan memanfaatkan Dagger sebagai basis kode. Library Dagger yang sudah cukup lama dan mapan sebagai library DI, dirasa cukup sulit penerapannya apalagi dimengerti, sehingga muncul banyak library alternatif lain seperti Koin diatas. Namun sekarang, Google telah mengembangkan Hilt yang mudah di implementasikan dan dimengerti tanpa menghilangkan komponen-komponen yang ada pada Dagger.
+
+Dalam kode ini anda dapat menemukan banyak anotasi dan provide Hilt secara singleton. Saya hanya menggunakan singleton dan `ApplicationComponent` pada keseluhuran karena ketergantungan dependencies tidak sampai pada layer view. Jadi tiap-tiap dependencies dapat diakses pada semua scope project aplikasi tanpa ada batasan.
+
+#### Handle dependencies across module
+Karena semua dependencies di install pada module `ApplicationComponent`, maka diperlukan teknik mengambil class dependencies yang telah di provide, terutama pada class-class yang tidak memiliki `EntryPoint` seperti Activity, Service dan lain-lain (https://developer.android.com/training/dependency-injection/hilt-android?hl=id#kotlin).
+
+Untuk keperluan tersebut, perlu dibuat variable global, yang dapat diakses oleh `MainApplication` sebagai scope utama project aplikasi. Bagusnya, pada kotlin, kita dapat mendeklarasikan variable global tanpa class, hanya ditulis pada file kotlin (*.kt). Tahap selanjutnya adalah menetapkan value dari masing-masing global variable di `MainApplication` dengan mengambil dependencies yang telah di inject.
+
+Dalam membuat global variable tersebut, saya menggunakan `MutableStateFlow` sebagai bungkusannya. Sehingga variable tersebut dapat ditetapkan valuenya berdasarkan dependencies yang telah di provide. Skemanya adalah
+
+Module B. Menetapkan global variable dengan nullable
+```kotlin
+// lateinit.kt module b
+val _someVarState: MutableStateFlow<SomeVar?> = MutableStateFlow(null)
+```
+
+Module A. Menetapkan value variable tersebut dengan nilai yang sudah di provide
+```kotlin
+// MainApplication.kt module a
+import module_b._someVarState
+
+@HiltAndroidApp
+class MainApplication : Application() {
+        
+        @Inject
+        lateinit var someVar: SomeVar
+        
+        override fun onCreate() {
+            super.onCreate()
+            _someVarState.value = SomeVar
+        }
+}
+```
+
+Lantas, tinggal buat function helper agar terlihat lebih bagus yang dapat digunakan tiap-tiap class yang membutuhkan.
+
+```kotlin
+inline fun <reified T: Any?>getValueOf(instanceState: MutableStateFlow<T?>): T {
+    val immutable: StateFlow<T?> = instanceState
+    val className = T::class.simpleName
+    return try {
+        immutable.value!!
+    } catch (e: ExceptionInInitializerError) {
+        loge("Module not yet initialize. Check module of class : `$className`")
+        throw e
+    }
+}
+
+inline fun <reified T>getValueSafeOf(instanceState: MutableStateFlow<T>): T {
+    val immutable: StateFlow<T> = instanceState
+    return immutable.value
+}
+```
+
+Ada dua function yang dibuat, `getValueOf()` menghasilkan nilai yang tidak null, karena global variable tersebut bersifat nullable, maka ditambahkan `not-null` assertion, cara ini dapat menyebabkan NPE jika value belum di tetapkan pada `MainApplication`. Sementara `getValueSafeOf()` mengambil nilai yang nullable.

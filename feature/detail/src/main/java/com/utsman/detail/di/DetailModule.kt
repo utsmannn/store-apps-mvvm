@@ -19,7 +19,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(ApplicationComponent::class)
-class DetailModule {
+object DetailModule {
 
     @Provides
     @Singleton

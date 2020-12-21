@@ -16,7 +16,7 @@ import dagger.hilt.android.components.ApplicationComponent
 
 @Module
 @InstallIn(ApplicationComponent::class)
-class HomeModule {
+object HomeModule {
 
     @Provides
     fun provideHomeUseCase(

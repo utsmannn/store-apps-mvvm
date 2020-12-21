@@ -42,7 +42,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(ApplicationComponent::class)
-class DataModule {
+object DataModule {
 
     @Provides
     @Singleton
