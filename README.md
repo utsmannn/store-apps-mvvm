@@ -16,16 +16,16 @@
 
 |Home|Detail|Detail downloading|Download monitor|
 |--|--|--|--|
-|![](https://raw.githubusercontent.com/utsmannn/store-apps-mvvm-clean-architecture/master/images/home.png)|![](https://raw.githubusercontent.com/utsmannn/store-apps-mvvm-clean-architecture/master/images/detail.png)|![](https://raw.githubusercontent.com/utsmannn/store-apps-mvvm-clean-architecture/master/images/detail_download.png)|![](https://raw.githubusercontent.com/utsmannn/store-apps-mvvm-clean-architecture/master/images/download_monitor.png)|
+|![](images/home.png=?raw=true)|![](images/detail.png=?raw=true)|![](images/detail_download.png=?raw=true)|![](images/download_monitor.png=?raw=true)|
 
 |Download manager|Auto installer|Options auto installer|App updated|
 |--|--|--|--|
-|![](https://raw.githubusercontent.com/utsmannn/store-apps-mvvm-clean-architecture/master/images/download_manager.png)|![](https://raw.githubusercontent.com/utsmannn/store-apps-mvvm-clean-architecture/master/images/installer.png)|![](https://raw.githubusercontent.com/utsmannn/store-apps-mvvm-clean-architecture/master/images/options_installer.png)|![](https://raw.githubusercontent.com/utsmannn/store-apps-mvvm-clean-architecture/master/images/updated.png)|
+|![](images/download_manager.png?raw=true)|![](images/installer.png=?raw=true)|![](images/options_installer.png=?raw=true)|![](images/updated.png=?raw=true)|
 
 ---
 
 ## Stream Data Flow
-![](https://raw.githubusercontent.com/utsmannn/store-apps-mvvm-clean-architecture/master/images/stream_data_flow.png)
+![](images/stream_data_flow.png=?raw=true)
 
 - **Network**: Data berasal dari API Aptoide dan dieksekusi pada network threading menggunakan Retrofit.
 - **Repository** : Route retrofit berasal dari api service yang dipanggil oleh repository dengan fungsi interactor flow yang menghasilkan response yang telah wrap oleh class result.
@@ -169,4 +169,4 @@ Moshi merupakan JSON Library untuk android dan java yang dikembangkan oleh Squar
 - Moshi memiliki ukuran yang lebih kecil dibanding Gson
 - Moshi dikembangkan oleh developer yang sama dengan Retrofit. Hal ini memastikan update Retrofit kedepan akan kompatible dengan Moshi.
 
-Meski begitu, sulit membuat function converter dari model ke string Json secara generik. Tidak seperti Gson yang hanya butuh type class, Moshi membutuhkan adapter pada tiap class generik dan memerlukan Buffer Reader UTF 8 untuk generate pretty nya. Lihat ([JsonBeautifier](libraries/network/src/main/java/com/utsman/network/utils/JsonBeautifier.kt))
+Meski begitu, sulit membuat function converter dari model ke string Json secara generik. Tidak seperti Gson yang hanya butuh type class, Moshi membutuhkan adapter pada tiap class generik dan memerlukan Buffer Reader UTF 8 untuk generate pretty nya. Lihat [JsonBeautifier](libraries/network/src/main/java/com/utsman/network/utils/JsonBeautifier.kt)
