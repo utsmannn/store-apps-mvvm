@@ -41,7 +41,6 @@ class RootedRepositoryImplement @Inject constructor(
                     val errorReader = BufferedReader(InputStreamReader(process.errorStream))
                     val errorLine = errorReader.readLine()
                     logi("error line is not null -> $errorLine")
-
                     process.waitFor()
 
                     if (errorLine != null) {
@@ -53,7 +52,6 @@ class RootedRepositoryImplement @Inject constructor(
                         )
 
                         errorLogInstallerRepository.insertError(errorLogEntity)
-
                         task.resume(false, errorLine)
                     } else {
                         task.resume(true, "Success")

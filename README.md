@@ -18,6 +18,7 @@
 - [Architecture](#architecture)
     - [Stream Data Flow](#stream-data-flow)
     - [Modularization](#modularization)
+        - [Layer](#layer)
     - [UseCase](#usecase)
         - [ResultState](#resultstate)
         - [Interactor](#interactor)
@@ -36,6 +37,13 @@
         - [Worker](#worker-class)
         - [WorkRequest and observer WorkManager](#workrequest-and-observer-workmanager)
         - [Implementation with architecture](#implementation-with-architecture)
+- [Externals](#externals)
+    - [Download Manager](#download-manager)
+        - [Data file](#data-file)
+        - [Request Download](#request-download)
+        - [Download Listener](#download-listener)
+    - [Root Apk Installer](#root-apk-installer)
+        - [Check root access](#check-root-access)
 
 ---
 |Home|Detail|Detail downloading|Download monitor|
@@ -79,7 +87,7 @@ root
 ------ network
 ```
 
-#### Layer?
+#### Layer
 Layer yang dimaksud dalam prinsip Clean Arch adalah lapisan-lapisan yang mewakili fungsionalitas dari class-class yang membangun sebuah fitur. Untuk gampang nya bisa lihat gambar berikut.
 
 ![](https://miro.medium.com/max/942/1*Jve_0_GCxLEiYzdc2QKogQ.jpeg)
@@ -447,7 +455,166 @@ Selengkapnya lihat:
 - [DetailUseCase.kt](feature/detail/src/main/java/com/utsman/detail/domain/DetailUseCase.kt)
 - [WorkInfoResult](data/src/main/java/com/utsman/data/model/dto/worker/WorkInfoResult.kt)
 
-### DownloadManager
 
+## Externals
+### Download Manager
+Menggunakan API `DownloadManager` bawaan dari android untuk downloader pada project ini adalah pilihan yang baik. Selain mudah implemntasinya, juga tidak perlu melakukan pengecekan dan request ulang ketika device reboot. Hanya butuh sedikit kode untuk membuat listener downloading dan penerapan async code yang baik sehingga dapat di implementasi pada workmanager. Di sini, saya buat satu class static (object class) untuk menaruh semua function DownloadManager. Lihat [DownloadUtils.kt](data/src/main/java/com/utsman/data/utils/DownloadUtils.kt)
+
+#### Data File
+Pada download manager di project ini, diperlukan beberapa parameter yang selalu dibawa, seperti nama file, url file sampai `package_manager`. Data class `FileDownload` dibuat untuk keperluan tersebut.
+
+```kotlin
+data class FileDownload(
+    var id: Int? = 0,
+    var name: String? = "",
+    var url: String? = "",
+    var packageName: String? = "",
+    var fileName: String? = ""
+) {
+    companion object {
+        fun simple(download: FileDownload.() -> Unit) = FileDownload().apply(download)
+    }
+}
+``` 
+
+#### Request Download
+Untuk melakukan request download, code yang ditulis cukup sederhana.
+
+```kotlin
+object DownloadUtils {
+
+        ....
+
+        fun startDownload(fileDownload: FileDownload?, showNotificationComplete: Boolean = true): Long? {
+            val downloadRequest = DownloadManager.Request(Uri.parse(fileDownload?.url)).apply {
+                val notifyComplete = if (showNotificationComplete) {
+                    DownloadManager.Request.VISIBILITY_VISIBLE or DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
+                } else {
+                    DownloadManager.Request.VISIBILITY_VISIBLE
+                }
+                setNotificationVisibility(notifyComplete)
+                setDestinationInExternalFilesDir(getContext(), Environment.DIRECTORY_DOWNLOADS, "${fileDownload?.fileName}.apk")
+                setAllowedOverMetered(true)
+                setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_MOBILE)
+                setTitle("Downloading ${fileDownload?.name}")
+            }
+        
+            return downloadManager().enqueue(downloadRequest)
+        }
+
+        ....
+
+}
+```
+
+Function `startDownload()` me-return `downloadId` yang berasal dari `DownloadManager.enqueue(downloadRequest)`. Id tersebut dibutuhkan untuk membuat listener dan membatalkan download task. Ketika download berjalan pada WorkManager, `downloadId` tersebut di simpan menggunakan Room dan digunakan kembali untuk observer pada listener.
+
+#### Download Listener
+Untuk membuat download listener, perlukan `Query` dan `Cursor` yang didapat dari query DownloadManager. Query inilah yang akan di observer sehingga didapat posisi status download manager nya. Pada observer download status dengan query, tidak serta merta query melakukan observer secara asynchronous, kita perlu membuat sedikit *pemaksaan* tiap detik agar cursor dari query mampu mengecek posisi download status, hal ini membutuhkan `ticker`. Ticker adalah channel coroutines yang mampu mengkonsum `Unit` atau function secara berulang tiap waktu tergantung pada waktu/delay yang ditentukan.
+
+```kotlin
+import kotlinx.coroutines.channels.ticker
+
+val ticker = ticker(100)
+ticker.consumeAsFlow().collect {
+    // loop every 100ms
+}
+```
+
+Ticker juga dapat di akhiri dalam kondisi tertentu dengan `ticker.cancel()`.
+
+Sebelum memanfaatkan kemampuan ticker tersebut, perlu membuat function observer query dulu dengan mengekstensi class `ReceiveChannel<Unit>` yang merupakan tipe class asli dari ticker..
+
+```kotlin
+private suspend fun ReceiveChannel<Unit>.observingCursor(downloadId: Long?) {
+    val cursor = getCursor(downloadId)
+
+    if (cursor != null && cursor.moveToFirst()) {
+        val colStatus = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+       
+        when (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
+            DownloadManager.STATUS_SUCCESSFUL -> {
+                // state success
+                // cancel ticker
+                cancel()
+            }
+            DownloadManager.STATUS_RUNNING -> {
+                // state running
+               
+            }
+            DownloadManager.STATUS_PAUSED -> {
+                // state paused
+            }
+            DownloadManager.STATUS_PENDING -> {
+                // state pending
+            }
+            DownloadManager.STATUS_FAILED -> {
+                // state failed
+                // cancel ticker
+                cancel()
+            }
+        }
+    } else {
+        // state cancel
+        cancel()
+    }
+}
+```
+
+Lihat [DownloadUtils.kt#156](data/src/main/java/com/utsman/data/utils/DownloadUtils.kt#L156)
+
+Untuk menconsume state agar state dapat diolah, dibutuhkan listener dan dipasang pada tiap-tiap status sesuai function listenernya.
+
+```kotlin
+interface DownloadListener {
+    suspend fun onSuccess(cursor: Cursor, status: Download.Status)
+    suspend fun onRunning(fileSizeObserver: FileSizeObserver?, status: Download.Status)
+    suspend fun onPaused(cursor: Cursor, status: Download.Status)
+    suspend fun onPending(cursor: Cursor, status: Download.Status)
+    suspend fun onFailed(cursor: Cursor, status: Download.Status)
+    suspend fun onCancel(status: Download.Status)
+}
+```
+
+Lihat [DownloadUtils.kt#221](data/src/main/java/com/utsman/data/utils/DownloadUtils.kt#L221)
+
+Setelah selesai buat function listenernya, pasang function tersebut pada ticker.
+
+```kotlin
+import kotlinx.coroutines.channels.ticker
+
+val ticker = ticker(100)
+ticker.consumeAsFlow().collect {
+    ticker.observingCursor(downloadId)
+}
+```
+
+
+### Root Apk Installer
+Tidak lengkap rasanya jika sebuah aplikasi market apk tidak memiliki kemampuan silent install seperti Google PlayStore. Untuk implementasi kemampuan tersebut, dibutuhkan root akses sehingga dapat melakukan command install pada aplikasi.
+
+#### Check root access
+RootBeer merupakan library untuk melakukan pengecekan akses root dengan kemampuan native, artinya library ini secara native akan mencari binary yang berpotensial ada dalam tiap-tiap root device seperti `su` dan `BusyBox`. Jika ditemukan binary-binary tersebut, maka diketahui oleh RootBeer sebagai device yang memiliki akses root. Implementasinya pun sederhana.
+
+```kotlin
+val rootBeer = RootBeer(context)
+val isRooted = rootBeer.checkForRootNative() && rootBeer.isRooted
+```
+
+Lihat
+
+- [RootBeer by scottyab](https://github.com/scottyab/rootbeer)
+- [RootedRepositoryImplement.kt](data/src/main/java/com/utsman/data/repository/root/RootedRepositoryImplement.kt#L28)
+
+Contoh command nya sebagai berikut
+```shell script
+pm install -r /sdcard/download/simontok-terbaru.apk
+```
+
+Pada android, kita perlu lakukan command tersebut dengan class `Proccess` yang dihasilkan dari
+
+```kotlin
+Runtime.getRuntime().exec(arrayOf("su", "-c", command))
+```
 
 ---
