@@ -1,5 +1,19 @@
-# Store Apps - MVVM Clean Architecture (under development)
+<h1 align="center">
+  Store Apps - Apk Downloader
+</h1>
 
+<p align="center">
+  <img src="https://images.unsplash.com/photo-1484399172022-72a90b12e3c1?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"/>
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"></a>
+  <a href="https://github.com/utsmannn/store-apps-mvvm-clean-architecture/pulls"><img alt="Pull request" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat"></a>
+  <a href="https://twitter.com/utsmannn"><img alt="Twitter" src="https://img.shields.io/twitter/follow/utsmannn"></a>
+  <a href="https://github.com/utsmannn"><img alt="Github" src="https://img.shields.io/github/followers/utsmannn?label=follow&style=social"></a>
+</p>
+
+### MVVM Clean Architecture develop with
 - Modularization
 - UseCase
 - Retrofit
@@ -13,6 +27,18 @@
 - Work Manager
 - Download Manager
 - ViewBinding (with helper by [yogacp](https://github.com/yogacp/android-viewbinding))
+
+### Features
+- Apk downloader
+- Search app
+- Update app
+- Deep link app market or playstore
+- Auto installer (root required)
+
+### Apk debug
+[Download apk debug](apk/debug/app-debug.apk?raw=true)
+
+---
 
 ## Table of Contents
 - [Architecture](#architecture)
@@ -604,17 +630,45 @@ val isRooted = rootBeer.checkForRootNative() && rootBeer.isRooted
 Lihat
 
 - [RootBeer by scottyab](https://github.com/scottyab/rootbeer)
-- [RootedRepositoryImplement.kt](data/src/main/java/com/utsman/data/repository/root/RootedRepositoryImplement.kt#L28)
+- [RootedRepositoryImplement.kt#28](data/src/main/java/com/utsman/data/repository/root/RootedRepositoryImplement.kt#L28)
 
 Contoh command nya sebagai berikut
 ```shell script
 pm install -r /sdcard/download/simontok-terbaru.apk
 ```
 
-Pada android, kita perlu lakukan command tersebut dengan class `Proccess` yang dihasilkan dari
+Pada android, kita perlu lakukan command tersebut dengan class `Proccess`
 
 ```kotlin
-Runtime.getRuntime().exec(arrayOf("su", "-c", command))
+val process = Runtime.getRuntime().exec(arrayOf("su", "-c", command))
+process.waitFor()
 ```
 
+Untuk mendapatkan message error, dapat menggunakan `InputStreamReader(process.errorStream)` dengan reader `BufferedReader.readLine()`
+
+```kotlin
+val process = Runtime.getRuntime().exec(arrayOf("su", "-c", command))
+val errorReader = BufferedReader(InputStreamReader(process.errorStream))
+val errorLine = errorReader.readLine()
+```
+
+Lihat [RootedRepositoryImplement.kt](data/src/main/java/com/utsman/data/repository/root/RootedRepositoryImplement.kt)
+
 ---
+
+```
+Copyright 2020 (c) Muhammad Utsman
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+```

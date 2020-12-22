@@ -24,7 +24,7 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,UnusedAttribute">
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,11 +32,41 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".OptionsActivity"
-            android:label="Options" />
+            android:name=".ui.OptionsActivity"
+            android:label="Options"/>
         <activity
-            android:name=".ErrorLogInstallerActivity"
+            android:name=".ui.ErrorLogInstallerActivity"
             android:label="Error Log Installer" />
+        <activity android:name=".ui.DeepLinkRouteActivity"
+            android:label="Store App Link">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="play.google.com"
+                    android:scheme="https"
+                    android:pathPattern="/store/apps/.*"/>
+
+                <data
+                    android:host="play.app.goo.gl"
+                    android:scheme="https"/>
+
+                <data
+                    android:host="play.app.goo.gl"
+                    android:scheme="http"/>
+
+                <data
+                    android:host="play.app.goo.gl"
+                    android:scheme="intent"/>
+
+                <data
+                    android:host="intent://play.app.goo.gl"
+                    android:pathPattern="/.*"/>
+
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

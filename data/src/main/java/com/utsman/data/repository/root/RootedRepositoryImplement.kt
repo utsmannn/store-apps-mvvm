@@ -15,8 +15,6 @@ import kotlinx.coroutines.*
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
-import java.io.Reader
-import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.resume
 
@@ -40,7 +38,6 @@ class RootedRepositoryImplement @Inject constructor(
                     val process = Runtime.getRuntime().exec(arrayOf("su", "-c", command))
                     val errorReader = BufferedReader(InputStreamReader(process.errorStream))
                     val errorLine = errorReader.readLine()
-                    logi("error line is not null -> $errorLine")
                     process.waitFor()
 
                     if (errorLine != null) {
