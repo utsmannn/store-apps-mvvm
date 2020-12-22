@@ -420,8 +420,7 @@ Untuk implementasi pada arsitektur project, request WorkManager dilakukan pada l
 
 ![](images/worker_flow.png?raw=true)
 
-Observer WorkManager dapat menghasilkan `WorkInfo`, sehingga pada usecase tidak hanya perlu memanggil fungsi akhir dari observing workmanager tadi. 
-
+Observer WorkManager dapat menghasilkan `WorkInfo`, dan dibungkus oleh state `WorkInfoResult`, sehingga pada UseCase dapat mengobserver `WorkInfo` dengan state nya.
 
 ```kotlin
 class DetailUseCase(private val downloadRepository: DownloadRepository) {
@@ -446,7 +445,7 @@ class DetailUseCase(private val downloadRepository: DownloadRepository) {
 Selengkapnya lihat:
 - [DownloadRepositoryImpl.kt](data/src/main/java/com/utsman/data/repository/download/DownloadRepositoryImpl.kt)
 - [DetailUseCase.kt](feature/detail/src/main/java/com/utsman/detail/domain/DetailUseCase.kt)
-
+- [WorkInfoResult](data/src/main/java/com/utsman/data/model/dto/worker/WorkInfoResult.kt)
 
 ### DownloadManager
 
