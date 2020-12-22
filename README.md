@@ -32,6 +32,10 @@
         - [DataSource](#data-source)
         - [Adapter](#adapter)
         - [LoadState Listener](#loadstate-listener)
+    - [WorkManager](#workmanager)
+        - [Worker](#worker-class)
+        - [WorkRequest and observer WorkManager](#workrequest-and-observer-workmanager)
+        - [Implementation with architecture](#implementation-with-architecture)
 
 ---
 |Home|Detail|Detail downloading|Download monitor|
@@ -291,7 +295,7 @@ Paging library merupakan komponen dari Jetpack yang dapat menghandle banyak data
 
 #### Data Source
 Pada data source paging 2, developer perlu menentapkan 3 function, `loadInitial`, `loadAfter` dan `loadBefore`. Pada `loadInital` dan `loadAfter`, dapat terjadi redundant karena code implementasi nya sering kali sama, hanya param key yang bertindak sebagai "page" selanjutnya. Sementara pada Paging 3 hanya membutuhkan implementasi pada `load` function.
-Dah gitu, data source pada paging 3 berdiri diatas coroutines functions, lihat [AppsPagingSource](data/src/main/java/com/utsman/data/source/AppsPagingSource.kt). Hal ini membuat developer lebih mudah implementasi async code.
+Dah gitu, data source pada paging 3 berdiri diatas coroutines functions, lihat [AppsPagingSource.kt](data/src/main/java/com/utsman/data/source/AppsPagingSource.kt). Hal ini membuat developer lebih mudah implementasi async code.
 
 #### Adapter
 Pada adapter paging 2, mirip seperti `RecyclerView.Adapter` biasa, yang membedakan hanya tipe data (`PagedList` dan `List`) dan beberapa function seperti `submit`, `getItem`. Sementara pada Paging 3, ditambahkan listener `LoadState` juga footer atau header yang dapat di attach pada adapter. Ini membuat developer tidak perlu lagi membuat listener dan membuat network state dengan mutliple view type.
@@ -305,7 +309,7 @@ Ini adalah fitur yang ditambahkan pada paging 3, memungkinkan developer melihat 
 - *append*: `LoadState` akhir dari aliran data pada `DataSource`
 - *mediator*: `LoadState` yang terdapat pada `RemoteMediator` jika `RemoteMediator` dipasang
 
-Lihat dokumentasi [CombinedLoadStates](https://developer.android.com/reference/kotlin/androidx/paging/CombinedLoadStates)
+Lihat dokumentasi [CombinedLoadStates.kt](https://developer.android.com/reference/kotlin/androidx/paging/CombinedLoadStates)
 
 Berdasarkan state-state tersebut, developer dapat memasang ui loading atau not-loading pada activity/fragment sebelum item dimuat oleh adapter.
 
@@ -349,7 +353,7 @@ class PagingStateAdapter : LoadStateAdapter<PagingStateAdapter.PagingStateViewHo
     }
 }
 ```
-Lihat [PagingStateAdapter](libraries/abstraction/src/main/java/com/utsman/abstraction/base/PagingStateAdapter.kt)
+Lihat [PagingStateAdapter.kt](libraries/abstraction/src/main/java/com/utsman/abstraction/base/PagingStateAdapter.kt)
 
 Kemudian, state adapter tersebut dipasang dengan adapter utama
 
@@ -363,5 +367,88 @@ binding.recyclerView.run {
     adapter = pagingListAdapter.withLoadStateFooter(pagingStateAdapter) // pasang state adapter pada footer dari adapter utama
 }
 ```
+
+### WorkManager
+WorkManager adalah library yang memungkinkan sebuah fungsi berjalan pada background diluar aplikasi, sehingga ketika aplikasi ditutup, WorkManager akan tetap menjalankan tugasnya. Pada project ini, WorkManager dijalankan untuk menangani tugas download, sehingga ketika aplikasi ditutup, download akan tetap berjalan bahkan ketika restart task download akan dilanjutkan.
+
+#### Worker Class
+Sebelum menjalankan task working, perlu dibuat class yang berisi function task. Saya membuat class ini dengan extend pada class `CoroutineWorker` karena `DownloadManager` yang dijalankan akan bersifat asynchronous. Untuk bagaimana membuat task asynchronous download, lihat [DownloadManager Asynchronous](#downloadManager-asynchronous).
+
+```kotlin
+class DownloadAppWorker(context: Context, workerParameters: WorkerParameters) :
+    CoroutineWorker(context, workerParameters) {
+
+    override suspend fun doWork() = withContext(Dispatchers.IO) {
+        download(this) // download manager async
+    }
+}
+```
+
+Selengkapnya lihat [DownloadAppWorker.kt](data/src/main/java/com/utsman/data/worker/DownloadAppWorker.kt)
+
+#### WorkRequest and observer WorkManager
+Untuk menjalankan task Working, cukup sederhana. Developer perlu membuat `WorkRequest` dengan class `OneTimeWorkRequestBuilder`. `OneTimeWorkRequestBuilder` sendiri bertugas untuk menjalankan `Worker` dengan sekali perintah hingga selesai tanpa penjadwalan. Lihat [WorkManager Basic](https://developer.android.com/topic/libraries/architecture/workmanager/basics)
+
+```kotlin
+val inputData = workDataOf("data" to "data send to worker")
+
+val worker = OneTimeWorkRequestBuilder<DownloadAppWorker>()
+    .setInputData(inputData)
+    .build()
+```
+Lihat [DownloadRepositoryImpl.kt](data/src/main/java/com/utsman/data/repository/download/DownloadRepositoryImpl.kt#L36)
+
+Sementara untuk observing Worker dapat dilakukan dengan liveData
+
+```kotlin
+WorkManager.getInstance(applicationContext)
+    // requestId is the WorkRequest id
+    .getWorkInfoByIdLiveData(requestId)
+    .observe(observer, Observer { workInfo: WorkInfo? ->
+            if (workInfo != null) {
+                val progress = workInfo.progress
+                val value = progress.getInt(Progress, 0)
+                // Do something with progress information
+            }
+    })
+```
+
+
+#### Implementation with Architecture
+Dalam project ini, ada kondisi dimana perlu menyimpan `requestId` untuk bisa meng-observer jika activity/fragment di create kembali sesuai konteks yang akan di observer. Untuk handle konndisi tersebut, diperlukan penyimpanan data, jadi saya gunakan Room.
+Untuk implementasi pada arsitektur project, request WorkManager dilakukan pada level repository, begitupun dengan observer worker. Karena untuk mengobserver worker diperlukan `requestId`, dilakukan flatMap dari file yang sedang didownload.
+
+![](images/worker_flow.png?raw=true)
+
+Observer WorkManager dapat menghasilkan `WorkInfo`, sehingga pada usecase tidak hanya perlu memanggil fungsi akhir dari observing workmanager tadi. 
+
+
+```kotlin
+class DetailUseCase(private val downloadRepository: DownloadRepository) {
+
+    // variable workInfoResult
+    val workInfoState = MutableStateFlow<WorkInfoResult>(WorkInfoResult.Stopped())
+
+    // function observer dalam usecase
+    suspend fun observerWorkInfoResult(packageName: String) {
+
+        // manggil function observer dalam repository
+        downloadRepository.observerWorkInfo(packageName)
+            .collect {
+
+                // tetapkan nilai dari variable workInfoResult
+                workInfoState.value = it
+            }
+    }
+}
+```
+
+Selengkapnya lihat:
+- [DownloadRepositoryImpl.kt](data/src/main/java/com/utsman/data/repository/download/DownloadRepositoryImpl.kt)
+- [DetailUseCase.kt](feature/detail/src/main/java/com/utsman/detail/domain/DetailUseCase.kt)
+
+
+### DownloadManager
+
 
 ---
