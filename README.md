@@ -309,7 +309,7 @@ Ini adalah fitur yang ditambahkan pada paging 3, memungkinkan developer melihat 
 - *append*: `LoadState` akhir dari aliran data pada `DataSource`
 - *mediator*: `LoadState` yang terdapat pada `RemoteMediator` jika `RemoteMediator` dipasang
 
-Lihat dokumentasi [CombinedLoadStates.kt](https://developer.android.com/reference/kotlin/androidx/paging/CombinedLoadStates)
+Lihat dokumentasi [CombinedLoadStates](https://developer.android.com/reference/kotlin/androidx/paging/CombinedLoadStates)
 
 Berdasarkan state-state tersebut, developer dapat memasang ui loading atau not-loading pada activity/fragment sebelum item dimuat oleh adapter.
 
