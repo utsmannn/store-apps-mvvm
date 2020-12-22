@@ -14,6 +14,26 @@
 - Download Manager
 - ViewBinding (with helper by [yogacp](https://github.com/yogacp/android-viewbinding))
 
+## Table of Contents
+- [Architecture](#architecture)
+    - [Stream Data Flow](#stream-data-flow)
+    - [Modularization](#modularization)
+    - [UseCase](#usecase)
+        - [ResultState](#resultstate)
+        - [Interactor](#interactor)
+    - [Networking](#networking)
+        - [Moshi](#moshi)
+    - [Dependencies Injection](#dependencies-injection)
+        - [Koin](#koin)
+        - [Dagger Hilt](#dagger-hilt)
+        - [Handle dependencies across module](#handle-dependencies-across-module)
+    - [ViewModel](#viewmodel)
+    - [Paging Library 3](#paging-library-3)
+        - [DataSource](#data-source)
+        - [Adapter](#adapter)
+        - [LoadState Listener](#loadstate-listener)
+
+---
 |Home|Detail|Detail downloading|Download monitor|
 |--|--|--|--|
 |![](images/home.png?raw=true)|![](images/detail.png?raw=true)|![](images/detail_download.png?raw=true)|![](images/download_monitor.png?raw=true)|
@@ -55,7 +75,7 @@ root
 ------ network
 ```
 
-#### Apa itu layer?
+#### Layer?
 Layer yang dimaksud dalam prinsip Clean Arch adalah lapisan-lapisan yang mewakili fungsionalitas dari class-class yang membangun sebuah fitur. Untuk gampang nya bisa lihat gambar berikut.
 
 ![](https://miro.medium.com/max/942/1*Jve_0_GCxLEiYzdc2QKogQ.jpeg)
@@ -112,7 +132,7 @@ viewModel.randomList.observe(viewLifecycleOwner, Observer { state ->
 ```
 
 #### Interactor
-Interactor merupakan fungsi pengambilan data yang menghasilkan class `Flow<ResultState>`. Digunakan untuk berinteraksi dengan suspend function yang mengambil data atau response dari repository atau dapat juga langsung dari route services. Baca mengenai `Flow` di sini https://kotlinlang.org/docs/reference/coroutines/flow.html
+Interactor merupakan fungsi yang bertugas mengambil data dan menghasilkan class `Flow<ResultState>`. Digunakan untuk berinteraksi dengan suspend function yang mengambil data atau response dari repository atau dapat juga langsung dari route services. Baca mengenai `Flow` di sini https://kotlinlang.org/docs/reference/coroutines/flow.html
 
 ```kotlin
 suspend fun <T: Any> fetch(call: suspend () -> T): Flow<ResultState<T>> = flow {
@@ -219,7 +239,7 @@ class MainApplication : Application() {
         
         override fun onCreate() {
             super.onCreate()
-            _someVarState.value = SomeVar
+            _someVarState.value = someVar
         }
 }
 ```
@@ -244,7 +264,7 @@ inline fun <reified T>getValueSafeOf(instanceState: MutableStateFlow<T>): T {
 }
 ```
 
-Ada dua function yang dibuat, `getValueOf()` menghasilkan nilai yang tidak null, karena global variable tersebut bersifat nullable, maka ditambahkan `not-null` assertion, cara ini dapat menyebabkan NPE jika value belum di tetapkan pada `MainApplication`. Sementara `getValueSafeOf()` mengambil nilai yang nullable. Sehingga pemanggilan dependencies nya dapat dilakukan pada class seperti helper, WorkManager, interface dll.
+Ada dua function yang dibuat, `getValueOf()` menghasilkan nilai yang tidak null, karena global variable tersebut bersifat nullable, maka ditambahkan `not-null` assertion, cara ini dapat menyebabkan NPE jika value gagal di tetapkan pada `MainApplication`. Sementara `getValueSafeOf()` mengambil nilai yang nullable. Sehingga pemanggilan dependencies nya dapat dilakukan pada class seperti helper, WorkManager, interface dll.
 
 ```kotlin
 class DownloadWorkManager(context: Context, workerParameters: WorkerParameters) : CoroutineWorker(context, workerParameters) {
@@ -252,7 +272,6 @@ class DownloadWorkManager(context: Context, workerParameters: WorkerParameters) 
     private val someVarState = getValueSafeOf(_someVarState)
 
     ...
-
 }
 ```
 
@@ -261,8 +280,87 @@ ViewModel berfungsi meneruskan dan menyimpan state variable (jika diperlukan) da
 
 ```kotlin
 class SomeViewModel(private val useCase: SomeUseCase) : ViewModel() {
+
     val resultLiveData 
             get() = useCase.someResult.asLiveData(viewModelScope.coroutineContext)
+}
+```
+
+### Paging Library 3
+Paging library merupakan komponen dari Jetpack yang dapat menghandle banyak data pada recyclerview. Meski masih versi alpa, paging 3 cukup mapan untuk digunakan pada production, saya tidak menemui bug yang fatal selama riset Paging 3. Kelebihan yang signifikan dibanding paging 2 terletak pada `DataSource`, viewModel handling dan adapter. 
+
+#### Data Source
+Pada data source paging 2, developer perlu menentapkan 3 function, `loadInitial`, `loadAfter` dan `loadBefore`. Pada `loadInital` dan `loadAfter`, dapat terjadi redundant karena code implementasi nya sering kali sama, hanya param key yang bertindak sebagai "page" selanjutnya. Sementara pada Paging 3 hanya membutuhkan implementasi pada `load` function.
+Dah gitu, data source pada paging 3 berdiri diatas coroutines functions, lihat [AppsPagingSource](data/src/main/java/com/utsman/data/source/AppsPagingSource.kt). Hal ini membuat developer lebih mudah implementasi async code.
+
+#### Adapter
+Pada adapter paging 2, mirip seperti `RecyclerView.Adapter` biasa, yang membedakan hanya tipe data (`PagedList` dan `List`) dan beberapa function seperti `submit`, `getItem`. Sementara pada Paging 3, ditambahkan listener `LoadState` juga footer atau header yang dapat di attach pada adapter. Ini membuat developer tidak perlu lagi membuat listener dan membuat network state dengan mutliple view type.
+
+#### LoadState Listener
+Ini adalah fitur yang ditambahkan pada paging 3, memungkinkan developer melihat state pada aliran data. Pada function `addLoadStateListener` dari adapter, developer bisa kontrol view saat data sedang `loading`, `notloading` dan `error` dengan lima kondisi, yakni:
+
+- *source*: `LoadState` yang asli dari `DataSource`
+- *refresh*: `LoadState` yang sedang memuat data baru pada `DataSource`
+- *prepend*: `LoadState` awal dan belum memuat apa-apa dari aliran data pada `DataSource`
+- *append*: `LoadState` akhir dari aliran data pada `DataSource`
+- *mediator*: `LoadState` yang terdapat pada `RemoteMediator` jika `RemoteMediator` dipasang
+
+Lihat dokumentasi [CombinedLoadStates](https://developer.android.com/reference/kotlin/androidx/paging/CombinedLoadStates)
+
+Berdasarkan state-state tersebut, developer dapat memasang ui loading atau not-loading pada activity/fragment sebelum item dimuat oleh adapter.
+
+```kotlin
+pagingListAdapter.addLoadStateListener { combinedLoadStates ->
+
+    val refreshState = combinedLoadStates.refresh // mengambil kondisi refresh load state
+    progressCircular.isVisible = refreshState is LoadState.Loading // menampikan progress bar jika refresh state sedang loading
+}
+``` 
+
+Paging 3 ini juga mempunyai state adapter dengan viewholder yang berbeda pada adapter utama. Adapter tersebut di pasang sejajar dengan adapter utama, fungsi ui nya dapat menampilkan status loading maupun error pada data yang sejajar dengan item utama yang telah di load sebelumnya. Jika pada paging 2 developer harus membuat network viewholder dengan teknik multiple viewtype dengan satu viewholder untuk menampilkan ui loading atau error, pada Paging 3 tidak perlu melakukan itu.
+
+```kotlin
+class PagingStateAdapter : LoadStateAdapter<PagingStateAdapter.PagingStateViewHolder>() {
+
+    // viewholder single line
+    class PagingStateViewHolder(view: View) : RecyclerView.ViewHolder(view)
+
+    override fun onBindViewHolder(holder: PagingStateViewHolder, loadState: LoadState) {
+        val binding = ItemListLoaderBinding.bind(holder.itemView)
+        binding.run {
+    
+            // jika state loading menampilkan progress bar
+            progressCircular.isVisible = loadState is LoadState.Loading
+
+            // jika state error menampilkan textview dan button
+            btnRetry.isVisible = loadState is LoadState.Error
+            txtMsg.isVisible = loadState is LoadState.Error
+
+            ....
+        }
+    }
+
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        loadState: LoadState
+    ): PagingStateViewHolder {
+        val view = parent.inflate(R.layout.item_list_loader)
+        return PagingStateViewHolder(view)
+    }
+}
+```
+Lihat [PagingStateAdapter](libraries/abstraction/src/main/java/com/utsman/abstraction/base/PagingStateAdapter.kt)
+
+Kemudian, state adapter tersebut dipasang dengan adapter utama
+
+```kotlin
+binding.recyclerView.run {
+
+    val pagingListAdapter = PagingListAdapter() // adapter utama
+    val pagingStateAdapter = PagingStateAdapter() // adapter state
+
+    layoutManager = gridLayout
+    adapter = pagingListAdapter.withLoadStateFooter(pagingStateAdapter) // pasang state adapter pada footer dari adapter utama
 }
 ```
 
