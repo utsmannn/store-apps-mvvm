@@ -70,6 +70,7 @@
         - [Download Listener](#download-listener)
     - [Root Apk Installer](#root-apk-installer)
         - [Check root access](#check-root-access)
+        - [Command](#command)
 
 ---
 |Home|Detail|Detail downloading|Download monitor|
@@ -631,6 +632,8 @@ Lihat
 
 - [RootBeer by scottyab](https://github.com/scottyab/rootbeer)
 - [RootedRepositoryImplement.kt#28](data/src/main/java/com/utsman/data/repository/root/RootedRepositoryImplement.kt#L28)
+
+#### Command
 
 Contoh command nya sebagai berikut
 ```shell script
